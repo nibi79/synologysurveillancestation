@@ -27,7 +27,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     // APIs
     private SynoApiAuth apiAuth = null;
     private SynoApiInfo apiInfo = null;
-    private SynoApiCameraGetSnapshot apiCameraGetSnapshot = null;
+    // private SynoApiCameraGetSnapshot apiCameraGetSnapshot = null;
     private SynoApiCamera apiCamera = null;
     private SynoApiExternalRecording apiExternalRecording = null;
     private SynoApiPTZ apiPTZ = null;
@@ -67,7 +67,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         // initialize APIs
         apiInfo = new SynoApiInfo(config, sessionID);
-        apiCameraGetSnapshot = new SynoApiCameraGetSnapshot(config, sessionID);
+        // apiCameraGetSnapshot = new SynoApiCameraGetSnapshot(config, sessionID);
         apiCamera = new SynoApiCamera(config, sessionID);
         apiExternalRecording = new SynoApiExternalRecording(config, sessionID);
         apiPTZ = new SynoApiPTZ(config, sessionID);
@@ -203,9 +203,9 @@ public class SynoWebApiHandler implements SynoWebApi {
      * String)
      */
     @Override
-    public ByteArrayOutputStream getSnapshot(String cameraId) throws IOException, URISyntaxException {
+    public ByteArrayOutputStream getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
 
-        return apiCameraGetSnapshot.getSnapshot(cameraId);
+        return apiCamera.getSnapshot(cameraId);
     }
 
     /*

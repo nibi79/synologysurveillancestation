@@ -10,12 +10,6 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * Facade
- *
- * api = SYNO.Api.Info
- * method = Query
- *
- * http://IP_ADRESS:PORT/webapi/query.cgi?api=SYNO.API.Info&method=Query&version=1&query=SYNO.SurveillanceStation.
  *
  * * @author Nils
  *
@@ -40,8 +34,6 @@ public interface SynoWebApi {
     // ----------------------------
 
     /**
-     * api = SYNO.SurveillanceStation.Camera
-     * method = GetSnapshot
      *
      * @return
      * @throws URISyntaxException
@@ -71,27 +63,73 @@ public interface SynoWebApi {
      */
     public InfoResponse getInfo() throws WebApiException;
 
-    // recording
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse startRecording(String cameraId) throws WebApiException;
 
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse stopRecording(String cameraId) throws WebApiException;
 
-    // enable
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public CameraResponse enable(String cameraId) throws WebApiException;
 
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public CameraResponse disable(String cameraId) throws WebApiException;
 
-    // zoom
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse zoomIn(String cameraId) throws WebApiException;
 
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse zoomOut(String cameraId) throws WebApiException;
 
-    // move
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse moveUp(String cameraId) throws WebApiException;
 
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse moveDown(String cameraId) throws WebApiException;
 
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse moveLeft(String cameraId) throws WebApiException;
 
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse moveRight(String cameraId) throws WebApiException;
 }

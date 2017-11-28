@@ -1,9 +1,21 @@
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
@@ -89,6 +101,54 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         }
 
         return callApi(method, params);
+    }
+
+    /**
+     * Get the up-to-date snapshot of the selected camera in JPEG format.
+     *
+     * @throws WebApiException
+     * @throws IOException
+     * @throws UnsupportedOperationException
+     * @throws URISyntaxException
+     *
+     */
+    public ByteArrayOutputStream getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        CloseableHttpResponse response = null;
+
+        try {
+
+            List<NameValuePair> params = new ArrayList<>();
+
+            // API parameters
+            params.add(new BasicNameValuePair("camStm", "1"));
+            params.add(new BasicNameValuePair("cameraId", cameraId));
+            params.add(new BasicNameValuePair("preview", "true"));
+
+            URL url = getWebApiUrl("GetSnapshot", params);
+            URI uri = url.toURI();
+
+            CloseableHttpClient httpclient = HttpClients.createDefault();
+            HttpClientContext context = HttpClientContext.create();
+            HttpGet httpget = new HttpGet(uri);
+
+            response = httpclient.execute(httpget, context);
+
+            HttpEntity entity = response.getEntity();
+            IOUtils.copy(entity.getContent(), baos);
+            entity.getContent();
+
+            return baos;
+
+        } finally {
+            if (response != null) {
+
+                response.close();
+            }
+
+        }
+
     }
 
     /**

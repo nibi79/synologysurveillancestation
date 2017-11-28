@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -25,7 +26,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 
 /**
  * API request
- * 
+ *
  * @author Nils
  *
  * @param <T>
@@ -61,7 +62,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoApi#getApiConfig()
      */
     @Override
@@ -118,6 +119,23 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected T callApi(String method, List<NameValuePair> params) throws WebApiException {
 
+        URL url = getWebApiUrl(method, params);
+
+        return callWebApi(url.toString());
+
+    }
+
+    /**
+     * Builds the url for api.
+     *
+     * @param method
+     * @param params
+     * @return
+     * @throws MalformedURLException
+     * @throws URISyntaxException
+     */
+    protected URL getWebApiUrl(String method, List<NameValuePair> params) throws WebApiException {
+
         try {
 
             URIBuilder b = getWebApiUrlBuilder();
@@ -141,8 +159,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             b.addParameter("_sid", getSessionId());
 
             URL url = b.build().toURL();
-
-            return callWebApi(url.toString());
+            return url;
 
         } catch (URISyntaxException | IOException | UnsupportedOperationException e) {
             throw new WebApiException(e);
@@ -151,7 +168,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
     /**
      * E
-     * 
+     *
      * @param apiurl
      * @return
      * @throws WebApiException
@@ -159,8 +176,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws UnsupportedOperationException
      * @throws IOException
      */
-    protected T callWebApi(String apiurl)
-            throws WebApiException, URISyntaxException, UnsupportedOperationException, IOException {
+    protected T callWebApi(String apiurl) throws WebApiException {
 
         try {
 
@@ -197,7 +213,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             }
 
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException e) {
+                | NoSuchMethodException | SecurityException | IOException | URISyntaxException e) {
             throw new WebApiException(e);
         }
 

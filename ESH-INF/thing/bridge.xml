@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="synologysurveillancestation"
+                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+                          xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <!-- Wemo Link -->
+    <bridge-type id="station">
+        <label>Bridge Synology Surveilance Station API</label>
+        <description>Represents the API for Synology Surveilance Station.</description>
+
+        <properties>
+            <property name="vendor">Synology</property>
+        </properties>
+        
+        <config-description>
+        <parameter name="protocol" type="text">
+            <label>Protocol:</label>
+            <description>Protocol (http, https) for accessing Surveillance Station</description>
+            <default>http</default>
+            <required>true</required>
+        </parameter>
+        <parameter name="host" type="text">
+            <label>IP-Adress:</label>
+            <description>Ip of Surveillance Station</description>
+            <required>true</required>
+        </parameter>
+        <parameter name="port" type="text">
+            <label>Port:</label>
+            <description>Port for accessing Surveillance Station</description>
+            <default>5000</default>
+            <required>true</required>
+        </parameter>
+        <parameter name="username" type="text">
+            <label>Username:</label>
+            <description>Username for accessing camera (empty for standard)</description>
+            <default></default>
+        </parameter>
+        <parameter name="password" type="text">
+            <label>Password:</label>
+            <description>Password for accessing camera (empty for standard)</description>
+            <default></default>
+            <required>true</required>
+        </parameter>
+        <parameter name="poll" unit="s" type="integer">
+            <label>Poll time:</label>
+            <description>Interval of image being refreshed in seconds</description>
+            <default>5</default>
+            <required>true</required>
+        </parameter>
+        </config-description>
+    </bridge-type>
+    
+
+
+</thing:thing-descriptions>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="synologysurveillancestation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+	<thing-type id="camera">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="station" />
+		</supported-bridge-type-refs>
+		<label>Surveillance Station Camera</label>
+		<description>Synology Surveillance Station Camera</description>
+		<category>Camera</category>
+
+
+		<channels>
+			<channel id="image" typeId="image-channel" />
+			<channel id="record" typeId="recording-channel" />
+			<channel id="enable" typeId="enable-channel" />
+			<channel id="zoom" typeId="zoom-channel" />
+			<channel id="move" typeId="move-channel" />
+		</channels>
+
+	</thing-type>
+
+	<!-- Sample Channel Type -->
+	<channel-type id="image-channel">
+		<item-type>Image</item-type>
+		<label>Image</label>
+		<description>Image channel for Camera Binding</description>
+	</channel-type>
+	<channel-type id="enable-channel">
+		<item-type>Switch</item-type>
+		<label>Enable</label>
+		<description>Enable channel for Camera Binding</description>
+	</channel-type>
+	<channel-type id="recording-channel">
+		<item-type>Switch</item-type>
+		<label>Record</label>
+		<description>Recording channel for Camera Binding</description>
+	</channel-type>
+	<channel-type id="zoom-channel">
+		<item-type>String</item-type>
+		<label>Zoom</label>
+		<description>Zooming channel for Camera Binding</description>
+		<state>
+			<options>
+				<option value="IN">in</option>
+				<option value="OUT">out</option>
+			</options>
+		</state>
+	</channel-type>
+	<channel-type id="move-channel">
+		<item-type>String</item-type>
+		<label>Move</label>
+		<description>Moving channel for Camera Binding</description>
+		<state>
+			<options>
+				<option value="UP">up</option>
+				<option value="DOWN">down</option>
+				<option value="LEFT">left</option>
+				<option value="RIGHT">right</option>
+			</options>
+		</state>
+	</channel-type>
+</thing:thing-descriptions>

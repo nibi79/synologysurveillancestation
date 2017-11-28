@@ -9,56 +9,65 @@ import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
+ * SYNO.SurveillanceStation.ExternalRecording
+ *
+ * This API provides methods to start or stop external recording of a camera.
+ *
+ * Method:
+ * - Record
+ *
  * @author Nils
  *
  */
 public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
 
+    // API configuration
     // TODO Check version 3 -< invalid parameter?
     private static final String API_VERSION = "2";
     private static final String API_NAME = "SYNO.SurveillanceStation.ExternalRecording";
     private static final String API_SCRIPT = "/webapi/entry.cgi";
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
 
+    // API methods
     private static final String METHOD_RECORD = "Record";
 
     /**
      * @param config
      */
     public SynoApiExternalRecording(Config config, String sessionID) {
-        super(config, sessionID);
-    }
-
-    @Override
-    public String getApiVersion() {
-        return API_VERSION;
-    }
-
-    @Override
-    public String getApiName() {
-        return API_NAME;
-    }
-
-    @Override
-    public String getApiScriptPath() {
-        return API_SCRIPT;
+        super(apiConfig, config, sessionID);
     }
 
     private SimpleResponse call(String method, String cameraId, String action) throws WebApiException {
 
         List<NameValuePair> params = new ArrayList<>();
 
-        // API Parameters
+        // API parameters
         params.add(new BasicNameValuePair("cameraId", cameraId));
         params.add(new BasicNameValuePair("action", action));
 
         return callApi(method, params);
     }
 
+    /**
+     * Start external recording of a camera.
+     *
+     * @param camerId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse startRecording(String camerId) throws WebApiException {
 
         return call(METHOD_RECORD, camerId, "start");
     }
 
+    /**
+     * Stop external recording of a camera.
+     *
+     * @param camerId
+     * @return
+     * @throws WebApiException
+     */
     public SimpleResponse stopRecording(String camerId) throws WebApiException {
 
         return call(METHOD_RECORD, camerId, "stop");

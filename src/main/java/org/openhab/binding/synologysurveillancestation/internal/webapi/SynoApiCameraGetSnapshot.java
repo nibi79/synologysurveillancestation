@@ -32,6 +32,8 @@ public class SynoApiCameraGetSnapshot {
     }
 
     /**
+     * Get the up-to-date snapshot of the selected camera in JPEG format.
+     *
      * @throws WebApiException
      * @throws IOException
      * @throws UnsupportedOperationException

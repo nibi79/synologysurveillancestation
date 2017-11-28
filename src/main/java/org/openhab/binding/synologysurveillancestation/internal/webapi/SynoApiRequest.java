@@ -23,26 +23,50 @@ import org.apache.http.impl.client.HttpClients;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 
+/**
+ * API request
+ * 
+ * @author Nils
+ *
+ * @param <T>
+ */
 public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoApi {
 
     protected static final String API_TRUE = Boolean.TRUE.toString();
     protected static final String API_FALSE = Boolean.FALSE.toString();
+    private SynoApiConfig apiConfig = null;
 
     final Class<T> typeParameterClass;
 
     private Config config = null;
     private String sessionId = null;
 
+    /**
+     * @param apiConfig
+     * @param config
+     * @param sessionId
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(Config config, String sessionId) {
+    public SynoApiRequest(SynoApiConfig apiConfig, Config config, String sessionId) {
 
         super();
 
         this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0]);
 
+        this.apiConfig = apiConfig;
         this.config = config;
         this.sessionId = sessionId;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoApi#getApiConfig()
+     */
+    @Override
+    public SynoApiConfig getApiConfig() {
+        return apiConfig;
     }
 
     /**
@@ -60,6 +84,8 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
     }
 
     /**
+     * Creates an URIBuilder to build the url.
+     *
      * @return
      */
     protected URIBuilder getWebApiUrlBuilder() {
@@ -71,10 +97,25 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
         return b;
     }
 
+    /**
+     * Calls the method.
+     *
+     * @param method
+     * @return
+     * @throws WebApiException
+     */
     protected T callApi(String method) throws WebApiException {
         return callApi(method, null);
     }
 
+    /**
+     * Calls the method with the passed paramters.
+     *
+     * @param method
+     * @param params
+     * @return
+     * @throws WebApiException
+     */
     protected T callApi(String method, List<NameValuePair> params) throws WebApiException {
 
         try {
@@ -82,11 +123,11 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             URIBuilder b = getWebApiUrlBuilder();
 
             // API script
-            b.setPath(getApiScriptPath());
+            b.setPath(apiConfig.getScriptpath());
 
             // API data
-            b.addParameter("api", getApiName());
-            b.addParameter("version", getApiVersion());
+            b.addParameter("api", apiConfig.getName());
+            b.addParameter("version", apiConfig.getVersion());
 
             // API method
             b.addParameter("method", method);
@@ -109,6 +150,8 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
     }
 
     /**
+     * E
+     * 
      * @param apiurl
      * @return
      * @throws WebApiException
@@ -120,9 +163,6 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             throws WebApiException, URISyntaxException, UnsupportedOperationException, IOException {
 
         try {
-            // String loginUrl =
-            // "http://192.168.178.54:5000/webapi/auth.cgi?api=SYNO.API.Auth&method=Login&version=3&account=nibil&passwd=&session=SurveillanceStation&format=sid";
-            // final URL url = new URL(loginUrl);
 
             URL url = new URL(apiurl);
 

@@ -9,43 +9,46 @@ import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
 
 /**
+ *
+ * SYNO.API.Auth
+ *
+ * API used to perform session login and logout.
+ *
+ * Method:
+ * - Login
+ * - Logout
+ *
  * @author Nils
  *
  */
 public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
+    // API configuration
     private static final String API_VERSION = "3";
     private static final String API_NAME = "SYNO.API.Auth";
     private static final String API_SCRIPT = "/webapi/auth.cgi";
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
 
     /**
      * @param config
      */
     public SynoApiAuth(Config config) {
 
-        super(config, null);
+        super(apiConfig, config, null);
     }
 
-    @Override
-    public String getApiVersion() {
-        return API_VERSION;
-    }
-
-    @Override
-    public String getApiName() {
-        return API_NAME;
-    }
-
-    @Override
-    public String getApiScriptPath() {
-        return API_SCRIPT;
-    }
-
+    /**
+     * Calls the passed method.
+     *
+     * @param method
+     * @return
+     * @throws WebApiException
+     */
     private AuthResponse call(String method) throws WebApiException {
 
         List<NameValuePair> params = new ArrayList<>();
 
-        // API Parameters
+        // API parameters
         params.add(new BasicNameValuePair("account", getConfig().getUsername()));
         params.add(new BasicNameValuePair("passwd", getConfig().getPassword()));
 
@@ -56,31 +59,25 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
     }
 
     /**
-     * api = SYNO.Api.Auth
-     * method = Login
-     *
-     * http://IP_ADRESS:PORT/webapi/auth.cgi?api=SYNO.API.Auth&method=Login&version=2&account=admin&passwd=123456&session=SurveillanceStation&format=sid
+     * Create new login session.
      *
      * @return
      * @throws WebApiException
      */
     public AuthResponse login() throws WebApiException {
 
-        return call("login");
+        return call("Login");
     }
 
     /**
-     * api = SYNO.Api.Auth
-     * method = Logout
-     *
-     * http://IP_ADRESS:PORT/webapi/auth.cgi?api=SYNO.API.Auth&method=Logout&version=2&session=SurveillanceStation&_sid=Jn5dZ9aS95wh2
+     * Destroy current login session.
      *
      * @return
      * @throws WebApiException
      */
     public AuthResponse logout(String sessionID) throws WebApiException {
 
-        return call("logout");
+        return call("Logout");
     }
 
 }

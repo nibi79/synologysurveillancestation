@@ -4,35 +4,30 @@ import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 
 /**
+ * SYNO.SurveillanceStation.Info
+ *
+ * This API provides a method to acquire Surveillance Station related information such as package version, package UI
+ * path, and the total number of camera and installed licenses.
+ *
+ * Method:
+ * - GetInfo
+ *
  * @author Nils
  *
  */
 public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
 
+    // API Configuration
     private static final String API_VERSION = "5";
     private static final String API_NAME = "SYNO.SurveillanceStation.Info";
     private static final String API_SCRIPT = "/webapi/entry.cgi";
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
 
     /**
      * @param config
      */
     public SynoApiInfo(Config config, String sessionID) {
-        super(config, sessionID);
-    }
-
-    @Override
-    public String getApiVersion() {
-        return API_VERSION;
-    }
-
-    @Override
-    public String getApiName() {
-        return API_NAME;
-    }
-
-    @Override
-    public String getApiScriptPath() {
-        return API_SCRIPT;
+        super(apiConfig, config, sessionID);
     }
 
     public InfoResponse call(String method) throws WebApiException {

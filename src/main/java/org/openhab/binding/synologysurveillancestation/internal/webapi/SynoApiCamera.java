@@ -52,8 +52,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, ApiConstants.API_VERSION_08,
-            ApiConstants.API_SCRIPT_ENTRY);
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_08, API_SCRIPT_ENTRY);
 
     /**
      * @param config
@@ -125,7 +124,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
             // 0 - High quality, 1 - Balanced, 2 - Low bandwidth
             params.add(new BasicNameValuePair("profileType", "1"));
 
-            URL url = getWebApiUrl(ApiConstants.METHOD_GETSNAPSHOT, params);
+            URL url = getWebApiUrl(METHOD_GETSNAPSHOT, params);
             URI uri = url.toURI();
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -158,7 +157,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse list() throws WebApiException {
 
-        return call(ApiConstants.METHOD_LIST);
+        return call(METHOD_LIST);
     }
 
     /**
@@ -170,7 +169,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse getInfo(String cameraId) throws WebApiException {
 
-        return call(ApiConstants.METHOD_GETINFO, cameraId);
+        return call(METHOD_GETINFO, cameraId);
     }
 
     /**
@@ -185,7 +184,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("cameraIds", cameraId));
 
-        return callApi(ApiConstants.METHOD_ENABLE, params);
+        return callApi(METHOD_ENABLE, params);
     }
 
     /**
@@ -200,7 +199,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("cameraIds", cameraId));
 
-        return callApi(ApiConstants.METHOD_DISABLE, params);
+        return callApi(METHOD_DISABLE, params);
     }
 
 }

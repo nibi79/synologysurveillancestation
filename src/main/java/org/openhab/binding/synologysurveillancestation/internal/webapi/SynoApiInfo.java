@@ -18,10 +18,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
 
     // API Configuration
-    private static final String API_VERSION = "5";
     private static final String API_NAME = "SYNO.SurveillanceStation.Info";
-    private static final String API_SCRIPT = "/webapi/entry.cgi";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_05, API_SCRIPT_ENTRY);
 
     /**
      * @param config
@@ -30,21 +28,13 @@ public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
         super(apiConfig, config, sessionID);
     }
 
-    public InfoResponse call(String method) throws WebApiException {
-
-        return callApi(method);
-    }
-
     /**
-     * api = SYNO.SurveillanceStation.Camera
-     * method = List
-     *
-     * http://IP_ADRESS:PORT/webapi/info.cgi?api=SYNO.SurveillanceStation.Info&method=GetInfo&version=1
+     * Get Surveillance Station related general information.
      *
      * @return
      * @throws WebApiException
      */
     public InfoResponse getInfo() throws WebApiException {
-        return call("GetInfo");
+        return callApi(METHOD_GETINFO);
     }
 }

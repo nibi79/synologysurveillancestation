@@ -25,8 +25,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
     // API configuration
     private static final String API_NAME = "SYNO.API.Auth";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, ApiConstants.API_VERSION_06,
-            ApiConstants.API_SCRIPT_AUTH);
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_06, API_SCRIPT_AUTH);
 
     /**
      * @param config
@@ -65,7 +64,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      */
     public AuthResponse login() throws WebApiException {
 
-        return call(ApiConstants.METHOD_LOGIN);
+        return call(METHOD_LOGIN);
     }
 
     /**
@@ -76,7 +75,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      */
     public AuthResponse logout(String sessionID) throws WebApiException {
 
-        return call(ApiConstants.METHOD_LOGOUT);
+        return call(METHOD_LOGOUT);
     }
 
 }

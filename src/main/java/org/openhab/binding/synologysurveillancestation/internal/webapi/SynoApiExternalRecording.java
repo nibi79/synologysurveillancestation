@@ -23,13 +23,8 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
 
     // API configuration
     // TODO Check version 3 -< invalid parameter?
-    private static final String API_VERSION = "2";
     private static final String API_NAME = "SYNO.SurveillanceStation.ExternalRecording";
-    private static final String API_SCRIPT = "/webapi/entry.cgi";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
-
-    // API methods
-    private static final String METHOD_RECORD = "Record";
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_02, API_SCRIPT_ENTRY);
 
     /**
      * @param config
@@ -38,6 +33,13 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
         super(apiConfig, config, sessionID);
     }
 
+    /**
+     * @param method
+     * @param cameraId
+     * @param action
+     * @return
+     * @throws WebApiException
+     */
     private SimpleResponse call(String method, String cameraId, String action) throws WebApiException {
 
         List<NameValuePair> params = new ArrayList<>();

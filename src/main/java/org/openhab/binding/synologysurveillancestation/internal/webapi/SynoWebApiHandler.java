@@ -93,9 +93,12 @@ public class SynoWebApiHandler implements SynoWebApi {
 
                     case "ON":
                         enable(cameraId);
+                        break;
                     case "OFF":
                         disable(cameraId);
+                        break;
                 }
+                break;
 
             case CHANNEL_RECORD:
 
@@ -103,19 +106,25 @@ public class SynoWebApiHandler implements SynoWebApi {
 
                     case "ON":
                         startRecording(cameraId);
+                        break;
                     case "OFF":
                         stopRecording(cameraId);
+                        break;
                 }
 
+                break;
             case CHANNEL_ZOOM:
 
                 switch (command) {
 
                     case "IN":
                         zoomIn(cameraId);
+                        break;
                     case "OUT":
                         zoomOut(cameraId);
+                        break;
                 }
+                break;
 
             case CHANNEL_MOVE:
 
@@ -123,13 +132,18 @@ public class SynoWebApiHandler implements SynoWebApi {
 
                     case "UP":
                         moveUp(cameraId);
+                        break;
                     case "DOWN":
                         moveDown(cameraId);
+                        break;
                     case "LEFT":
                         moveLeft(cameraId);
+                        break;
                     case "RIGHT":
                         moveRight(cameraId);
+                        break;
                 }
+                break;
 
             default:
                 break;

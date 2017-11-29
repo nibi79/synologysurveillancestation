@@ -148,7 +148,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
                             updateStatus(ThingStatus.ONLINE);
 
-                        } catch (URISyntaxException | IOException e) {
+                        } catch (URISyntaxException | IOException | WebApiException e) {
                             logger.error("could not get snapshot: {}", getThing(), e);
                             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                                     "communication error: " + e.toString());

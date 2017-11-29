@@ -13,7 +13,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * Facade for Synology Surveillance Station Web API
+ * Facade for Synology Surveillance Station Web API.
  *
  * @author Nils
  *

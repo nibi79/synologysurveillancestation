@@ -24,10 +24,9 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
     // API configuration
-    private static final String API_VERSION = "3";
     private static final String API_NAME = "SYNO.API.Auth";
-    private static final String API_SCRIPT = "/webapi/auth.cgi";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, ApiConstants.API_VERSION_06,
+            ApiConstants.API_SCRIPT_AUTH);
 
     /**
      * @param config
@@ -66,7 +65,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      */
     public AuthResponse login() throws WebApiException {
 
-        return call("Login");
+        return call(ApiConstants.METHOD_LOGIN);
     }
 
     /**
@@ -77,7 +76,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      */
     public AuthResponse logout(String sessionID) throws WebApiException {
 
-        return call("Logout");
+        return call(ApiConstants.METHOD_LOGOUT);
     }
 
 }

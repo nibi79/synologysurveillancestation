@@ -51,10 +51,9 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
     // API configuration
-    private static final String API_VERSION = "8";
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera";
-    private static final String API_SCRIPT = "/webapi/entry.cgi";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, ApiConstants.API_VERSION_08,
+            ApiConstants.API_SCRIPT_ENTRY);
 
     /**
      * @param config
@@ -122,11 +121,11 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
             List<NameValuePair> params = new ArrayList<>();
 
             // API parameters
-            params.add(new BasicNameValuePair("camStm", "1"));
             params.add(new BasicNameValuePair("cameraId", cameraId));
-            params.add(new BasicNameValuePair("preview", "true"));
+            // 0 - High quality, 1 - Balanced, 2 - Low bandwidth
+            params.add(new BasicNameValuePair("profileType", "1"));
 
-            URL url = getWebApiUrl("GetSnapshot", params);
+            URL url = getWebApiUrl(ApiConstants.METHOD_GETSNAPSHOT, params);
             URI uri = url.toURI();
 
             CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -159,7 +158,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse list() throws WebApiException {
 
-        return call("List");
+        return call(ApiConstants.METHOD_LIST);
     }
 
     /**
@@ -171,7 +170,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse getInfo(String cameraId) throws WebApiException {
 
-        return call("GetInfo", cameraId);
+        return call(ApiConstants.METHOD_GETINFO, cameraId);
     }
 
     /**
@@ -183,7 +182,10 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse enable(String cameraId) throws WebApiException {
 
-        return call("Enable", cameraId);
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("cameraIds", cameraId));
+
+        return callApi(ApiConstants.METHOD_ENABLE, params);
     }
 
     /**
@@ -195,7 +197,10 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse disable(String cameraId) throws WebApiException {
 
-        return call("Disable", cameraId);
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("cameraIds", cameraId));
+
+        return callApi(ApiConstants.METHOD_DISABLE, params);
     }
 
 }

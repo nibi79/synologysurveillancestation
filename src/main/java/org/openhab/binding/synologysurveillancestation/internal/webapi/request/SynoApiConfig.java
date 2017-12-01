@@ -1,4 +1,4 @@
-package org.openhab.binding.synologysurveillancestation.internal.webapi;
+package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
 /**
  * API configuration parameters

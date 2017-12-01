@@ -8,6 +8,11 @@ import java.net.URISyntaxException;
 
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalRecording;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiInfo;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiPTZ;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;

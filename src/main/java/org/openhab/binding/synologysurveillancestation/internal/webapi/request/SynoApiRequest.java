@@ -1,4 +1,4 @@
-package org.openhab.binding.synologysurveillancestation.internal.webapi;
+package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +22,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 
 /**

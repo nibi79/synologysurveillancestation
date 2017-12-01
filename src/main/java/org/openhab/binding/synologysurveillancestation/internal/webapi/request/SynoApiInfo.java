@@ -1,6 +1,7 @@
-package org.openhab.binding.synologysurveillancestation.internal.webapi;
+package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
 import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 
 /**

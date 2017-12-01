@@ -59,4 +59,9 @@ public abstract class SynoApiResponse {
         }
     }
 
+    @Override
+    public String toString() {
+
+        return jsonResponse.toString();
+    }
 }

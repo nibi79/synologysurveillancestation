@@ -38,7 +38,7 @@
 		<label>Record</label>
 		<description>Recording channel for Camera Binding</description>
 	</channel-type>
-	<channel-type id="zoom-channel">
+	<channel-type id="zoom-channel" advanced="true">
 		<item-type>String</item-type>
 		<label>Zoom</label>
 		<description>Zooming channel for Camera Binding</description>
@@ -49,7 +49,7 @@
 			</options>
 		</state>
 	</channel-type>
-	<channel-type id="move-channel">
+	<channel-type id="move-channel" advanced="true">
 		<item-type>String</item-type>
 		<label>Move</label>
 		<description>Moving channel for Camera Binding</description>

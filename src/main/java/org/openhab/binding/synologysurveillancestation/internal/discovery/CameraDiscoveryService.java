@@ -1,4 +1,12 @@
-package org.openhab.binding.synologysurveillancestation.discovery;
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
 import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
 
@@ -24,6 +32,11 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+/**
+ * The {@link CameraDiscoveryService} is a service for discovering your cameras through Synology API
+ *
+ * @author Nils
+ */
 public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(CameraDiscoveryService.class);
@@ -33,7 +46,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
     /**
      * Maximum time to search for devices in seconds.
      */
-    private final static int SEARCH_TIME = 20;
+    private static final int SEARCH_TIME = 20;
 
     public CameraDiscoveryService(SynologySurveillanceStationBridgeHandler bridgeHandler)
             throws IllegalArgumentException {
@@ -100,8 +113,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
             }
 
         } catch (WebApiException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error in WebApiException", e);
         }
     }
 

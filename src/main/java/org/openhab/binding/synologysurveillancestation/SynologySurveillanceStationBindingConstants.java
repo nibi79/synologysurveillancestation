@@ -20,7 +20,7 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
  * The {@link SynologySurveillanceStationBindingConstants} class defines common constants, which are
  * used across the whole binding.
  *
- * @author Nils - Initial contribution
+ * @author Nils
  */
 @NonNullByDefault
 public class SynologySurveillanceStationBindingConstants {
@@ -33,7 +33,7 @@ public class SynologySurveillanceStationBindingConstants {
     public static final ThingTypeUID THING_TYPE_CAMERA = new ThingTypeUID(BINDING_ID, "camera");
     public static final ThingTypeUID THING_TYPE_STATION = new ThingTypeUID(BINDING_ID, "station");
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
             .unmodifiableSet(Stream.of(THING_TYPE_CAMERA, THING_TYPE_STATION).collect(Collectors.toSet()));
 
     /* List of all config properties */
@@ -46,10 +46,10 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String POLL = "POLL";
 
     // List of all Channel ids
-    public final static String CHANNEL_IMAGE = "image";
-    public final static String CHANNEL_RECORD = "record";
-    public final static String CHANNEL_ENABLE = "enable";
-    public final static String CHANNEL_ZOOM = "zoom";
-    public final static String CHANNEL_MOVE = "move";
+    public static final String CHANNEL_IMAGE = "image";
+    public static final String CHANNEL_RECORD = "record";
+    public static final String CHANNEL_ENABLE = "enable";
+    public static final String CHANNEL_ZOOM = "zoom";
+    public static final String CHANNEL_MOVE = "move";
 
 }

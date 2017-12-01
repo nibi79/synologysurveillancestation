@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  * The {@link SynologySurveillanceStationHandler} is responsible for handling commands, which are
  * sent to one of the channels.
  *
- * @author Nils - Initial contribution
+ * @author Nils
  */
 // @NonNullByDefault
 public class SynologySurveillanceStationHandler extends BaseThingHandler {

@@ -1,3 +1,11 @@
+/**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
 import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
@@ -19,12 +27,10 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * Facade for Synology Surveillance Station Web API.
+ * The {@link SynoWebApiHandler} is a facade for Synology Surveillance Station Web API.
  *
  * @author Nils
- *
  */
-
 public class SynoWebApiHandler implements SynoWebApi {
 
     private Config config = null;

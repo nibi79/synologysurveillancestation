@@ -24,9 +24,9 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
-import org.openhab.binding.synologysurveillancestation.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationHandler;
+import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Component;
 

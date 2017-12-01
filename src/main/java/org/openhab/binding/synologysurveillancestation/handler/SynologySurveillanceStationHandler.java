@@ -146,7 +146,9 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
                             updateState(cx.getUID(), new RawType(snapshot, "image/jpeg"));
 
-                            updateStatus(ThingStatus.ONLINE);
+                            if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
+                                updateStatus(ThingStatus.ONLINE);
+                            }
 
                         } catch (URISyntaxException | IOException | WebApiException e) {
                             logger.error("could not get snapshot: {}", getThing(), e);

@@ -21,8 +21,8 @@
             <required>true</required>
         </parameter>
         <parameter name="host" type="text">
-            <label>IP-Adress:</label>
-            <description>Ip of Surveillance Station</description>
+            <label>IP-Address:</label>
+            <description>IP of Surveillance Station</description>
             <required>true</required>
         </parameter>
         <parameter name="port" type="text">
@@ -32,12 +32,13 @@
             <required>true</required>
         </parameter>
         <parameter name="username" type="text">
-            <label>Username:</label>
-            <description>Username for accessing camera (empty for standard)</description>
+            <label>User name:</label>
+            <description>User name for accessing camera (empty for standard)</description>
             <default></default>
         </parameter>
         <parameter name="password" type="text">
             <label>Password:</label>
+            <context>password</context>
             <description>Password for accessing camera (empty for standard)</description>
             <default></default>
             <required>true</required>
@@ -50,7 +51,6 @@
         </parameter>
         </config-description>
     </bridge-type>
-    
 
 
 </thing:thing-descriptions>

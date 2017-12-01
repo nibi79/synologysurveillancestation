@@ -1,9 +1,12 @@
-package org.openhab.binding.synologysurveillancestation.internal.webapi;
+package org.openhab.binding.synologysurveillancestation.internal.webapi.error;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public enum WebApiErrorCodes {
+/**
+ * ErrorCodes for most APIs.
+ *
+ * @author Nils
+ *
+ */
+public enum WebApiErrorCodes implements ErrorCode {
 
     UNKNOWN_ERROR(100, "Unknown error"),
     INVALID_PARAMETER(101, "Invalid parameters"),
@@ -36,25 +39,27 @@ public enum WebApiErrorCodes {
         this.msg = msg;
     }
 
+    @Override
     public int getCode() {
         return this.code;
     }
 
+    @Override
     public String getMsg() {
         return this.msg;
     }
 
-    static Map<Integer, WebApiErrorCodes> map = new HashMap<>();
-
-    static {
-        for (WebApiErrorCodes catalog : WebApiErrorCodes.values()) {
-            map.put(catalog.code, catalog);
-        }
+    /**
+     * @param code
+     * @return
+     */
+    public static ErrorCode getByCode(int code) {
+        return ErrorCode.lookup(WebApiAuthErrorCodes.class, code);
     }
 
-    public static WebApiErrorCodes getByCode(int code) {
+    @Override
+    public String toString() {
 
-        return map.get(code);
+        return this.name() + " | ErrorCode: " + this.getCode() + " - " + this.getMsg();
     }
-
 }

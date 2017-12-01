@@ -1,5 +1,7 @@
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.ErrorCode;
+
 public class WebApiException extends Exception {
 
     private static final long serialVersionUID = 1L;
@@ -21,10 +23,10 @@ public class WebApiException extends Exception {
         this.errorMsg = errorMsg;
     }
 
-    public WebApiException(int errorCode) {
+    public WebApiException(ErrorCode errorCode) {
         super();
-        this.errorCode = errorCode;
-        this.errorMsg = WebApiErrorCodes.getByCode(errorCode).getMsg();
+        this.errorCode = errorCode.getCode();
+        this.errorMsg = errorCode.getMsg();
     }
 
     public WebApiException(String errorMsg, Throwable cause) {

@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
@@ -29,7 +28,7 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public AuthResponse logout() throws WebApiException;
+    public SimpleResponse logout() throws WebApiException;
 
     // ----------------------------
 
@@ -82,14 +81,14 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public CameraResponse enable(String cameraId) throws WebApiException;
+    public SimpleResponse enable(String cameraId) throws WebApiException;
 
     /**
      * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public CameraResponse disable(String cameraId) throws WebApiException;
+    public SimpleResponse disable(String cameraId) throws WebApiException;
 
     /**
      * @param cameraId

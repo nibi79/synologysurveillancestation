@@ -1,6 +1,6 @@
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
-public class AuthResponse extends SynoApiResponse {
+public class AuthResponse extends SimpleResponse {
 
     /**
      * @param jsonResponse

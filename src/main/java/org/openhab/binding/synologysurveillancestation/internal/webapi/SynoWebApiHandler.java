@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
@@ -67,7 +68,6 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         // initialize APIs
         apiInfo = new SynoApiInfo(config, sessionID);
-        // apiCameraGetSnapshot = new SynoApiCameraGetSnapshot(config, sessionID);
         apiCamera = new SynoApiCamera(config, sessionID);
         apiExternalRecording = new SynoApiExternalRecording(config, sessionID);
         apiPTZ = new SynoApiPTZ(config, sessionID);
@@ -166,7 +166,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         } else {
 
-            throw new WebApiException(response.getErrorcode());
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
 
     }
@@ -186,7 +186,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         } else {
 
-            throw new WebApiException(response.getErrorcode());
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
     }
 
@@ -205,9 +205,17 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#logout()
      */
     @Override
-    public AuthResponse logout() throws WebApiException {
+    public SimpleResponse logout() throws WebApiException {
 
-        return apiAuth.logout(sessionID);
+        SimpleResponse response = apiAuth.logout(sessionID);
+
+        if (response.isSuccess()) {
+
+            return response;
+        } else {
+
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
     }
 
     /*
@@ -234,7 +242,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         if (!response.isSuccess()) {
 
-            throw new WebApiException(response.getErrorcode());
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
 
         return response;
@@ -253,7 +261,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         if (!response.isSuccess()) {
 
-            throw new WebApiException(response.getErrorcode());
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
 
         return response;
@@ -265,16 +273,11 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#enable(java.lang.String)
      */
     @Override
-    public CameraResponse enable(String cameraId) throws WebApiException {
+    public SimpleResponse enable(String cameraId) throws WebApiException {
 
-        CameraResponse response = apiCamera.enable(cameraId);
+        SimpleResponse response = apiCamera.enable(cameraId);
 
-        if (!response.isSuccess()) {
-
-            throw new WebApiException(response.getErrorcode());
-        }
-
-        return response;
+        return handleSimpleResponse(response);
     }
 
     /*
@@ -283,16 +286,11 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#disable(java.lang.String)
      */
     @Override
-    public CameraResponse disable(String cameraId) throws WebApiException {
+    public SimpleResponse disable(String cameraId) throws WebApiException {
 
-        CameraResponse response = apiCamera.disable(cameraId);
+        SimpleResponse response = apiCamera.disable(cameraId);
 
-        if (!response.isSuccess()) {
-
-            throw new WebApiException(response.getErrorcode());
-        }
-
-        return response;
+        return handleSimpleResponse(response);
     }
 
     /*

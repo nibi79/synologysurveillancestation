@@ -2,7 +2,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.response
 
 import com.google.gson.JsonArray;
 
-public class CameraResponse extends SynoApiResponse {
+public class CameraResponse extends SimpleResponse {
 
     /**
      * @param jsonResponse

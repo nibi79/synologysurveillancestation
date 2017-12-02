@@ -59,10 +59,10 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
                 config.setProtocoll("http");
 
                 // Polling all potential IPs of this subnet
-                for (int ip = 64; ip < 80; ip++) {
+                for (int ip = 1; ip < 255; ip++) {
                     String currentIp = subnet + String.valueOf(ip);
 
-                    logger.debug("Polling {} ", currentIp);
+                    //logger.debug("Polling {} ", currentIp);
 
                     if (pingHost(currentIp, 5000, 300)) {
 

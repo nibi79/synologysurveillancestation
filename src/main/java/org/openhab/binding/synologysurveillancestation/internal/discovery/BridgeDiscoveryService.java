@@ -1,5 +1,10 @@
 /**
+ * Copyright (c) 2010-2017 by the respective copyright holders.
  *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
@@ -62,7 +67,7 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
                 for (int ip = 1; ip < 255; ip++) {
                     String currentIp = subnet + String.valueOf(ip);
 
-                    //logger.debug("Polling {} ", currentIp);
+                    // logger.debug("Polling {} ", currentIp);
 
                     if (pingHost(currentIp, 5000, 200)) {
 
@@ -79,9 +84,9 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
                                         SynologySurveillanceStationBindingConstants.THING_TYPE_STATION, thingId);
 
                                 if (discoveryServiceCallback.getExistingThing(thingUID) != null) {
-                                    logger.debug("Thing " + thingUID.toString() + " already exists");
+                                    logger.debug("Thing {} already exists", thingUID.toString());
                                 } else if (discoveryServiceCallback.getExistingDiscoveryResult(thingUID) != null) {
-                                    logger.debug("Thing " + thingUID.toString() + " was discovered already");
+                                    logger.debug("Thing {} was discovered already", thingUID.toString());
                                 } else {
                                     Map<String, Object> properties = new HashMap<>(1);
                                     properties.put(SynologySurveillanceStationBindingConstants.PROTOCOL,
@@ -106,7 +111,7 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
                 }
 
             } else {
-                logger.info("Automatic discovery fails: no LAN subnet found");
+                logger.debug("Automatic discovery fails: no LAN subnet found");
             }
         }
     };

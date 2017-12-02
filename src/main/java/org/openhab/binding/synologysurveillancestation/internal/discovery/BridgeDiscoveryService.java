@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = DiscoveryService.class, immediate = true, configurationPid = "discovery.synologysurveillancestation")
 public class BridgeDiscoveryService extends AbstractDiscoveryService implements ExtendedDiscoveryService {
 
-    public static final int DISCOVERY_TIMEOUT = 60;
+    public static final int DISCOVERY_TIMEOUT = 5;
     private final Logger logger = LoggerFactory.getLogger(BridgeDiscoveryService.class);
     ScheduledFuture<?> discoveryJob;
     private DiscoveryServiceCallback discoveryServiceCallback;
@@ -64,7 +64,7 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
 
                     //logger.debug("Polling {} ", currentIp);
 
-                    if (pingHost(currentIp, 5000, 300)) {
+                    if (pingHost(currentIp, 5000, 200)) {
 
                         config.setHost(currentIp);
                         SynoApiQuery apiQuery = new SynoApiQuery(config);
@@ -177,15 +177,14 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
      */
     @Override
     protected void startScan() {
-        runnable.run();
+        startBackgroundDiscovery();
     }
 
     @Override
     protected void startBackgroundDiscovery() {
         logger.debug("Start Synology DiskStation background discovery");
-        int refreshInterval = 60 * 60 * 24; // once per day
-        if (discoveryJob == null || discoveryJob.isCancelled()) {
-            discoveryJob = scheduler.scheduleWithFixedDelay(runnable, 15, refreshInterval, TimeUnit.SECONDS);
+        if (discoveryJob == null || discoveryJob.isCancelled() || discoveryJob.isDone()) {
+            discoveryJob = scheduler.schedule(runnable, 0, TimeUnit.SECONDS);
         }
     }
 

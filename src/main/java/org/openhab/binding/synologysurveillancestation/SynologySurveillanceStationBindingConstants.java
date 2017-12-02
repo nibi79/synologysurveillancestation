@@ -34,6 +34,7 @@ public class SynologySurveillanceStationBindingConstants {
     public static final ThingTypeUID THING_TYPE_STATION = new ThingTypeUID(BINDING_ID, "station");
 
     public static final Set<ThingTypeUID> SUPPORTED_BRIDGE_TYPES = Collections.singleton(THING_TYPE_STATION);
+    public static final Set<ThingTypeUID> SUPPORTED_CAMERA_TYPES = Collections.singleton(THING_TYPE_CAMERA);
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
             .unmodifiableSet(Stream.of(THING_TYPE_CAMERA, THING_TYPE_STATION).collect(Collectors.toSet()));
 
@@ -44,7 +45,7 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
     public static final String SESSION_ID = "sessionID";
-    public static final String POLL = "POLL";
+    public static final String POLL = "poll";
 
     // List of all Channel ids
     public static final String CHANNEL_IMAGE = "image";

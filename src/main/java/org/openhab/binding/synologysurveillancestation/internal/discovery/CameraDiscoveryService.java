@@ -17,6 +17,8 @@ import java.util.Set;
 import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
 import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
+import org.eclipse.smarthome.config.discovery.DiscoveryService;
+import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
@@ -25,6 +27,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebAp
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
+import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +40,7 @@ import com.google.gson.JsonObject;
  *
  * @author Nils
  */
+@Component(service = DiscoveryService.class, immediate = true, configurationPid = "discovery.synologysurveillancestation")
 public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(CameraDiscoveryService.class);
@@ -47,6 +51,10 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
      * Maximum time to search for devices in seconds.
      */
     private static final int SEARCH_TIME = 20;
+
+    public CameraDiscoveryService() {
+        super(SynologySurveillanceStationBindingConstants.SUPPORTED_CAMERA_TYPES, SEARCH_TIME);
+    }
 
     public CameraDiscoveryService(SynologySurveillanceStationBridgeHandler bridgeHandler)
             throws IllegalArgumentException {
@@ -61,6 +69,11 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
+        // Trigger no scan if offline
+        if (bridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
+            return;
+        }
+
         try {
 
             SynoWebApiHandler apiHandler = bridgeHandler.getSynoWebApiHandler();

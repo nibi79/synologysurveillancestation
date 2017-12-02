@@ -11,11 +11,9 @@ package org.openhab.binding.synologysurveillancestation.handler;
 import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.CHANNEL_IMAGE;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.smarthome.core.library.types.RawType;
@@ -26,6 +24,7 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.slf4j.Logger;
@@ -43,8 +42,21 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationHandler.class);
 
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
-    private final AtomicBoolean initialized = new AtomicBoolean(false);
-    private final ExecutorService serviceCached = Executors.newCachedThreadPool();
+
+    ScheduledFuture<?> snapshotJob;
+    /**
+     * Defines a runnable for a discovery
+     */
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                refreshData();
+            } catch (Exception e) {
+                logger.error("error in refresh", e);
+            }
+        }
+    };
 
     public SynologySurveillanceStationHandler(Thing thing) {
         super(thing);
@@ -79,9 +91,12 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     }
 
     @Override
-    public void initialize() {
+    public void dispose() {
+        stop();
+    }
 
-        updateStatus(ThingStatus.UNKNOWN);
+    @Override
+    public void initialize() {
 
         if (getBridge() != null) {
 
@@ -91,25 +106,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 updateStatus(ThingStatus.ONLINE);
-
-                if (initialized.compareAndSet(false, true)) {
-                    WeakReference<SynologySurveillanceStationHandler> weakReference = new WeakReference<>(this);
-                    serviceCached.submit(new Callable<Void>() {
-                        @Override
-                        public Void call() throws Exception {
-                            while (weakReference.get() != null) {
-                                try {
-                                    refreshData();
-                                } catch (Exception e) {
-                                    logger.error("error in refresh", e);
-                                }
-                                // TODO POLL time
-                                Thread.sleep(Math.max(10, 5000));
-                            }
-                            return null;
-                        }
-                    });
-                }
+                start();
 
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
@@ -122,6 +119,32 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
             logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
         }
 
+    }
+
+    /**
+     * Stops the refresh thread
+     */
+    private void stop() {
+        if (snapshotJob != null) {
+            snapshotJob.cancel(true);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+
+            }
+        }
+    }
+
+    /**
+     * Starts the refresh thread with refresh rate of the bridge
+     */
+    private void start() {
+        // TODO: Changing bridge configuration should restart this thread to apply new refresh rate
+        if (getBridge() != null) {
+            int refresh = Integer.parseInt(
+                    getBridge().getConfiguration().get(SynologySurveillanceStationBindingConstants.POLL).toString());
+            snapshotJob = scheduler.scheduleAtFixedRate(runnable, 0, refresh, TimeUnit.SECONDS);
+        }
     }
 
     private void refreshData() {

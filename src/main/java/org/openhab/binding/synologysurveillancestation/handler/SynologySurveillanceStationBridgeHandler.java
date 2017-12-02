@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The {@link SynologySurveillanceStationBridgeHandler} is a Bridge handler for camera Things
- *
+ * TODO: Deleting bridge first hinders deletion of a camera
+ * 
  * @author Nils
  */
 public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler {
@@ -53,8 +54,6 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
 
         try {
 
-            updateStatus(ThingStatus.UNKNOWN);
-
             if (logger.isDebugEnabled()) {
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
@@ -69,6 +68,14 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
             // TODO if needed add other infos
 
             updateStatus(ThingStatus.ONLINE);
+
+            // TODO: Trigger camera discovery service
+            /*
+             * SynologySurveillanceStationBridgeHandler handler = (SynologySurveillanceStationBridgeHandler) this
+             * .getThing().getHandler();
+             * CameraDiscoveryService discoveryService = new CameraDiscoveryService(handler);
+             * discoveryService.startScan();
+             */
 
         } catch (WebApiException e) {
             if (e.getErrorCode() == 400) {

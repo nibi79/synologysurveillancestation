@@ -64,6 +64,15 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
         return null;
     }
 
+    @Override
+    protected void removeHandler(ThingHandler handler) {
+        ThingTypeUID thingTypeUID = handler.getThing().getThingTypeUID();
+        ThingUID thingUID = handler.getThing().getUID();
+        if (thingTypeUID.equals(THING_TYPE_STATION)) {
+            this.discoveryServiceRegs.remove(thingUID);
+        }
+    }
+
     private void registerDeviceDiscoveryService(SynologySurveillanceStationBridgeHandler bridgHandler) {
 
         CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgHandler);

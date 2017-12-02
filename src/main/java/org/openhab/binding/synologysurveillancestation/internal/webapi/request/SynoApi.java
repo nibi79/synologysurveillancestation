@@ -28,6 +28,7 @@ public interface SynoApi {
     // API configuration scripts
     public static final String API_SCRIPT_AUTH = "/webapi/auth.cgi";
     public static final String API_SCRIPT_ENTRY = "/webapi/entry.cgi";
+    public static final String API_SCRIPT_QUERY = "/webapi/query.cgi";
 
     // API methods
     public static final String METHOD_LOGIN = "Login";
@@ -38,6 +39,7 @@ public interface SynoApi {
     public static final String METHOD_ENABLE = "Enable";
     public static final String METHOD_DISABLE = "Disable";
     public static final String METHOD_GETSNAPSHOT = "GetSnapshot";
+    public static final String METHOD_QUERY = "Query";
 
     public static final String METHOD_RECORD = "Record";
 

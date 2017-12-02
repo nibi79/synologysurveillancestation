@@ -33,6 +33,7 @@ public class SynologySurveillanceStationBindingConstants {
     public static final ThingTypeUID THING_TYPE_CAMERA = new ThingTypeUID(BINDING_ID, "camera");
     public static final ThingTypeUID THING_TYPE_STATION = new ThingTypeUID(BINDING_ID, "station");
 
+    public static final Set<ThingTypeUID> SUPPORTED_BRIDGE_TYPES = Collections.singleton(THING_TYPE_STATION);
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
             .unmodifiableSet(Stream.of(THING_TYPE_CAMERA, THING_TYPE_STATION).collect(Collectors.toSet()));
 

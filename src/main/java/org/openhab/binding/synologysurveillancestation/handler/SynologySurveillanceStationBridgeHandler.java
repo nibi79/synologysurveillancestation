@@ -71,7 +71,13 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
             updateStatus(ThingStatus.ONLINE);
 
         } catch (WebApiException e) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Errorcode: " + e.getErrorCode());
+            if (e.getErrorCode() == 400) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                        "Please add or check your credentials");
+            } else {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "Errorcode: " + e.getErrorCode());
+            }
         }
 
     }

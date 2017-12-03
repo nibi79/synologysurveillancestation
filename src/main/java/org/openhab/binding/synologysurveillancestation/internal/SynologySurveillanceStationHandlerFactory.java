@@ -54,7 +54,14 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
             SynologySurveillanceStationBridgeHandler handler = new SynologySurveillanceStationBridgeHandler(
                     (Bridge) thing);
-            registerDeviceDiscoveryService(handler);
+
+            CameraDiscoveryService discoveryService = new CameraDiscoveryService(handler);
+
+            this.discoveryServiceRegs.put(handler.getThing().getUID(), bundleContext.registerService(
+                    DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
+
+            handler.setDiscovery(discoveryService);
+
             return handler;
         }
         if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
@@ -73,11 +80,4 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
         }
     }
 
-    private void registerDeviceDiscoveryService(SynologySurveillanceStationBridgeHandler bridgHandler) {
-
-        CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgHandler);
-
-        this.discoveryServiceRegs.put(bridgHandler.getThing().getUID(), bundleContext
-                .registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
-    }
 }

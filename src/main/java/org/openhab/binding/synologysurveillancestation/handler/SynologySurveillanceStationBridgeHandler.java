@@ -16,6 +16,7 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
@@ -25,13 +26,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The {@link SynologySurveillanceStationBridgeHandler} is a Bridge handler for camera Things
- * TODO: Deleting bridge first hinders deletion of a camera
- * 
+ *
  * @author Nils
  */
 public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationBridgeHandler.class);
+    private CameraDiscoveryService cameraDiscovery;
 
     private SynoWebApiHandler apiHandler = null;
 
@@ -46,7 +47,10 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
     @Override
     public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
         // There is nothing to handle in the bridge handler
+    }
 
+    public void setDiscovery(CameraDiscoveryService discovery) {
+        this.cameraDiscovery = discovery;
     }
 
     @Override
@@ -69,13 +73,10 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
 
             updateStatus(ThingStatus.ONLINE);
 
-            // TODO: Trigger camera discovery service
-            /*
-             * SynologySurveillanceStationBridgeHandler handler = (SynologySurveillanceStationBridgeHandler) this
-             * .getThing().getHandler();
-             * CameraDiscoveryService discoveryService = new CameraDiscoveryService(handler);
-             * discoveryService.startScan();
-             */
+            // Trigger discovery of cameras             
+            if (cameraDiscovery != null) {
+                cameraDiscovery.discoverCameras();
+            }
 
         } catch (WebApiException e) {
             if (e.getErrorCode() == 400) {

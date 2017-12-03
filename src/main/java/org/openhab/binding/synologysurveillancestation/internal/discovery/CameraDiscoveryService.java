@@ -62,6 +62,13 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         this.bridgeHandler = bridgeHandler;
     }
 
+    /**
+     * Public method for triggering camera discovery
+     */
+    public void discoverCameras() {
+        startScan();
+    }
+
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
         return SynologySurveillanceStationBindingConstants.SUPPORTED_THING_TYPES;
@@ -69,6 +76,9 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
+        if (bridgeHandler == null) {
+            return;
+        }
         // Trigger no scan if offline
         if (bridgeHandler.getThing().getStatus() != ThingStatus.ONLINE) {
             return;
@@ -132,6 +142,6 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startBackgroundDiscovery() {
-        super.startBackgroundDiscovery();
+        startScan();
     }
 }

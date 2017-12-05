@@ -18,10 +18,25 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiExc
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * From functional spec:
+ * SYNO.SurveillanceStation.SynoApiPTZ
  *
  * This API provides a set of methods to execute PTZ action, and to acquire PTZ related information such as
  * patrol list or patrol schedule of a camera.
+ *
+ * Method:
+ * - Move
+ * - Zoom
+ * - ListPreset
+ * - GoPreset
+ * - ListPatrol
+ * - RunPatrol
+ * - Focus
+ * - Iris
+ * - AutoFocus
+ * - AbsPtz
+ * - Home
+ * - AutoPan
+ * - ObjTracking
  *
  * @author Nils
  *
@@ -29,15 +44,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
 
     // API configuration
-    // TODO Check version 3 -< invalid parameter?
-    private static final String API_VERSION = "3";
     private static final String API_NAME = "SYNO.SurveillanceStation.PTZ";
-    private static final String API_SCRIPT = "/webapi/entry.cgi";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION, API_SCRIPT);
-
-    // API methods
-    private static final String METHOD_ZOOM = "Zoom";
-    private static final String METHOD_MOVE = "Move";
+    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_03, API_SCRIPT_ENTRY);
 
     /**
      * @param config

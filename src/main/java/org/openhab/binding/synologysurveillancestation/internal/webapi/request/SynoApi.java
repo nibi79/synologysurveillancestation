@@ -43,5 +43,8 @@ public interface SynoApi {
 
     public static final String METHOD_RECORD = "Record";
 
+    public static final String METHOD_ZOOM = "Zoom";
+    public static final String METHOD_MOVE = "Move";
+
     public SynoApiConfig getApiConfig();
 }

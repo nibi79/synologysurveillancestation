@@ -172,13 +172,12 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     /**
      * Get specific camera settings.
      *
-     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public CameraResponse getInfo(String cameraId) throws WebApiException {
+    public CameraResponse getInfo(String camerId) throws WebApiException {
 
-        return call(METHOD_GETINFO, cameraId);
+        return call(METHOD_GETINFO, camerId);
     }
 
     /**

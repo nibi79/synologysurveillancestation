@@ -67,6 +67,9 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
         if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
             return new SynologySurveillanceStationHandler(thing);
         }
+        if (thingTypeUID.equals(THING_TYPE_CAMERA_PTZ)) {
+            return new SynologySurveillanceStationHandler(thing);
+        }
 
         return null;
     }

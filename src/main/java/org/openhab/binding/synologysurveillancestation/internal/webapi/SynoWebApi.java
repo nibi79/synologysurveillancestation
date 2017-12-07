@@ -62,6 +62,13 @@ public interface SynoWebApi {
     public CameraResponse list() throws WebApiException;
 
     /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public CameraResponse getInfo(String cameraId) throws WebApiException;
+
+    /**
      *
      * api = SYNO.SurveillanceStation.Info
      * method = GetInfo

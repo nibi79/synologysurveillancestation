@@ -10,7 +10,6 @@ package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
 import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,7 +25,6 @@ import org.openhab.binding.synologysurveillancestation.handler.SynologySurveilla
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,24 +102,13 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
                             JsonObject cam = camera.getAsJsonObject();
 
-                            ThingTypeUID thingTypeUID = new ThingTypeUID(BINDING_ID, "camera");
-
                             String cameraId = cam.get("id").getAsString();
 
-                            ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, cameraId);
+                            CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
 
-                            Map<String, Object> properties = new LinkedHashMap<>();
-                            properties.put(DEVICE_ID, cameraId);
-                            properties.put(SynoApiResponse.PROP_VENDOR,
-                                    cam.get(SynoApiResponse.PROP_VENDOR).getAsString());
-                            properties.put(SynoApiResponse.PROP_MODEL,
-                                    cam.get(SynoApiResponse.PROP_MODEL).getAsString());
-                            properties.put(SynoApiResponse.PROP_DEVICETYPE,
-                                    cam.get(SynoApiResponse.PROP_DEVICETYPE).getAsString());
-                            properties.put(SynoApiResponse.PROP_HOST, cam.get(SynoApiResponse.PROP_HOST).getAsString());
-                            properties.put(SynoApiResponse.PROP_RESOLUTION,
-                                    cam.get(SynoApiResponse.PROP_RESOLUTION).getAsString());
-                            properties.put(SynoApiResponse.PROP_TYPE, cam.get(SynoApiResponse.PROP_TYPE).getAsString());
+                            ThingUID thingUID = createThingUID(bridgeUID, cameraId, cameraDetails);
+
+                            Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
 
                             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
                                     .withProperties(properties).withBridge(bridgeHandler.getThing().getUID())
@@ -140,8 +127,35 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         }
     }
 
+    /**
+     * Creates ThingUID by evaluating camera PTZ support.
+     *
+     * @param bridgeUID
+     * @param cameraId
+     * @param cameraDetails
+     * @return
+     */
+    private ThingUID createThingUID(ThingUID bridgeUID, String cameraId, CameraResponse cameraDetails) {
+
+        JsonObject cameraDetail = cameraDetails.getCameras().get(0).getAsJsonObject();
+
+        int ptzCap = cameraDetail.get("ptzCap").getAsInt();
+
+        ThingTypeUID thingTypeUID = THING_TYPE_CAMERA;
+
+        // supports PTZ?
+        if (ptzCap > 0) {
+            thingTypeUID = THING_TYPE_CAMERA_PTZ;
+        }
+
+        ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, cameraId);
+
+        return thingUID;
+    }
+
     @Override
     protected void startBackgroundDiscovery() {
         startScan();
     }
+
 }

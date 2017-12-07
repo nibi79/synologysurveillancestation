@@ -11,6 +11,21 @@
 		<description>Synology Surveillance Station Camera</description>
 		<category>Camera</category>
 
+		<channels>
+			<channel id="image" typeId="image-channel" />
+			<channel id="record" typeId="recording-channel" />
+			<channel id="enable" typeId="enable-channel" />
+		</channels>
+
+	</thing-type>
+
+	<thing-type id="cameraptz">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="station" />
+		</supported-bridge-type-refs>
+		<label>Surveillance Station Camera PTZ</label>
+		<description>Synology Surveillance Station Camera PTZ</description>
+		<category>Camera</category>
 
 		<channels>
 			<channel id="image" typeId="image-channel" />
@@ -38,7 +53,7 @@
 		<label>Record</label>
 		<description>Recording channel for Camera Binding</description>
 	</channel-type>
-	<channel-type id="zoom-channel" advanced="true">
+	<channel-type id="zoom-channel">
 		<item-type>String</item-type>
 		<label>Zoom</label>
 		<description>Zooming channel for Camera Binding</description>
@@ -49,7 +64,7 @@
 			</options>
 		</state>
 	</channel-type>
-	<channel-type id="move-channel" advanced="true">
+	<channel-type id="move-channel">
 		<item-type>String</item-type>
 		<label>Move</label>
 		<description>Moving channel for Camera Binding</description>

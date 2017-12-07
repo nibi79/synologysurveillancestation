@@ -25,6 +25,18 @@ public abstract class SynoApiResponse {
     public static final String PROP_TYPE = "type";
     public static final String PROP_CAMERANUMBER = "cameraNumber";
 
+    // PTZ capabilities
+    public static final String PROP_PTZ_PAN = "ptz_pan";
+    public static final String PROP_PTZ_TILT = "ptz_tilt";
+    public static final String PROP_PTZ_ZOOM = "ptz_zoom";
+    public static final String PROP_PTZ_HOME = "ptz_home";
+    public static final String PROP_PTZ_ABS = "ptz_abs";
+    public static final String PROP_PTZ_FOCUS = "ptz_focus";
+    public static final String PROP_PTZ_AUTOFOCUS = "ptz_autofocus";
+    public static final String PROP_PTZ_IRIS = "ptz_iris";
+    public static final String PROP_PTZ_SPEED = "ptz_speed";
+    public static final String PROP_PTZ_ZOOM_SPEED = "ptz_zoom_speed";
+
     private JsonObject jsonResponse = null;
 
     /**
@@ -71,5 +83,16 @@ public abstract class SynoApiResponse {
     public String toString() {
 
         return jsonResponse.toString();
+    }
+
+    /**
+     * @param hexValue
+     * @param bitNumber
+     * @return
+     */
+    protected boolean isBitSet(String hexValue, int bitNumber) {
+
+        int val = Integer.valueOf(hexValue, 16);
+        return (val & (1 << bitNumber)) != 0;
     }
 }

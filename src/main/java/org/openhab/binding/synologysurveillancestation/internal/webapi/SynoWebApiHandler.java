@@ -262,6 +262,25 @@ public class SynoWebApiHandler implements SynoWebApi {
 
     /*
      * (non-Javadoc)
+     * 
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getInfo(java.lang.String)
+     */
+    @Override
+    public CameraResponse getInfo(String cameraId) throws WebApiException {
+
+        CameraResponse response = apiCamera.getInfo(cameraId);
+
+        if (!response.isSuccess()) {
+
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
+
+        return response;
+
+    }
+
+    /*
+     * (non-Javadoc)
      *
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getInfo()
      */

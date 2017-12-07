@@ -99,73 +99,73 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
     /**
      * Control the PTZ camera to zoom out.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse zoomOut(String camerId) throws WebApiException {
+    public SimpleResponse zoomOut(String cameraId) throws WebApiException {
 
-        return callZoom(camerId, "out");
+        return callZoom(cameraId, "out");
     }
 
     /**
      * Control the PTZ camera to zoom in.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse zoomIn(String camerId) throws WebApiException {
+    public SimpleResponse zoomIn(String cameraId) throws WebApiException {
 
-        return callZoom(camerId, "in");
+        return callZoom(cameraId, "in");
     }
 
     /**
      * Control the PTZ camera to move its lens up.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveUp(String camerId) throws WebApiException {
+    public SimpleResponse moveUp(String cameraId) throws WebApiException {
 
-        return callMove(camerId, "up", 1);
+        return callMove(cameraId, "up", 1);
     }
 
     /**
      * Control the PTZ camera to move its lens down.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveDown(String camerId) throws WebApiException {
+    public SimpleResponse moveDown(String cameraId) throws WebApiException {
 
-        return callMove(camerId, "down", 1);
+        return callMove(cameraId, "down", 1);
     }
 
     /**
      * Control the PTZ camera to move its lens left.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveLeft(String camerId) throws WebApiException {
+    public SimpleResponse moveLeft(String cameraId) throws WebApiException {
 
-        return callMove(camerId, "left", 1);
+        return callMove(cameraId, "left", 1);
     }
 
     /**
      * Control the PTZ camera to move its lens right.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveRight(String camerId) throws WebApiException {
+    public SimpleResponse moveRight(String cameraId) throws WebApiException {
 
-        return callMove(camerId, "right", 1);
+        return callMove(cameraId, "right", 1);
     }
 
 }

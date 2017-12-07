@@ -64,21 +64,22 @@ public class CameraResponse extends SimpleResponse {
      */
     public Map<String, Object> getCameraProperties(String cameraId) {
 
-        int camId = Integer.valueOf(cameraId);
+        if (cameraId != null) {
 
-        JsonArray cameras = this.getCameras().getAsJsonArray();
+            JsonArray cameras = this.getCameras().getAsJsonArray();
 
-        for (JsonElement camera : cameras) {
+            for (JsonElement camera : cameras) {
 
-            if (camera.isJsonObject()) {
+                if (camera.isJsonObject()) {
 
-                JsonObject cam = camera.getAsJsonObject();
+                    JsonObject cam = camera.getAsJsonObject();
 
-                int id = cam.get("id").getAsInt();
+                    String id = cam.get("id").getAsString();
 
-                if (camId == id) {
+                    if (cameraId.equals(id)) {
 
-                    return createProperties(cam, camId);
+                        return createProperties(cam, cameraId);
+                    }
                 }
             }
         }
@@ -93,7 +94,7 @@ public class CameraResponse extends SimpleResponse {
      * @param cameraId
      * @return
      */
-    private Map<String, Object> createProperties(JsonObject cam, int cameraId) {
+    private Map<String, Object> createProperties(JsonObject cam, String cameraId) {
 
         Map<String, Object> properties = new LinkedHashMap<>();
 

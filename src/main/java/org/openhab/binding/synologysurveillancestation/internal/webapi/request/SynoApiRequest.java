@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
@@ -193,7 +194,9 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
             URI uri = url.toURI();
             HttpGet httpget = new HttpGet(uri);
-            CloseableHttpClient httpclient = HttpClients.createDefault();
+            RequestConfig defaultRequestConfig = RequestConfig.custom().setConnectTimeout(4000).setSocketTimeout(4000)
+                    .setConnectionRequestTimeout(4000).build();
+            CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
             HttpClientContext context = HttpClientContext.create();
             CloseableHttpResponse response = httpclient.execute(httpget, context);
 

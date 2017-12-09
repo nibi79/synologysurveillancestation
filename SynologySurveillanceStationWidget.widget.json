@@ -1,0 +1,33 @@
+{
+    "template": "<style>\n  .synology-camera-snapshot {\n    margin-top:20px;\n  }\n  \n  .synology-camera-snapshot .box-content {  \n  \tpadding: 0px;\n  }\n  \n  .monospace {\n  \tfont-family: monospace;\n  }\n  \n  .camera-header {\n    top: 5px;\n    left: 0px;\n    margin: 0px;\n    width: 100%;\n    padding: 0px;\n  }\n</style>\n\n<script type=\"text/ng-template\" id=\"missingJsWarning.html\">\n    <div class=\"container\" style=\"padding: 20px; border: 1px solid #456; height:320px;\">\n      <a ng-click=\"$close()\" class=\"pull-right btn btn-danger\">X</a>\n      <h2>Information on autorefresh</h2>\n      <h1>\n        <b>For this widget to function you will need an additional script file.</b><br /><br />\n        Please head to your openHAB static content folder: <b>/conf/html</b><br />\n        Create an empty file with following name: <b>SynologySurveillanceStationSnapshot.directive.js</b><br /><br />\n        Copy and paste following content into this file:<br /><br />        \n          <div class=\"monospace\">\n            angular\n        .module('app.widgets')\n        .directive('removeWarning', function() {\n            return {\n                link: function(scope, element, attrs) {\n                    element.html('');\n                }\n            }\n        })\n        .directive('sendCmdAtInterval', ['$interval', function ($interval) {\n            return {\n                link: function (scope, element, attrs) {\n                    var refresh = scope.model.refresh;\n                    if (!refresh) {\n                        refresh = 60;\n                    }\n                    refresh = refresh * 1000;\n                    var item = scope.model.item;\n                    var handler = $interval(function () {\n                        scope.sendCmd(item, 'REFRESH');\n                    }, refresh);\n                    scope.$on('$destroy', function () {\n                        $interval.cancel(handler);\n                    });\n                }\n            };\n        }]);\n          </div><br />\n        \tRefresh your panel\n      </h1>\n    </div>\n</script>\n\n\n<div ng-init=\"directive=false\" />\n\n<h1 ng-if=\"config.camera_label!=null && directive\" class=\"camera-header\">{{config.camera_label}}<br /></h1>\n\n<div ng-if=\"directive==false\" >\n  <a ng-click=\"openModal('missingJsWarning.html', true, 'lg')\">Information on autorefresh</a>\n</div>\n\n<div class='synology-camera-snapshot' oc-lazy-load=\"'/static/SynologySurveillanceStationSnapshot.directive.js'\" >\n  <div ng-init=\"directive=true\" />\n  <a ng-href=\"{{config.camera_live_view_url==null?'':config.camera_live_view_url}}\" target=\"_blank\">\n    <div send-cmd-at-interval ng-init=\"model={'item':config.camera_image_channel, 'refresh': config.camera_image_refresh, 'type': 'image', 'image_source': 'item-image'}\" >\n      <widget-image ng-model=\"model\" style=\"margin:auto;\"  />\n    </div>\n  </a>  \n</div>",
+    "name": "Synology Surveillance Station Camera Snapshot",
+    "author": "Pavion",
+    "description": "Triggers and displays a snapshot only if HABPanel is open",
+    "settings": [
+        {
+            "type": "string",
+            "id": "camera_label",
+            "label": "Label of this snapshot",
+            "description": "Label of this snapshot or empty"
+        },
+        {
+            "type": "item",
+            "id": "camera_image_channel",
+            "label": "Camera image channel",
+            "description": "Camera image channel"
+        },
+        {
+            "type": "number",
+            "id": "camera_image_refresh",
+            "label": "Refresh interval",
+            "default": "60",
+            "description": "Interval for polling and refreshing snapshots"
+        },
+        {
+            "type": "string",
+            "id": "camera_live_view_url",
+            "label": "Synology Surveillance Station URL",
+            "description": "Non-mandatory URL for redirecting to live view on snapshot click"
+        }
+    ]
+}

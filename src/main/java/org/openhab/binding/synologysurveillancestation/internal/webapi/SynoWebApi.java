@@ -147,4 +147,11 @@ public interface SynoWebApi {
      * @throws WebApiException
      */
     public SimpleResponse moveRight(String cameraId) throws WebApiException;
+
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse moveHome(String cameraId) throws WebApiException;
 }

@@ -168,4 +168,16 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         return callMove(cameraId, "right", 1);
     }
 
+    /**
+     * Control the PTZ camera to move to preset HOME.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse moveHome(String cameraId) throws WebApiException {
+
+        return callMove(cameraId, "home", 1);
+    }
+
 }

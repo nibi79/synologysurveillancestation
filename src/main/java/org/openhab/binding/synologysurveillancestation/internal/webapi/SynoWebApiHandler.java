@@ -153,6 +153,9 @@ public class SynoWebApiHandler implements SynoWebApi {
                     case "RIGHT":
                         moveRight(cameraId);
                         break;
+                    case "HOME":
+                        moveHome(cameraId);
+                        break;
                 }
                 break;
 
@@ -424,6 +427,19 @@ public class SynoWebApiHandler implements SynoWebApi {
     public SimpleResponse moveRight(String cameraId) throws WebApiException {
 
         SimpleResponse response = apiPTZ.moveRight(cameraId);
+
+        return handleSimpleResponse(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveHome(java.lang.String)
+     */
+    @Override
+    public SimpleResponse moveHome(String cameraId) throws WebApiException {
+
+        SimpleResponse response = apiPTZ.moveHome(cameraId);
 
         return handleSimpleResponse(response);
     }

@@ -31,6 +31,8 @@
 			<channel id="image" typeId="image-channel" />
 			<channel id="record" typeId="recording-channel" />
 			<channel id="enable" typeId="enable-channel" />
+
+			<!-- channels for PTZ -->
 			<channel id="zoom" typeId="zoom-channel" />
 			<channel id="move" typeId="move-channel" />
 		</channels>
@@ -74,6 +76,7 @@
 				<option value="DOWN">down</option>
 				<option value="LEFT">left</option>
 				<option value="RIGHT">right</option>
+				<option value="HOME">home</option>
 			</options>
 		</state>
 	</channel-type>

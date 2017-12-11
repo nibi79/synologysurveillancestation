@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
 import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
-import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.config.discovery.DiscoveryServiceCallback;
 import org.eclipse.smarthome.config.discovery.ExtendedDiscoveryService;
 import org.eclipse.smarthome.core.thing.ThingUID;
@@ -30,7 +29,6 @@ import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStati
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiQuery;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
-import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * @author Pav
  *
  */
-@Component(service = DiscoveryService.class, immediate = true, configurationPid = "discovery.synologysurveillancestation")
 public class BridgeDiscoveryService extends AbstractDiscoveryService implements ExtendedDiscoveryService {
 
     public static final int DISCOVERY_TIMEOUT = 5;
@@ -93,8 +90,6 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
                                             config.getProtocol());
                                     properties.put(SynologySurveillanceStationBindingConstants.PORT, config.getPort());
                                     properties.put(SynologySurveillanceStationBindingConstants.HOST, config.getHost());
-                                    properties.put(SynologySurveillanceStationBindingConstants.PASSWORD, null);
-                                    properties.put(SynologySurveillanceStationBindingConstants.USER_NAME, null);
 
                                     DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
                                             .withProperties(properties).withLabel(thingId).build();

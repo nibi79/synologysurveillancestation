@@ -10,9 +10,7 @@ package org.openhab.binding.synologysurveillancestation.internal;
 
 import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
 
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -20,14 +18,15 @@ import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
-import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationHandler;
+import org.openhab.binding.synologysurveillancestation.internal.discovery.BridgeDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -40,31 +39,45 @@ import org.osgi.service.component.annotations.Component;
 @NonNullByDefault
 public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerFactory {
 
+    private @Nullable ServiceRegistration<?> cameraDiscoveryServiceReg;
+    private @Nullable ServiceRegistration<?> bridgeDiscoveryServiceReg;
+
+    @Override
+    protected void activate(ComponentContext componentContext) {
+        super.activate(componentContext);
+        BridgeDiscoveryService discoveryService = new BridgeDiscoveryService();
+        bridgeDiscoveryServiceReg = bundleContext.registerService(DiscoveryService.class.getName(), discoveryService,
+                new Hashtable<String, Object>());
+    }
+
+    @Override
+    protected void deactivate(ComponentContext componentContext) {
+        super.deactivate(componentContext);
+        if (bridgeDiscoveryServiceReg != null) {
+            bridgeDiscoveryServiceReg.unregister();
+            bridgeDiscoveryServiceReg = null;
+        }
+    }
+
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
         return SUPPORTED_THING_TYPES.contains(thingTypeUID);
     }
-
-    private final Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
     @Override
     protected @Nullable ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
-            SynologySurveillanceStationBridgeHandler handler = new SynologySurveillanceStationBridgeHandler(
+            SynologySurveillanceStationBridgeHandler bridgeHandler = new SynologySurveillanceStationBridgeHandler(
                     (Bridge) thing);
+            CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
+            bridgeHandler.setDiscovery(discoveryService);
+            cameraDiscoveryServiceReg = bundleContext.registerService(DiscoveryService.class.getName(),
+                    discoveryService, new Hashtable<String, Object>());
 
-            CameraDiscoveryService discoveryService = new CameraDiscoveryService(handler);
-
-            this.discoveryServiceRegs.put(handler.getThing().getUID(), bundleContext.registerService(
-                    DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
-
-            handler.setDiscovery(discoveryService);
-
-            return handler;
-        }
-        if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
+            return bridgeHandler;
+        } else if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
             return new SynologySurveillanceStationHandler(thing);
         }
         if (thingTypeUID.equals(THING_TYPE_CAMERA_PTZ)) {
@@ -76,11 +89,13 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
 
     @Override
     protected void removeHandler(ThingHandler handler) {
-        ThingTypeUID thingTypeUID = handler.getThing().getThingTypeUID();
-        ThingUID thingUID = handler.getThing().getUID();
-        if (thingTypeUID.equals(THING_TYPE_STATION)) {
-            this.discoveryServiceRegs.remove(thingUID);
+        if (handler.getThing().getThingTypeUID().equals(THING_TYPE_STATION)) {
+            if (cameraDiscoveryServiceReg != null) {
+                cameraDiscoveryServiceReg.unregister();
+                cameraDiscoveryServiceReg = null;
+            }
         }
+        super.removeHandler(handler);
     }
 
 }

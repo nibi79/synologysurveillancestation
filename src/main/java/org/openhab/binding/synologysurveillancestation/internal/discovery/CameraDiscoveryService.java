@@ -149,7 +149,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         }
 
         ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, cameraId);
-
+        
         return thingUID;
     }
 

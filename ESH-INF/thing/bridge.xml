@@ -33,14 +33,13 @@
         </parameter>
         <parameter name="username" type="text">
             <label>User name:</label>
-            <description>User name for accessing camera (empty for standard)</description>
-            <default></default>
+            <description>User name for accessing camera</description>
+            <required>true</required>
         </parameter>
         <parameter name="password" type="text">
             <label>Password:</label>
             <context>password</context>
-            <description>Password for accessing camera (empty for standard)</description>
-            <default></default>
+            <description>Password for accessing camera</description>
             <required>true</required>
         </parameter>
         <parameter name="poll" unit="s" type="integer">

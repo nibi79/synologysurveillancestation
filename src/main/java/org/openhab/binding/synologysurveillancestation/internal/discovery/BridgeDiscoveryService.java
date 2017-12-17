@@ -159,7 +159,7 @@ public class BridgeDiscoveryService extends AbstractDiscoveryService implements 
                     InetAddress ia = ias.nextElement();
                     byte[] ip = ia.getAddress();
                     if (ip.length == 4) {// IPv4 support only
-                        if (ip[0] == (byte) 192 || ip[1] == 10) {
+                        if (ip[0] == (byte) 192 || ip[0] == 10) {
                             String subnet = String.format("%d.%d.%d.", 0xff & ip[0], 0xff & ip[1], 0xff & ip[2]);
                             return subnet;
                         }

@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.handler;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.CHANNEL_IMAGE;
+import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,6 +16,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.library.types.RawType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -36,14 +38,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author Nils
  */
-// @NonNullByDefault
+@NonNullByDefault
 public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationHandler.class);
-
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
+    private @Nullable SynoWebApiHandler apiHandler;
+    private @Nullable ScheduledFuture<?> snapshotJob;
 
-    ScheduledFuture<?> snapshotJob;
     /**
      * Defines a runnable for a discovery
      */
@@ -51,7 +53,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
         @Override
         public void run() {
             try {
-                refreshData();
+                refreshImage();
             } catch (Exception e) {
                 logger.error("error in refresh", e);
             }
@@ -63,26 +65,32 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     }
 
     @Override
+    public boolean isLinked(String channelId) {
+        return super.isLinked(channelId);
+    }
+
+    @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
 
         try {
 
             String cameraId = getThing().getUID().getId();
 
-            SynologySurveillanceStationBridgeHandler bridge = ((SynologySurveillanceStationBridgeHandler) getBridge()
-                    .getHandler());
-
-            SynoWebApiHandler apiHandler = bridge.getSynoWebApiHandler();
-
             switch (channelUID.getId()) {
                 case CHANNEL_IMAGE:
-
                     if (command.toString().equals("REFRESH")) {
-                        refreshData();
+                        refreshImage();
                     }
-
-                default:
+                    break;
+                case CHANNEL_MOTION_DETECTED:
+                case CHANNEL_ALARM_DETECTED:
+                    break;
+                case CHANNEL_RECORD:
+                case CHANNEL_ENABLE:
+                case CHANNEL_ZOOM:
+                case CHANNEL_MOVE:
                     apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                    break;
             }
         } catch (WebApiException e) {
             logger.error("handle command: {}::{}::{}", getThing().getLabel(), getThing().getUID());
@@ -92,7 +100,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
     @Override
     public void dispose() {
-        stop();
+        stopRefreshImage();
     }
 
     @Override
@@ -100,13 +108,17 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
         if (getBridge() != null) {
 
+            SynologySurveillanceStationBridgeHandler bridge = ((SynologySurveillanceStationBridgeHandler) getBridge()
+                    .getHandler());
+            apiHandler = bridge.getSynoWebApiHandler();
+
             String cameraId = getThing().getUID().getId();
 
-            logger.debug("Initializing SynologySurveillanceStationHandler for Camerid '{}'", cameraId);
+            logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 updateStatus(ThingStatus.ONLINE);
-                start();
+                startRefreshImage();
 
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
@@ -124,7 +136,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     /**
      * Stops the refresh thread
      */
-    private void stop() {
+    private void stopRefreshImage() {
         if (snapshotJob != null) {
             snapshotJob.cancel(true);
             try {
@@ -138,7 +150,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     /**
      * Starts the refresh thread with refresh rate of the bridge
      */
-    private void start() {
+    private void startRefreshImage() {
         // TODO: Changing bridge configuration should restart this thread to apply new refresh rate
         if (getBridge() != null) {
             int refresh = Integer.parseInt(
@@ -147,40 +159,32 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
         }
     }
 
-    private void refreshData() {
-        if (refreshInProgress.compareAndSet(false, true)) {
-            try {
-                for (Channel cx : getThing().getChannels()) {
-                    if (cx.getAcceptedItemType().equals("Image")) {
-                        if (logger.isTraceEnabled()) {
-                            logger.trace("Will update: {}::{}::{}", getThing().getUID().getId(),
-                                    cx.getChannelTypeUID().getId(), getThing().getLabel());
-                        }
-
-                        try {
-
-                            String cameraId = getThing().getUID().getId();
-
-                            SynologySurveillanceStationBridgeHandler bridge = ((SynologySurveillanceStationBridgeHandler) getBridge()
-                                    .getHandler());
-                            SynoWebApiHandler apiHandler = bridge.getSynoWebApiHandler();
-
-                            byte[] snapshot = apiHandler.getSnapshot(cameraId).toByteArray();
-
-                            updateState(cx.getUID(), new RawType(snapshot, "image/jpeg"));
-
-                            if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
-                                updateStatus(ThingStatus.ONLINE);
-                            }
-
-                        } catch (URISyntaxException | IOException | WebApiException e) {
-                            logger.error("could not get snapshot: {}", getThing(), e);
-                            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                                    "communication error: " + e.toString());
-                        }
-                    }
+    private void refreshImage() {
+        if (isLinked(CHANNEL_IMAGE)) {
+            if (refreshInProgress.compareAndSet(false, true)) {
+                Channel cx = getThing().getChannel(CHANNEL_IMAGE);
+                if (logger.isTraceEnabled()) {
+                    logger.trace("Will update: {}::{}::{}", getThing().getUID().getId(), cx.getChannelTypeUID().getId(),
+                            getThing().getLabel());
                 }
-            } finally {
+
+                try {
+                    String cameraId = getThing().getUID().getId();
+
+                    byte[] snapshot = apiHandler.getSnapshot(cameraId).toByteArray();
+
+                    updateState(cx.getUID(), new RawType(snapshot, "image/jpeg"));
+
+                    if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
+                        updateStatus(ThingStatus.ONLINE);
+                    }
+
+                } catch (URISyntaxException | IOException | WebApiException e) {
+                    logger.error("could not get snapshot: {}", getThing(), e);
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                            "communication error: " + e.toString());
+                }
+
                 refreshInProgress.set(false);
             }
         }

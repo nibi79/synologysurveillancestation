@@ -15,6 +15,10 @@
 			<channel id="image" typeId="image-channel" />
 			<channel id="record" typeId="recording-channel" />
 			<channel id="enable" typeId="enable-channel" />
+			
+			<!-- motion and alarm detection -->
+            <channel id="motiondetected" typeId="motion-detected-channel" />
+            <channel id="alarmdetected" typeId="alarm-detected-channel" />
 		</channels>
 
 	</thing-type>
@@ -35,6 +39,10 @@
 			<!-- channels for PTZ -->
 			<channel id="zoom" typeId="zoom-channel" />
 			<channel id="move" typeId="move-channel" />
+
+			<!-- motion and alarm detection -->
+            <channel id="motiondetected" typeId="motion-detected-channel" />
+            <channel id="alarmdetected" typeId="alarm-detected-channel" />
 		</channels>
 
 	</thing-type>
@@ -80,4 +88,15 @@
 			</options>
 		</state>
 	</channel-type>
+    <channel-type id="motion-detected-channel">
+        <item-type>Switch</item-type>
+        <label>Motion detected</label>
+        <description>Recording event on motion detection as in Timeline</description>
+    </channel-type>
+    <channel-type id="alarm-detected-channel">
+        <item-type>Switch</item-type>
+        <label>Motion detected</label>
+        <description>Recording event on alarm detection as in Timeline</description>
+    </channel-type>
+
 </thing:thing-descriptions>

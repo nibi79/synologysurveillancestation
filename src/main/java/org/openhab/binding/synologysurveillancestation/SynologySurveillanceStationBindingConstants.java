@@ -54,5 +54,7 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String CHANNEL_ENABLE = "enable";
     public static final String CHANNEL_ZOOM = "zoom";
     public static final String CHANNEL_MOVE = "move";
+    public static final String CHANNEL_MOTION_DETECTED = "motiondetected";
+    public static final String CHANNEL_ALARM_DETECTED = "alarmdetected";
 
 }

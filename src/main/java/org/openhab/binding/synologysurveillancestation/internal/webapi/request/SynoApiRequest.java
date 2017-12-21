@@ -33,6 +33,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * API request
@@ -42,6 +44,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @param <T>
  */
 public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoApi {
+    private final Logger logger = LoggerFactory.getLogger(SynoApiRequest.class);
 
     protected static final String API_TRUE = Boolean.TRUE.toString();
     protected static final String API_FALSE = Boolean.FALSE.toString();
@@ -208,7 +211,9 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
                 InputStream instream = entity.getContent();
                 String result = convertStreamToString(instream);
                 // now you have the string representation of the HTML request
-                System.out.println("RESPONSE: " + result);
+                if (result.length() > 0) {
+                    logger.debug("RESPONSE: " + result.substring(0, result.length() - 2));
+                }
                 instream.close();
                 if (response.getStatusLine().getStatusCode() == 200) {
                     // netState.setLogginDone(true);

@@ -4,7 +4,8 @@ This binding connects openHAB with your surveillance cameras running on Synology
 
 ## Supported Things
 
-Currently following Things are supported: 
+Currently following Things are supported:
+ 
 - Bridge Thing for the Synology Surveillance Station
 - One or many Things for supported cameras   
 
@@ -22,7 +23,15 @@ _Not yet implemented._
 
 ## Channels
 
-_Not yet implemented._
+Currently following Channels are supported:
+
+- Snapshot IMAGE
+- Record SWITCH
+- Enable SWITCH
+- Zoom IN/OUT (PTZ cameras only)
+- Move UP/DOWN/LEFT/RIGHT/HOMET (PTZ cameras only)
+- Motion Detected SWITCH (read-only)
+- Alarm Detected SWITCH (read-only)
 
 ## Full Example
 

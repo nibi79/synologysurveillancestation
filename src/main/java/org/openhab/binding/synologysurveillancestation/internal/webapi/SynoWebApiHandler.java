@@ -18,11 +18,13 @@ import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalRecording;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiInfo;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiPTZ;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
@@ -41,6 +43,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     private SynoApiInfo apiInfo = null;
     // private SynoApiCameraGetSnapshot apiCameraGetSnapshot = null;
     private SynoApiCamera apiCamera = null;
+    private SynoApiEvent apiEvent = null;
     private SynoApiExternalRecording apiExternalRecording = null;
     private SynoApiPTZ apiPTZ = null;
 
@@ -80,6 +83,7 @@ public class SynoWebApiHandler implements SynoWebApi {
         // initialize APIs
         apiInfo = new SynoApiInfo(config, sessionID);
         apiCamera = new SynoApiCamera(config, sessionID);
+        apiEvent = new SynoApiEvent(config, sessionID);
         apiExternalRecording = new SynoApiExternalRecording(config, sessionID);
         apiPTZ = new SynoApiPTZ(config, sessionID);
 
@@ -442,6 +446,19 @@ public class SynoWebApiHandler implements SynoWebApi {
         SimpleResponse response = apiPTZ.moveHome(cameraId);
 
         return handleSimpleResponse(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getEvents(java.lang.String)
+     */
+    @Override
+    public EventResponse getEventResponse(String cameraId, long lastEventTime) throws WebApiException {
+
+        EventResponse response = apiEvent.query(cameraId, lastEventTime);
+
+        return response;
     }
 
 }

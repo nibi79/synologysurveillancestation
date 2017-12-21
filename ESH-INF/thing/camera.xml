@@ -92,11 +92,13 @@
         <item-type>Switch</item-type>
         <label>Motion detected</label>
         <description>Recording event on motion detection as in Timeline</description>
+        <state readOnly="true"></state>
     </channel-type>
     <channel-type id="alarm-detected-channel">
         <item-type>Switch</item-type>
         <label>Alarm detected</label>
         <description>Recording event on alarm detection as in Timeline</description>
+        <state readOnly="true"></state>
     </channel-type>
 
 </thing:thing-descriptions>

@@ -12,12 +12,14 @@ import static org.openhab.binding.synologysurveillancestation.SynologySurveillan
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.ZonedDateTime;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.library.types.RawType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -29,6 +31,7 @@ import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,16 +47,24 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationHandler.class);
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable SynoWebApiHandler apiHandler;
-    private @Nullable ScheduledFuture<?> snapshotJob;
+    private @Nullable ScheduledFuture<?> refreshJob;
+    private String cameraId = "";
+    private long lastEventTime = 1513758653;
+    private int refresh = 5;
+
+    private long motionId = -1;
+    private long alarmId = -1;
+    private boolean motionCompleted = true;
+    private boolean alarmCompleted = true;
 
     /**
-     * Defines a runnable for a discovery
+     * Defines a runnable for a refresh job
      */
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
             try {
-                refreshImage();
+                refresh();
             } catch (Exception e) {
                 logger.error("error in refresh", e);
             }
@@ -74,16 +85,11 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
         try {
 
-            String cameraId = getThing().getUID().getId();
-
             switch (channelUID.getId()) {
                 case CHANNEL_IMAGE:
                     if (command.toString().equals("REFRESH")) {
-                        refreshImage();
+                        refresh();
                     }
-                    break;
-                case CHANNEL_MOTION_DETECTED:
-                case CHANNEL_ALARM_DETECTED:
                     break;
                 case CHANNEL_RECORD:
                 case CHANNEL_ENABLE:
@@ -100,7 +106,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
     @Override
     public void dispose() {
-        stopRefreshImage();
+        stopRefresh();
     }
 
     @Override
@@ -111,14 +117,22 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
             SynologySurveillanceStationBridgeHandler bridge = ((SynologySurveillanceStationBridgeHandler) getBridge()
                     .getHandler());
             apiHandler = bridge.getSynoWebApiHandler();
-
-            String cameraId = getThing().getUID().getId();
+            cameraId = getThing().getUID().getId();
+            refresh = Integer.parseInt(
+                    getBridge().getConfiguration().get(SynologySurveillanceStationBindingConstants.POLL).toString());
+            lastEventTime = ZonedDateTime.now().minusSeconds(refresh).toEpochSecond();
 
             logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 updateStatus(ThingStatus.ONLINE);
-                startRefreshImage();
+                try {
+                    updateState(getThing().getChannel(CHANNEL_MOTION_DETECTED).getUID(), OnOffType.OFF);
+                    updateState(getThing().getChannel(CHANNEL_ALARM_DETECTED).getUID(), OnOffType.OFF);
+                } catch (Exception ex) {
+                    // init alarm channels with OFF if possible
+                }
+                startRefresh();
 
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
@@ -136,9 +150,9 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     /**
      * Stops the refresh thread
      */
-    private void stopRefreshImage() {
-        if (snapshotJob != null) {
-            snapshotJob.cancel(true);
+    private void stopRefresh() {
+        if (refreshJob != null) {
+            refreshJob.cancel(true);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -150,18 +164,17 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     /**
      * Starts the refresh thread with refresh rate of the bridge
      */
-    private void startRefreshImage() {
+    private void startRefresh() {
         // TODO: Changing bridge configuration should restart this thread to apply new refresh rate
         if (getBridge() != null) {
-            int refresh = Integer.parseInt(
-                    getBridge().getConfiguration().get(SynologySurveillanceStationBindingConstants.POLL).toString());
-            snapshotJob = scheduler.scheduleAtFixedRate(runnable, 0, refresh, TimeUnit.SECONDS);
+            refreshJob = scheduler.scheduleAtFixedRate(runnable, 0, refresh, TimeUnit.SECONDS);
         }
     }
 
-    private void refreshImage() {
-        if (isLinked(CHANNEL_IMAGE)) {
-            if (refreshInProgress.compareAndSet(false, true)) {
+    // TODO: allow manual image refresh without refreshing events?
+    private void refresh() {
+        if (refreshInProgress.compareAndSet(false, true)) {
+            if (isLinked(CHANNEL_IMAGE)) {
                 Channel cx = getThing().getChannel(CHANNEL_IMAGE);
                 if (logger.isTraceEnabled()) {
                     logger.trace("Will update: {}::{}::{}", getThing().getUID().getId(), cx.getChannelTypeUID().getId(),
@@ -169,12 +182,8 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
                 }
 
                 try {
-                    String cameraId = getThing().getUID().getId();
-
                     byte[] snapshot = apiHandler.getSnapshot(cameraId).toByteArray();
-
                     updateState(cx.getUID(), new RawType(snapshot, "image/jpeg"));
-
                     if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
                         updateStatus(ThingStatus.ONLINE);
                     }
@@ -185,8 +194,58 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
                             "communication error: " + e.toString());
                 }
 
-                refreshInProgress.set(false);
             }
+
+            if (isLinked(CHANNEL_MOTION_DETECTED) || isLinked(CHANNEL_ALARM_DETECTED)) {
+                try {
+                    EventResponse response = apiHandler.getEventResponse(cameraId, lastEventTime - 30);
+
+                    if (isLinked(CHANNEL_ALARM_DETECTED)) {
+                        Channel ca = getThing().getChannel(CHANNEL_ALARM_DETECTED);
+                        if (response.getAlarmId() > alarmId) {
+                            alarmId = response.getAlarmId();
+                            alarmCompleted = response.isAlarmCompleted();
+                            updateState(ca.getUID(), OnOffType.ON);
+                            if (response.isAlarmCompleted()) {
+                                updateState(ca.getUID(), OnOffType.OFF);
+                            }
+                        } else if (response.getAlarmId() == alarmId && response.isAlarmCompleted() && !alarmCompleted) {
+                            alarmCompleted = true;
+                            updateState(ca.getUID(), OnOffType.OFF);
+                        }
+                    }
+
+                    if (isLinked(CHANNEL_MOTION_DETECTED)) {
+                        Channel cm = getThing().getChannel(CHANNEL_MOTION_DETECTED);
+                        if (response.getMotionId() > motionId) {
+                            motionId = response.getMotionId();
+                            motionCompleted = response.isMotionCompleted();
+                            updateState(cm.getUID(), OnOffType.ON);
+                            if (response.isMotionCompleted()) {
+                                updateState(cm.getUID(), OnOffType.OFF);
+                            }
+                        } else if (response.getMotionId() == motionId && response.isMotionCompleted()
+                                && !motionCompleted) {
+                            motionCompleted = true;
+                            updateState(cm.getUID(), OnOffType.OFF);
+                        }
+                    }
+
+                    lastEventTime = response.getTimestamp();
+
+                    if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
+                        updateStatus(ThingStatus.ONLINE);
+                    }
+
+                } catch (WebApiException e) {
+                    logger.error("could not get event: {}", getThing(), e);
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                            "communication error: " + e.toString());
+                }
+            }
+
+            refreshInProgress.set(false);
         }
     }
+
 }

@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
@@ -154,4 +155,11 @@ public interface SynoWebApi {
      * @throws WebApiException
      */
     public SimpleResponse moveHome(String cameraId) throws WebApiException;
+
+    /**
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public EventResponse getEventResponse(String cameraId, long lastEventTime) throws WebApiException;
 }

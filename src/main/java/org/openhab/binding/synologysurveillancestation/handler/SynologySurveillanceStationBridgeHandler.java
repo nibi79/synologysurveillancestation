@@ -8,13 +8,18 @@
  */
 package org.openhab.binding.synologysurveillancestation.handler;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
+import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
@@ -73,7 +78,7 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
 
             updateStatus(ThingStatus.ONLINE);
 
-            // Trigger discovery of cameras             
+            // Trigger discovery of cameras
             if (cameraDiscovery != null) {
                 cameraDiscovery.discoverCameras();
             }
@@ -88,5 +93,25 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
             }
         }
 
+    }
+
+    @Override
+    public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
+        super.handleConfigurationUpdate(configurationParameters);
+        Object refreshObj = configurationParameters.get(SynologySurveillanceStationBindingConstants.POLL);
+        if (refreshObj != null) {
+            int refresh = ((BigDecimal) refreshObj).intValue();
+            for (Thing thing : getThing().getThings()) {
+                try {
+                    SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing
+                            .getHandler();
+                    if (handler.getRefresh() != refresh) {
+                        handler.setRefresh(refresh);
+                    }
+                } catch (Exception e) {
+                    logger.error("Exception while changing refresh rate");
+                }
+            }
+        }
     }
 }

@@ -49,9 +49,9 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     private @Nullable SynoWebApiHandler apiHandler;
     private @Nullable ScheduledFuture<?> refreshJob;
     private String cameraId = "";
-    private long lastEventTime = 1513758653;
     private int refresh = 5;
 
+    private long lastEventTime = 1513758653;
     private long motionId = -1;
     private long alarmId = -1;
     private boolean motionCompleted = true;
@@ -82,13 +82,17 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-
         try {
-
             switch (channelUID.getId()) {
                 case CHANNEL_IMAGE:
                     if (command.toString().equals("REFRESH")) {
                         refresh();
+                    }
+                    break;
+                case CHANNEL_MOTION_DETECTED:
+                case CHANNEL_ALARM_DETECTED:
+                    if (command.toString().equals("REFRESH")) {
+                        updateState(channelUID, OnOffType.OFF);
                     }
                     break;
                 case CHANNEL_RECORD:
@@ -126,12 +130,6 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 updateStatus(ThingStatus.ONLINE);
-                try {
-                    updateState(getThing().getChannel(CHANNEL_MOTION_DETECTED).getUID(), OnOffType.OFF);
-                    updateState(getThing().getChannel(CHANNEL_ALARM_DETECTED).getUID(), OnOffType.OFF);
-                } catch (Exception ex) {
-                    // init alarm channels with OFF if possible
-                }
                 startRefresh();
 
             } else {
@@ -165,7 +163,6 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
      * Starts the refresh thread with refresh rate of the bridge
      */
     private void startRefresh() {
-        // TODO: Changing bridge configuration should restart this thread to apply new refresh rate
         if (getBridge() != null) {
             refreshJob = scheduler.scheduleAtFixedRate(runnable, 0, refresh, TimeUnit.SECONDS);
         }
@@ -246,6 +243,22 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
             refreshInProgress.set(false);
         }
+    }
+
+    /**
+     * @return the refresh
+     */
+    public int getRefresh() {
+        return refresh;
+    }
+
+    /**
+     * @param refresh the refresh to set
+     */
+    public void setRefresh(int refresh) {
+        this.refresh = refresh;
+        stopRefresh();
+        startRefresh();
     }
 
 }

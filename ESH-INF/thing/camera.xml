@@ -95,7 +95,7 @@
     </channel-type>
     <channel-type id="alarm-detected-channel">
         <item-type>Switch</item-type>
-        <label>Motion detected</label>
+        <label>Alarm detected</label>
         <description>Recording event on alarm detection as in Timeline</description>
     </channel-type>
 

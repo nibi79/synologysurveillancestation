@@ -19,15 +19,11 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * SYNO.SurveillanceStation.Info
+ * SYNO.SurveillanceStation.SynoApiQuery
  *
- * This API provides a method to acquire Surveillance Station related information such as package version, package UI
- * path, and the total number of camera and installed licenses.
+ * This API provides a method to query for the existence of Surveillance Station
  *
- * Method:
- * - GetInfo
- *
- * @author Nils
+ * @author Pavion
  *
  */
 public class SynoApiQuery extends SynoApiRequest<InfoResponse> {

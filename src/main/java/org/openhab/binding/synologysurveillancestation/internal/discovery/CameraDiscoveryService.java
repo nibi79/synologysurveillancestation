@@ -16,7 +16,6 @@ import java.util.Set;
 import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
 import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
-import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
@@ -25,7 +24,6 @@ import org.openhab.binding.synologysurveillancestation.handler.SynologySurveilla
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
-import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +36,6 @@ import com.google.gson.JsonObject;
  *
  * @author Nils
  */
-@Component(service = DiscoveryService.class, immediate = true, configurationPid = "discovery.synologysurveillancestation")
 public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(CameraDiscoveryService.class);
@@ -149,7 +146,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         }
 
         ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, cameraId);
-        
+
         return thingUID;
     }
 

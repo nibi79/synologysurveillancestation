@@ -10,7 +10,9 @@ package org.openhab.binding.synologysurveillancestation.internal;
 
 import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -18,16 +20,18 @@ import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationHandler;
-import org.openhab.binding.synologysurveillancestation.internal.discovery.BridgeDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The {@link SynologySurveillanceStationHandlerFactory} is responsible for creating things and thing
@@ -39,24 +43,18 @@ import org.osgi.service.component.annotations.Component;
 @NonNullByDefault
 public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerFactory {
 
-    private @Nullable ServiceRegistration<?> cameraDiscoveryServiceReg;
-    private @Nullable ServiceRegistration<?> bridgeDiscoveryServiceReg;
+    private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+
+    private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationHandlerFactory.class);
 
     @Override
     protected void activate(ComponentContext componentContext) {
         super.activate(componentContext);
-        BridgeDiscoveryService discoveryService = new BridgeDiscoveryService();
-        bridgeDiscoveryServiceReg = bundleContext.registerService(DiscoveryService.class.getName(), discoveryService,
-                new Hashtable<String, Object>());
     }
 
     @Override
     protected void deactivate(ComponentContext componentContext) {
         super.deactivate(componentContext);
-        if (bridgeDiscoveryServiceReg != null) {
-            bridgeDiscoveryServiceReg.unregister();
-            bridgeDiscoveryServiceReg = null;
-        }
     }
 
     @Override
@@ -73,8 +71,8 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
                     (Bridge) thing);
             CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
-            cameraDiscoveryServiceReg = bundleContext.registerService(DiscoveryService.class.getName(),
-                    discoveryService, new Hashtable<String, Object>());
+            this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(
+                    DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
 
             return bridgeHandler;
         } else if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
@@ -90,9 +88,10 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
     @Override
     protected void removeHandler(ThingHandler handler) {
         if (handler.getThing().getThingTypeUID().equals(THING_TYPE_STATION)) {
-            if (cameraDiscoveryServiceReg != null) {
-                cameraDiscoveryServiceReg.unregister();
-                cameraDiscoveryServiceReg = null;
+            ServiceRegistration<?> serviceReg = this.discoveryServiceRegs.get(handler.getThing().getUID());
+            if (serviceReg != null) {
+                serviceReg.unregister();
+                discoveryServiceRegs.remove(handler.getThing().getUID());
             }
         }
         super.removeHandler(handler);

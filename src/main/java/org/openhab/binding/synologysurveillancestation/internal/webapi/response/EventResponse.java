@@ -26,9 +26,13 @@ public class EventResponse extends SimpleResponse {
     private final Logger logger = LoggerFactory.getLogger(EventResponse.class);
 
     private long timestamp = 0;
+
+    private boolean motion = false;
     private long motionId = -1;
-    private long alarmId = -1;
     private boolean motionCompleted = true;
+
+    private boolean alarm = false;
+    private long alarmId = -1;
     private boolean alarmCompleted = true;
 
     /**
@@ -45,10 +49,12 @@ public class EventResponse extends SimpleResponse {
             if (event.isJsonObject()) {
                 JsonObject cam = event.getAsJsonObject();
                 int reason = cam.get("reason").getAsInt();
-                if (reason == SynoApiEvent.EVENT_REASON_ALARM && alarmId == -1) {
+                if (reason == SynoApiEvent.EVENT_REASON_ALARM && !alarm) {
+                    alarm = true;
                     alarmId = cam.get("eventId").getAsLong();
                     alarmCompleted = cam.get("is_complete").getAsBoolean();
-                } else if (reason == SynoApiEvent.EVENT_REASON_MOTION && motionId == -1) {
+                } else if (reason == SynoApiEvent.EVENT_REASON_MOTION && !motion) {
+                    motion = true;
                     motionId = cam.get("eventId").getAsLong();
                     motionCompleted = cam.get("is_complete").getAsBoolean();
                 }
@@ -91,4 +97,19 @@ public class EventResponse extends SimpleResponse {
     public boolean isAlarmCompleted() {
         return alarmCompleted;
     }
+
+    /**
+     * @return the motion
+     */
+    public boolean isMotion() {
+        return motion;
+    }
+
+    /**
+     * @return the alarm
+     */
+    public boolean isAlarm() {
+        return alarm;
+    }
+
 }

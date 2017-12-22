@@ -199,14 +199,20 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
                     if (isLinked(CHANNEL_ALARM_DETECTED)) {
                         Channel ca = getThing().getChannel(CHANNEL_ALARM_DETECTED);
-                        if (response.getAlarmId() > alarmId) {
-                            alarmId = response.getAlarmId();
-                            alarmCompleted = response.isAlarmCompleted();
-                            updateState(ca.getUID(), OnOffType.ON);
-                            if (response.isAlarmCompleted()) {
+                        if (response.isAlarm()) {
+                            if (response.getAlarmId() > alarmId) {
+                                alarmId = response.getAlarmId();
+                                alarmCompleted = response.isAlarmCompleted();
+                                updateState(ca.getUID(), OnOffType.ON);
+                                if (alarmCompleted) {
+                                    updateState(ca.getUID(), OnOffType.OFF);
+                                }
+                            } else if (response.getAlarmId() == alarmId && response.isAlarmCompleted()
+                                    && !alarmCompleted) {
+                                alarmCompleted = true;
                                 updateState(ca.getUID(), OnOffType.OFF);
                             }
-                        } else if (response.getAlarmId() == alarmId && response.isAlarmCompleted() && !alarmCompleted) {
+                        } else {
                             alarmCompleted = true;
                             updateState(ca.getUID(), OnOffType.OFF);
                         }
@@ -214,15 +220,20 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
                     if (isLinked(CHANNEL_MOTION_DETECTED)) {
                         Channel cm = getThing().getChannel(CHANNEL_MOTION_DETECTED);
-                        if (response.getMotionId() > motionId) {
-                            motionId = response.getMotionId();
-                            motionCompleted = response.isMotionCompleted();
-                            updateState(cm.getUID(), OnOffType.ON);
-                            if (response.isMotionCompleted()) {
+                        if (response.isMotion()) {
+                            if (response.getMotionId() > motionId) {
+                                motionId = response.getMotionId();
+                                motionCompleted = response.isMotionCompleted();
+                                updateState(cm.getUID(), OnOffType.ON);
+                                if (motionCompleted) {
+                                    updateState(cm.getUID(), OnOffType.OFF);
+                                }
+                            } else if (response.getMotionId() == motionId && response.isMotionCompleted()
+                                    && !motionCompleted) {
+                                motionCompleted = true;
                                 updateState(cm.getUID(), OnOffType.OFF);
                             }
-                        } else if (response.getMotionId() == motionId && response.isMotionCompleted()
-                                && !motionCompleted) {
+                        } else {
                             motionCompleted = true;
                             updateState(cm.getUID(), OnOffType.OFF);
                         }

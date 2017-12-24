@@ -51,7 +51,7 @@ public class EventResponse extends SimpleResponse {
                 if (event.isJsonObject()) {
                     JsonObject cam = event.getAsJsonObject();
                     int reason = cam.get("reason").getAsInt();
-                    long starttime = cam.get("starttime").getAsLong();
+                    long starttime = cam.get("startTime").getAsLong();
                     if (reason == SynoApiEvent.EVENT_REASON_ALARM && !alarm) {
                         alarm = true;
                         alarmId = cam.get("eventId").getAsLong();

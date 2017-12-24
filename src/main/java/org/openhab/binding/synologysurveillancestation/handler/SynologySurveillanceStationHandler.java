@@ -195,54 +195,58 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
             if (isLinked(CHANNEL_MOTION_DETECTED) || isLinked(CHANNEL_ALARM_DETECTED)) {
                 try {
-                    EventResponse response = apiHandler.getEventResponse(cameraId, lastEventTime - 30);
-
-                    if (isLinked(CHANNEL_ALARM_DETECTED)) {
-                        Channel ca = getThing().getChannel(CHANNEL_ALARM_DETECTED);
-                        if (response.isAlarm()) {
-                            if (response.getAlarmId() > alarmId) {
-                                alarmId = response.getAlarmId();
-                                alarmCompleted = response.isAlarmCompleted();
-                                updateState(ca.getUID(), OnOffType.ON);
-                                if (alarmCompleted) {
+                    EventResponse response = apiHandler.getEventResponse(cameraId, lastEventTime);
+                    if (response.isSuccess()) {
+                        if (isLinked(CHANNEL_ALARM_DETECTED)) {
+                            Channel ca = getThing().getChannel(CHANNEL_ALARM_DETECTED);
+                            if (response.isAlarm()) {
+                                if (response.getAlarmId() > alarmId) {
+                                    alarmId = response.getAlarmId();
+                                    alarmCompleted = response.isAlarmCompleted();
+                                    updateState(ca.getUID(), OnOffType.ON);
+                                    if (alarmCompleted) {
+                                        updateState(ca.getUID(), OnOffType.OFF);
+                                    }
+                                } else if (response.getAlarmId() == alarmId && response.isAlarmCompleted()
+                                        && !alarmCompleted) {
+                                    alarmCompleted = true;
                                     updateState(ca.getUID(), OnOffType.OFF);
                                 }
-                            } else if (response.getAlarmId() == alarmId && response.isAlarmCompleted()
-                                    && !alarmCompleted) {
+                            } else {
                                 alarmCompleted = true;
                                 updateState(ca.getUID(), OnOffType.OFF);
                             }
-                        } else {
-                            alarmCompleted = true;
-                            updateState(ca.getUID(), OnOffType.OFF);
                         }
-                    }
 
-                    if (isLinked(CHANNEL_MOTION_DETECTED)) {
-                        Channel cm = getThing().getChannel(CHANNEL_MOTION_DETECTED);
-                        if (response.isMotion()) {
-                            if (response.getMotionId() > motionId) {
-                                motionId = response.getMotionId();
-                                motionCompleted = response.isMotionCompleted();
-                                updateState(cm.getUID(), OnOffType.ON);
-                                if (motionCompleted) {
+                        if (isLinked(CHANNEL_MOTION_DETECTED)) {
+                            Channel cm = getThing().getChannel(CHANNEL_MOTION_DETECTED);
+                            if (response.isMotion()) {
+                                if (response.getMotionId() > motionId) {
+                                    motionId = response.getMotionId();
+                                    motionCompleted = response.isMotionCompleted();
+                                    updateState(cm.getUID(), OnOffType.ON);
+                                    if (motionCompleted) {
+                                        updateState(cm.getUID(), OnOffType.OFF);
+                                    }
+                                } else if (response.getMotionId() == motionId && response.isMotionCompleted()
+                                        && !motionCompleted) {
+                                    motionCompleted = true;
                                     updateState(cm.getUID(), OnOffType.OFF);
                                 }
-                            } else if (response.getMotionId() == motionId && response.isMotionCompleted()
-                                    && !motionCompleted) {
+                            } else {
                                 motionCompleted = true;
                                 updateState(cm.getUID(), OnOffType.OFF);
                             }
-                        } else {
-                            motionCompleted = true;
-                            updateState(cm.getUID(), OnOffType.OFF);
                         }
-                    }
 
-                    lastEventTime = response.getTimestamp();
-
-                    if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
-                        updateStatus(ThingStatus.ONLINE);
+                        lastEventTime = response.getTimestamp();
+                        if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
+                            updateStatus(ThingStatus.ONLINE);
+                        }
+                    } else {
+                        if (!thing.getStatus().equals(ThingStatus.OFFLINE)) {
+                            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
+                        }
                     }
 
                 } catch (WebApiException e) {

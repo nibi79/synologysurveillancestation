@@ -23,6 +23,8 @@ import com.google.gson.JsonObject;
  */
 @NonNullByDefault
 public class EventResponse extends SimpleResponse {
+    private static final int EVENT_POLL_OVERHEAD = 30;
+
     private final Logger logger = LoggerFactory.getLogger(EventResponse.class);
 
     private long timestamp = 0;
@@ -40,23 +42,31 @@ public class EventResponse extends SimpleResponse {
      */
     public EventResponse(String jsonResponse) {
         super(jsonResponse);
+        if (isSuccess()) {
+            JsonArray events = getData().getAsJsonArray("events");
 
-        JsonArray events = getData().getAsJsonArray("events");
+            timestamp = getData().getAsJsonObject().get("timestamp").getAsLong() - EVENT_POLL_OVERHEAD;
 
-        timestamp = getData().getAsJsonObject().get("timestamp").getAsLong();
-
-        for (JsonElement event : events) {
-            if (event.isJsonObject()) {
-                JsonObject cam = event.getAsJsonObject();
-                int reason = cam.get("reason").getAsInt();
-                if (reason == SynoApiEvent.EVENT_REASON_ALARM && !alarm) {
-                    alarm = true;
-                    alarmId = cam.get("eventId").getAsLong();
-                    alarmCompleted = cam.get("is_complete").getAsBoolean();
-                } else if (reason == SynoApiEvent.EVENT_REASON_MOTION && !motion) {
-                    motion = true;
-                    motionId = cam.get("eventId").getAsLong();
-                    motionCompleted = cam.get("is_complete").getAsBoolean();
+            for (JsonElement event : events) {
+                if (event.isJsonObject()) {
+                    JsonObject cam = event.getAsJsonObject();
+                    int reason = cam.get("reason").getAsInt();
+                    long starttime = cam.get("starttime").getAsLong();
+                    if (reason == SynoApiEvent.EVENT_REASON_ALARM && !alarm) {
+                        alarm = true;
+                        alarmId = cam.get("eventId").getAsLong();
+                        alarmCompleted = cam.get("is_complete").getAsBoolean();
+                        if (!alarmCompleted && starttime < timestamp) {
+                            timestamp = starttime;
+                        }
+                    } else if (reason == SynoApiEvent.EVENT_REASON_MOTION && !motion) {
+                        motion = true;
+                        motionId = cam.get("eventId").getAsLong();
+                        motionCompleted = cam.get("is_complete").getAsBoolean();
+                        if (!motionCompleted && starttime < timestamp) {
+                            timestamp = starttime;
+                        }
+                    }
                 }
             }
         }

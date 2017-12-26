@@ -8,11 +8,9 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
@@ -53,14 +51,14 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      */
     private AuthResponse call(String method) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
 
         // API parameters
-        params.add(new BasicNameValuePair("account", getConfig().getUsername()));
-        params.add(new BasicNameValuePair("passwd", getConfig().getPassword()));
+        params.put("account", getConfig().getUsername());
+        params.put("passwd", getConfig().getPassword());
 
-        params.add(new BasicNameValuePair("session", "SurveillanceStation"));
-        params.add(new BasicNameValuePair("format", "sid"));
+        params.put("session", "SurveillanceStation");
+        params.put("format", "sid");
 
         return callApi(method, params);
     }

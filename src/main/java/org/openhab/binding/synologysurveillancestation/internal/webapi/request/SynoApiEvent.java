@@ -8,11 +8,9 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
@@ -47,13 +45,13 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
      * @throws WebApiException
      */
     public EventResponse query(String cameraId, long lastEventTime) {
-        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
 
-        params.add(new BasicNameValuePair("cameraIds", cameraId));
-        params.add(new BasicNameValuePair("fromTime", String.valueOf(lastEventTime)));
-        params.add(new BasicNameValuePair("blIncludeSnapshot", "false"));
-        params.add(new BasicNameValuePair("limit", "10"));
-        params.add(new BasicNameValuePair("reason", "2,3"));
+        params.put("cameraIds", cameraId);
+        params.put("fromTime", String.valueOf(lastEventTime));
+        params.put("blIncludeSnapshot", API_FALSE);
+        params.put("limit", "10");
+        params.put("reason", "2,3");
 
         try {
             return callApi(METHOD_LIST, params);

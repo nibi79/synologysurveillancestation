@@ -77,6 +77,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     public boolean connect() throws WebApiException {
 
         apiAuth = new SynoApiAuth(config);
+        System.err.println("Creating connect");
 
         boolean connected = createSession();
 
@@ -269,7 +270,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getInfo(java.lang.String)
      */
     @Override
@@ -437,7 +438,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveHome(java.lang.String)
      */
     @Override

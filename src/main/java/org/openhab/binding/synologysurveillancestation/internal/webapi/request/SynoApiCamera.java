@@ -8,23 +8,19 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URI;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
@@ -92,19 +88,19 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     private CameraResponse call(String method, String cameraId) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
 
         // API parameters
-        params.add(new BasicNameValuePair("blFromCamList", API_TRUE));
-        params.add(new BasicNameValuePair("privCamType", API_TRUE));
-        params.add(new BasicNameValuePair("blIncludeDeletedCam", API_FALSE));
-        params.add(new BasicNameValuePair("basic", API_TRUE));
-        params.add(new BasicNameValuePair("streamInfo", API_TRUE));
-        params.add(new BasicNameValuePair("blPrivilege", API_FALSE));
-        params.add(new BasicNameValuePair("camStm", "1"));
+        params.put("blFromCamList", API_TRUE);
+        params.put("privCamType", API_TRUE);
+        params.put("blIncludeDeletedCam", API_FALSE);
+        params.put("basic", API_TRUE);
+        params.put("streamInfo", API_TRUE);
+        params.put("blPrivilege", API_FALSE);
+        params.put("camStm", "1");
 
         if (cameraId != null) {
-            params.add(new BasicNameValuePair("cameraIds", cameraId));
+            params.put("cameraIds", cameraId);
         }
 
         return callApi(method, params);
@@ -122,38 +118,28 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     public ByteArrayOutputStream getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        CloseableHttpResponse response = null;
 
         try {
 
-            List<NameValuePair> params = new ArrayList<>();
+            Map<String, String> params = new HashMap<>();
 
             // API parameters
-            params.add(new BasicNameValuePair("cameraId", cameraId));
+            params.put("cameraId", cameraId);
             // 0 - High quality, 1 - Balanced, 2 - Low bandwidth
-            params.add(new BasicNameValuePair("profileType", "1"));
+            params.put("profileType", "1");
 
-            URL url = getWebApiUrl(METHOD_GETSNAPSHOT, params);
-            URI uri = url.toURI();
+            Request request = getWebApiUrl(METHOD_GETSNAPSHOT, params);
 
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-            HttpClientContext context = HttpClientContext.create();
-            HttpGet httpget = new HttpGet(uri);
+            ContentResponse response = request.send();
 
-            response = httpclient.execute(httpget, context);
-
-            HttpEntity entity = response.getEntity();
-            IOUtils.copy(entity.getContent(), baos);
-            entity.getContent();
-
-            return baos;
-
-        } finally {
-            if (response != null) {
-
-                response.close();
+            if (response.getStatus() == 200) {
+                InputStream is = new ByteArrayInputStream(response.getContent());
+                IOUtils.copy(is, baos);
             }
-
+            return baos;
+        } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
+                | InterruptedException e) {
+            throw new WebApiException(e);
         }
 
     }
@@ -189,8 +175,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse enable(String cameraId) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("cameraIds", cameraId));
+        Map<String, String> params = new HashMap<>();
+        params.put("cameraIds", cameraId);
 
         return callApi(METHOD_ENABLE, params);
     }
@@ -204,8 +190,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public CameraResponse disable(String cameraId) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("cameraIds", cameraId));
+        Map<String, String> params = new HashMap<>();
+        params.put("cameraIds", cameraId);
 
         return callApi(METHOD_DISABLE, params);
     }

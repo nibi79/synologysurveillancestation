@@ -13,6 +13,7 @@ import static org.openhab.binding.synologysurveillancestation.SynologySurveillan
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -115,6 +116,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
+        System.err.println("Handle Thing initialization");
 
         if (getBridge() != null) {
 
@@ -185,7 +187,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
                         updateStatus(ThingStatus.ONLINE);
                     }
 
-                } catch (URISyntaxException | IOException | WebApiException e) {
+                } catch (URISyntaxException | IOException | WebApiException | NullPointerException e) {
                     logger.error("could not get snapshot: {}", getThing(), e);
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                             "communication error: " + e.toString());
@@ -249,7 +251,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
                         }
                     }
 
-                } catch (WebApiException e) {
+                } catch (WebApiException | NullPointerException e) {
                     logger.error("could not get event: {}", getThing(), e);
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                             "communication error: " + e.toString());
@@ -274,6 +276,16 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
         this.refresh = refresh;
         stopRefresh();
         startRefresh();
+    }
+
+    public void handleConfigurationUpdate() {
+        dispose();
+        initialize();
+    }
+
+    @Override
+    public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
+        super.handleConfigurationUpdate(configurationParameters);
     }
 
 }

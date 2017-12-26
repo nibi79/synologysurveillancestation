@@ -119,7 +119,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                 }
             }
 
-        } catch (WebApiException e) {
+        } catch (WebApiException | NullPointerException e) {
             logger.error("Error in WebApiException", e);
         }
     }

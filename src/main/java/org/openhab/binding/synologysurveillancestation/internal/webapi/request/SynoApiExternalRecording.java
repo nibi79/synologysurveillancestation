@@ -8,11 +8,9 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
@@ -51,11 +49,11 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      */
     private SimpleResponse call(String method, String cameraId, String action) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
 
         // API parameters
-        params.add(new BasicNameValuePair("cameraId", cameraId));
-        params.add(new BasicNameValuePair("action", action));
+        params.put("cameraId", cameraId);
+        params.put("action", action);
 
         return callApi(method, params);
     }

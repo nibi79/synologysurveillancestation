@@ -39,7 +39,6 @@ public interface SynoApi {
     public static final String METHOD_ENABLE = "Enable";
     public static final String METHOD_DISABLE = "Disable";
     public static final String METHOD_GETSNAPSHOT = "GetSnapshot";
-    public static final String METHOD_QUERY = "Query";
 
     public static final String METHOD_RECORD = "Record";
 

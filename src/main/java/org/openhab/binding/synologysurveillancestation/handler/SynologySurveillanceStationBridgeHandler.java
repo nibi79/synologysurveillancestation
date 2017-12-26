@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.synologysurveillancestation.handler;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -19,7 +18,6 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
-import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
@@ -37,7 +35,18 @@ import org.slf4j.LoggerFactory;
 public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationBridgeHandler.class);
-    private CameraDiscoveryService cameraDiscovery;
+    private CameraDiscoveryService discoveryService;
+    /**
+     * Defines a runnable for a discovery
+     */
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (discoveryService != null) {
+                discoveryService.discoverCameras();
+            }
+        }
+    };
 
     private SynoWebApiHandler apiHandler = null;
 
@@ -54,14 +63,15 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
         // There is nothing to handle in the bridge handler
     }
 
-    public void setDiscovery(CameraDiscoveryService discovery) {
-        this.cameraDiscovery = discovery;
+    public void setDiscovery(CameraDiscoveryService discoveryService) {
+        this.discoveryService = discoveryService;
     }
 
     @Override
     public void initialize() {
-
         try {
+
+            System.err.println("Init Bridge handler");
 
             if (logger.isDebugEnabled()) {
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
@@ -79,9 +89,7 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
             updateStatus(ThingStatus.ONLINE);
 
             // Trigger discovery of cameras
-            if (cameraDiscovery != null) {
-                cameraDiscovery.discoverCameras();
-            }
+            scheduler.submit(runnable);
 
         } catch (WebApiException e) {
             if (e.getErrorCode() == 400) {
@@ -97,21 +105,37 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
 
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
+        System.err.println("HandleSuperConfig");
         super.handleConfigurationUpdate(configurationParameters);
-        Object refreshObj = configurationParameters.get(SynologySurveillanceStationBindingConstants.POLL);
-        if (refreshObj != null) {
-            int refresh = ((BigDecimal) refreshObj).intValue();
-            for (Thing thing : getThing().getThings()) {
-                try {
-                    SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing
-                            .getHandler();
-                    if (handler.getRefresh() != refresh) {
-                        handler.setRefresh(refresh);
-                    }
-                } catch (Exception e) {
-                    logger.error("Exception while changing refresh rate");
-                }
+
+        for (Thing thing : getThing().getThings()) {
+            try {
+                SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing.getHandler();
+                handler.handleConfigurationUpdate();
+            } catch (Exception e) {
+                logger.error("Exception while changing refresh rate");
             }
         }
+
+        /*
+         *
+         * if (super.getThing().getStatus() == ThingStatus.ONLINE) {
+         * Object refreshObj = configurationParameters.get(SynologySurveillanceStationBindingConstants.POLL);
+         * if (refreshObj != null) {
+         * int refresh = ((BigDecimal) refreshObj).intValue();
+         * for (Thing thing : getThing().getThings()) {
+         * try {
+         * SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing
+         * .getHandler();
+         * if (handler.getRefresh() != refresh) {
+         * handler.setRefresh(refresh);
+         * }
+         * } catch (Exception e) {
+         * logger.error("Exception while changing refresh rate");
+         * }
+         * }
+         * }
+         * }
+         */
     }
 }

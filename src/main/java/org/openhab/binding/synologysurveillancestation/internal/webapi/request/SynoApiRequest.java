@@ -201,7 +201,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
                 String result = response.getContentAsString();
                 if (result.length() > 0) {
-                    logger.debug("RESPONSE: {}", result.substring(0, result.length() - 2));
+                    logger.debug("RESPONSE: {}", result);
                 }
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);

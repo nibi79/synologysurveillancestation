@@ -29,6 +29,7 @@ import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
+import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
@@ -54,6 +55,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     private @Nullable ScheduledFuture<?> refreshJob;
     private String cameraId = "";
     private int refresh = 5;
+    private boolean isPtz = false;
 
     private long lastEventTime = 1513758653;
 
@@ -71,8 +73,9 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
         }
     };
 
-    public SynologySurveillanceStationHandler(Thing thing) {
+    public SynologySurveillanceStationHandler(Thing thing, boolean isPtz) {
         super(thing);
+        this.isPtz = isPtz;
     }
 
     @Override
@@ -115,8 +118,6 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
     @Override
     public void initialize() {
-        System.err.println("Handle Thing initialization");
-
         if (getBridge() != null) {
 
             SynologySurveillanceStationBridgeHandler bridge = ((SynologySurveillanceStationBridgeHandler) getBridge()
@@ -128,6 +129,13 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
             lastEventTime = ZonedDateTime.now().minusSeconds(refresh).toEpochSecond();
 
             logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);
+
+            if (!isPtz) {
+                ThingBuilder thingBuilder = editThing();
+                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_ZOOM));
+                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVE));
+                updateThing(thingBuilder.build());
+            }
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 updateStatus(ThingStatus.ONLINE);
@@ -203,26 +211,24 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
                         for (String channelId : events.keySet()) {
                             SynoEvent event = events.get(channelId);
-                            if (isLinked(channelId)) {
-                                Channel channel = getThing().getChannel(channelId);
-                                if (response.hasEvent(event.getReason())) {
-                                    SynoEvent responseEvent = response.getEvent(event.getReason());
-                                    if (responseEvent.getEventId() > event.getEventId()) {
-                                        event.setEventId(responseEvent.getEventId());
-                                        event.setEventCompleted(responseEvent.isEventCompleted());
-                                        updateState(channel.getUID(), OnOffType.ON);
-                                        if (event.isEventCompleted()) {
-                                            updateState(channel.getUID(), OnOffType.OFF);
-                                        }
-                                    } else if (responseEvent.getEventId() == event.getEventId()
-                                            && responseEvent.isEventCompleted() && !event.isEventCompleted()) {
-                                        event.setEventCompleted(true);
+                            Channel channel = getThing().getChannel(channelId);
+                            if (response.hasEvent(event.getReason())) {
+                                SynoEvent responseEvent = response.getEvent(event.getReason());
+                                if (responseEvent.getEventId() > event.getEventId()) {
+                                    event.setEventId(responseEvent.getEventId());
+                                    event.setEventCompleted(responseEvent.isEventCompleted());
+                                    updateState(channel.getUID(), OnOffType.ON);
+                                    if (event.isEventCompleted()) {
                                         updateState(channel.getUID(), OnOffType.OFF);
                                     }
-                                } else {
+                                } else if (responseEvent.getEventId() == event.getEventId()
+                                        && responseEvent.isEventCompleted() && !event.isEventCompleted()) {
                                     event.setEventCompleted(true);
                                     updateState(channel.getUID(), OnOffType.OFF);
                                 }
+                            } else {
+                                event.setEventCompleted(true);
+                                updateState(channel.getUID(), OnOffType.OFF);
                             }
                         }
 
@@ -291,9 +297,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     @Override
     public void channelUnlinked(ChannelUID channelUID) {
         String id = channelUID.getId();
-        if (id.equals(CHANNEL_MOTION_DETECTED) || id.equals(CHANNEL_ALARM_DETECTED)) {
-            events.remove(id);
-        }
+        events.remove(id);
     }
 
 }

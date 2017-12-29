@@ -26,6 +26,7 @@ public abstract class SynoApiResponse {
     public static final String PROP_CAMERANUMBER = "cameraNumber";
 
     // PTZ capabilities
+    public static final String PROP_PTZ = "ptz";
     public static final String PROP_PTZ_PAN = "ptz_pan";
     public static final String PROP_PTZ_TILT = "ptz_tilt";
     public static final String PROP_PTZ_ZOOM = "ptz_zoom";

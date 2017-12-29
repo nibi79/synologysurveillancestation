@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.THING_TYPE_CAMERA;
 
 import java.util.Map;
 import java.util.Set;
@@ -103,7 +103,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
                             CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
 
-                            ThingUID thingUID = createThingUID(bridgeUID, cameraId, cameraDetails);
+                            ThingUID thingUID = new ThingUID(THING_TYPE_CAMERA, bridgeUID, cameraId);
 
                             Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
 
@@ -122,32 +122,6 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         } catch (WebApiException | NullPointerException e) {
             logger.error("Error in WebApiException", e);
         }
-    }
-
-    /**
-     * Creates ThingUID by evaluating camera PTZ support.
-     *
-     * @param bridgeUID
-     * @param cameraId
-     * @param cameraDetails
-     * @return
-     */
-    private ThingUID createThingUID(ThingUID bridgeUID, String cameraId, CameraResponse cameraDetails) {
-
-        JsonObject cameraDetail = cameraDetails.getCameras().get(0).getAsJsonObject();
-
-        int ptzCap = cameraDetail.get("ptzCap").getAsInt();
-
-        ThingTypeUID thingTypeUID = THING_TYPE_CAMERA;
-
-        // supports PTZ?
-        if (ptzCap > 0) {
-            thingTypeUID = THING_TYPE_CAMERA_PTZ;
-        }
-
-        ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, cameraId);
-
-        return thingUID;
     }
 
     @Override

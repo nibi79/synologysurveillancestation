@@ -31,13 +31,12 @@ public class SynologySurveillanceStationBindingConstants {
 
     // List of all Thing Type UIDs
     public static final ThingTypeUID THING_TYPE_CAMERA = new ThingTypeUID(BINDING_ID, "camera");
-    public static final ThingTypeUID THING_TYPE_CAMERA_PTZ = new ThingTypeUID(BINDING_ID, "cameraptz");
     public static final ThingTypeUID THING_TYPE_STATION = new ThingTypeUID(BINDING_ID, "station");
 
     public static final Set<ThingTypeUID> SUPPORTED_BRIDGE_TYPES = Collections.singleton(THING_TYPE_STATION);
     public static final Set<ThingTypeUID> SUPPORTED_CAMERA_TYPES = Collections.singleton(THING_TYPE_CAMERA);
-    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.unmodifiableSet(
-            Stream.of(THING_TYPE_CAMERA, THING_TYPE_CAMERA_PTZ, THING_TYPE_STATION).collect(Collectors.toSet()));
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
+            .unmodifiableSet(Stream.of(THING_TYPE_CAMERA, THING_TYPE_STATION).collect(Collectors.toSet()));
 
     /* List of all config properties */
     public static final String PROTOCOL = "protocol";
@@ -49,12 +48,12 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String POLL = "poll";
 
     // List of all Channel ids
-    public static final String CHANNEL_IMAGE = "image";
-    public static final String CHANNEL_RECORD = "record";
-    public static final String CHANNEL_ENABLE = "enable";
-    public static final String CHANNEL_ZOOM = "zoom";
-    public static final String CHANNEL_MOVE = "move";
-    public static final String CHANNEL_MOTION_DETECTED = "motiondetected";
-    public static final String CHANNEL_ALARM_DETECTED = "alarmdetected";
+    public static final String CHANNEL_IMAGE = "common#image";
+    public static final String CHANNEL_RECORD = "common#record";
+    public static final String CHANNEL_ENABLE = "common#enable";
+    public static final String CHANNEL_ZOOM = "ptz#zoom";
+    public static final String CHANNEL_MOVE = "ptz#move";
+    public static final String CHANNEL_MOTION_DETECTED = "event-motion#detected";
+    public static final String CHANNEL_ALARM_DETECTED = "event-alarm#detected";
 
 }

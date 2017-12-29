@@ -108,6 +108,7 @@ public class CameraResponse extends SimpleResponse {
 
         // check PTZ capabilities
         int ptzCap = cam.get("ptzCap").getAsInt();
+        properties.put(SynoApiResponse.PROP_PTZ, (ptzCap > 0) ? "true" : "false");
 
         if (ptzCap > 0) {
 

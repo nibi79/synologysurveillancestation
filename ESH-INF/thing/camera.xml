@@ -11,43 +11,47 @@
 		<description>Synology Surveillance Station Camera</description>
 		<category>Camera</category>
 
-		<channels>
-			<channel id="image" typeId="image-channel" />
-			<channel id="record" typeId="recording-channel" />
-			<channel id="enable" typeId="enable-channel" />
-			
-			<!-- motion and alarm detection -->
-            <channel id="motiondetected" typeId="motion-detected-channel" />
-            <channel id="alarmdetected" typeId="alarm-detected-channel" />
-		</channels>
-
+        <channel-groups>
+            <channel-group id="common" typeId="common" />
+            <channel-group id="event-motion" typeId="event">
+                <label>Motion event</label>
+                <description>Motion event of your camera</description>            
+            </channel-group>
+            <channel-group id="event-alarm" typeId="event">
+                <label>Alarm event</label>
+                <description>Alarm event of your camera</description>            
+            </channel-group>
+            <channel-group id="ptz" typeId="ptz" />
+        </channel-groups>
 	</thing-type>
 
-	<thing-type id="cameraptz">
-		<supported-bridge-type-refs>
-			<bridge-type-ref id="station" />
-		</supported-bridge-type-refs>
-		<label>Surveillance Station Camera PTZ</label>
-		<description>Synology Surveillance Station Camera PTZ</description>
-		<category>Camera</category>
+    <channel-group-type id="common">
+        <label>Common channels</label>
+        <description>Common channels of your camera</description>
+        <channels>
+            <channel id="image" typeId="image-channel" />
+            <channel id="record" typeId="recording-channel" />
+            <channel id="enable" typeId="enable-channel" />
+        </channels>
+    </channel-group-type>
 
-		<channels>
-			<channel id="image" typeId="image-channel" />
-			<channel id="record" typeId="recording-channel" />
-			<channel id="enable" typeId="enable-channel" />
+    <channel-group-type id="event">
+        <label>Event</label>
+        <description>Event of your camera</description>
+        <channels>
+            <channel id="detected" typeId="detected-channel" />
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="ptz">
+        <label>PTZ channels</label>
+        <description>Pan/Tilt/Zoom channels of your camera</description>
+        <channels>
+            <channel id="zoom" typeId="zoom-channel" />
+            <channel id="move" typeId="move-channel" />
+        </channels>
+    </channel-group-type>
 
-			<!-- channels for PTZ -->
-			<channel id="zoom" typeId="zoom-channel" />
-			<channel id="move" typeId="move-channel" />
-
-			<!-- motion and alarm detection -->
-            <channel id="motiondetected" typeId="motion-detected-channel" />
-            <channel id="alarmdetected" typeId="alarm-detected-channel" />
-		</channels>
-
-	</thing-type>
-
-	<!-- Sample Channel Type -->
 	<channel-type id="image-channel">
 		<item-type>Image</item-type>
 		<label>Image</label>
@@ -88,16 +92,10 @@
 			</options>
 		</state>
 	</channel-type>
-    <channel-type id="motion-detected-channel">
+    <channel-type id="detected-channel">
         <item-type>Switch</item-type>
-        <label>Motion detected</label>
-        <description>Recording event on motion detection as in Timeline</description>
-        <state readOnly="true"></state>
-    </channel-type>
-    <channel-type id="alarm-detected-channel">
-        <item-type>Switch</item-type>
-        <label>Alarm detected</label>
-        <description>Recording event on alarm detection as in Timeline</description>
+        <label>Event detected</label>
+        <description>An event as in Synology Surveillance Station Timeline</description>
         <state readOnly="true"></state>
     </channel-type>
 

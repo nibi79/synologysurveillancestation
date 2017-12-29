@@ -13,6 +13,7 @@ import static org.openhab.binding.synologysurveillancestation.SynologySurveillan
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
@@ -455,9 +456,10 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getEvents(java.lang.String)
      */
     @Override
-    public EventResponse getEventResponse(String cameraId, long lastEventTime) throws WebApiException {
+    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
+            throws WebApiException {
 
-        EventResponse response = apiEvent.query(cameraId, lastEventTime);
+        EventResponse response = apiEvent.query(cameraId, lastEventTime, events);
 
         return response;
     }

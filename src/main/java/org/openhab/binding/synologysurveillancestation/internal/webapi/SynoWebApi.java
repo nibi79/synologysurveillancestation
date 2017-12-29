@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
@@ -161,5 +162,6 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public EventResponse getEventResponse(String cameraId, long lastEventTime) throws WebApiException;
+    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
+            throws WebApiException;
 }

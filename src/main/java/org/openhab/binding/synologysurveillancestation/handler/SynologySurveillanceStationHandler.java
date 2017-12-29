@@ -13,6 +13,7 @@ import static org.openhab.binding.synologysurveillancestation.SynologySurveillan
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +30,9 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
@@ -53,10 +56,6 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     private int refresh = 5;
 
     private long lastEventTime = 1513758653;
-    private long motionId = -1;
-    private long alarmId = -1;
-    private boolean motionCompleted = true;
-    private boolean alarmCompleted = true;
 
     /**
      * Defines a runnable for a refresh job
@@ -170,6 +169,8 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
         }
     }
 
+    private Map<String, SynoEvent> events = new HashMap<>();
+
     // TODO: allow manual image refresh without refreshing events?
     private void refresh() {
         if (refreshInProgress.compareAndSet(false, true)) {
@@ -195,49 +196,33 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
 
             }
 
-            if (isLinked(CHANNEL_MOTION_DETECTED) || isLinked(CHANNEL_ALARM_DETECTED)) {
+            if (!events.isEmpty()) {
                 try {
-                    EventResponse response = apiHandler.getEventResponse(cameraId, lastEventTime);
+                    EventResponse response = apiHandler.getEventResponse(cameraId, lastEventTime, events);
                     if (response.isSuccess()) {
-                        if (isLinked(CHANNEL_ALARM_DETECTED)) {
-                            Channel ca = getThing().getChannel(CHANNEL_ALARM_DETECTED);
-                            if (response.isAlarm()) {
-                                if (response.getAlarmId() > alarmId) {
-                                    alarmId = response.getAlarmId();
-                                    alarmCompleted = response.isAlarmCompleted();
-                                    updateState(ca.getUID(), OnOffType.ON);
-                                    if (alarmCompleted) {
-                                        updateState(ca.getUID(), OnOffType.OFF);
-                                    }
-                                } else if (response.getAlarmId() == alarmId && response.isAlarmCompleted()
-                                        && !alarmCompleted) {
-                                    alarmCompleted = true;
-                                    updateState(ca.getUID(), OnOffType.OFF);
-                                }
-                            } else {
-                                alarmCompleted = true;
-                                updateState(ca.getUID(), OnOffType.OFF);
-                            }
-                        }
 
-                        if (isLinked(CHANNEL_MOTION_DETECTED)) {
-                            Channel cm = getThing().getChannel(CHANNEL_MOTION_DETECTED);
-                            if (response.isMotion()) {
-                                if (response.getMotionId() > motionId) {
-                                    motionId = response.getMotionId();
-                                    motionCompleted = response.isMotionCompleted();
-                                    updateState(cm.getUID(), OnOffType.ON);
-                                    if (motionCompleted) {
-                                        updateState(cm.getUID(), OnOffType.OFF);
+                        for (String channelId : events.keySet()) {
+                            SynoEvent event = events.get(channelId);
+                            if (isLinked(channelId)) {
+                                Channel channel = getThing().getChannel(channelId);
+                                if (response.hasEvent(event.getReason())) {
+                                    SynoEvent responseEvent = response.getEvent(event.getReason());
+                                    if (responseEvent.getEventId() > event.getEventId()) {
+                                        event.setEventId(responseEvent.getEventId());
+                                        event.setEventCompleted(responseEvent.isEventCompleted());
+                                        updateState(channel.getUID(), OnOffType.ON);
+                                        if (event.isEventCompleted()) {
+                                            updateState(channel.getUID(), OnOffType.OFF);
+                                        }
+                                    } else if (responseEvent.getEventId() == event.getEventId()
+                                            && responseEvent.isEventCompleted() && !event.isEventCompleted()) {
+                                        event.setEventCompleted(true);
+                                        updateState(channel.getUID(), OnOffType.OFF);
                                     }
-                                } else if (response.getMotionId() == motionId && response.isMotionCompleted()
-                                        && !motionCompleted) {
-                                    motionCompleted = true;
-                                    updateState(cm.getUID(), OnOffType.OFF);
+                                } else {
+                                    event.setEventCompleted(true);
+                                    updateState(channel.getUID(), OnOffType.OFF);
                                 }
-                            } else {
-                                motionCompleted = true;
-                                updateState(cm.getUID(), OnOffType.OFF);
                             }
                         }
 
@@ -245,6 +230,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
                         if (!thing.getStatus().equals(ThingStatus.ONLINE)) {
                             updateStatus(ThingStatus.ONLINE);
                         }
+
                     } else {
                         if (!thing.getStatus().equals(ThingStatus.OFFLINE)) {
                             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
@@ -286,6 +272,28 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
         super.handleConfigurationUpdate(configurationParameters);
+    }
+
+    @Override
+    public void channelLinked(ChannelUID channelUID) {
+        String id = channelUID.getId();
+        switch (id) {
+            case CHANNEL_MOTION_DETECTED:
+                events.put(id, new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
+                break;
+            case CHANNEL_ALARM_DETECTED:
+                events.put(id, new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
+                break;
+        }
+        handleCommand(channelUID, RefreshType.REFRESH);
+    }
+
+    @Override
+    public void channelUnlinked(ChannelUID channelUID) {
+        String id = channelUID.getId();
+        if (id.equals(CHANNEL_MOTION_DETECTED) || id.equals(CHANNEL_ALARM_DETECTED)) {
+            events.remove(id);
+        }
     }
 
 }

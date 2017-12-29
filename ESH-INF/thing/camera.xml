@@ -19,6 +19,21 @@
             </channel-group>
             <channel-group id="ptz" typeId="ptz" />
         </channel-groups>
+
+        <config-description>
+            <parameter name="refresh-rate-snapshot" unit="s" type="integer">
+                <label>Snapshot refresh rate:</label>
+                <description>Refresh rate for camera snapshot in seconds (0 to disable)</description>
+                <default>10</default>
+                <required>true</required>
+            </parameter>
+            <parameter name="refresh-rate-events" unit="s" type="integer">
+                <label>Event refresh rate:</label>
+                <description>Refresh rate for events in seconds (0 to disable)</description>
+                <default>3</default>
+                <required>true</required>
+            </parameter>
+        </config-description>
 	</thing-type>
 
     <channel-group-type id="common" >

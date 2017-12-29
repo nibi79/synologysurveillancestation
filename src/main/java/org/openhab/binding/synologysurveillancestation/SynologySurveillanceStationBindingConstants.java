@@ -53,7 +53,9 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String CHANNEL_ENABLE = "common#enable";
     public static final String CHANNEL_ZOOM = "ptz#zoom";
     public static final String CHANNEL_MOVE = "ptz#move";
-    public static final String CHANNEL_MOTION_DETECTED = "event-motion#detected";
-    public static final String CHANNEL_ALARM_DETECTED = "event-alarm#detected";
 
+    // List of all event types (as in thing.xml)
+    public static final String CHANNEL_EVENT_MOTION = "event#motion";
+    public static final String CHANNEL_EVENT_ALARM = "event#alarm";
+    public static final String CHANNEL_EVENT_MANUAL = "event#manual";
 }

@@ -28,16 +28,20 @@ public class SynoEvent {
 
     private boolean eventCompleted = true;
     private long eventId = -1;
-    private boolean active = true;
     private final int reason;
 
     /**
+     * Constructor for OH2 side
+     *
+     * @param reason
      */
     public SynoEvent(int reason) {
         this.reason = reason;
     }
 
     /**
+     * Constructor for API side
+     *
      * @param eventCompleted
      * @param eventId
      * @param reason
@@ -74,20 +78,6 @@ public class SynoEvent {
      */
     public void setEventId(long eventId) {
         this.eventId = eventId;
-    }
-
-    /**
-     * @return the active
-     */
-    public boolean isActive() {
-        return active;
-    }
-
-    /**
-     * @param active the active to set
-     */
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     /**

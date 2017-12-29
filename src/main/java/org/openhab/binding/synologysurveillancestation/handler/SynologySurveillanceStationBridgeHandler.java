@@ -70,9 +70,6 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
     @Override
     public void initialize() {
         try {
-
-            System.err.println("Init Bridge handler");
-
             if (logger.isDebugEnabled()) {
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
@@ -105,37 +102,14 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
 
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
-        System.err.println("HandleSuperConfig");
         super.handleConfigurationUpdate(configurationParameters);
-
         for (Thing thing : getThing().getThings()) {
             try {
                 SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing.getHandler();
                 handler.handleConfigurationUpdate();
             } catch (Exception e) {
-                logger.error("Exception while changing refresh rate");
+                logger.error("Error updating child configuration", e);
             }
         }
-
-        /*
-         *
-         * if (super.getThing().getStatus() == ThingStatus.ONLINE) {
-         * Object refreshObj = configurationParameters.get(SynologySurveillanceStationBindingConstants.POLL);
-         * if (refreshObj != null) {
-         * int refresh = ((BigDecimal) refreshObj).intValue();
-         * for (Thing thing : getThing().getThings()) {
-         * try {
-         * SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing
-         * .getHandler();
-         * if (handler.getRefresh() != refresh) {
-         * handler.setRefresh(refresh);
-         * }
-         * } catch (Exception e) {
-         * logger.error("Exception while changing refresh rate");
-         * }
-         * }
-         * }
-         * }
-         */
     }
 }

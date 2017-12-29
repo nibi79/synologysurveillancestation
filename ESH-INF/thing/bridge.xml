@@ -14,40 +14,40 @@
         </properties>
         
         <config-description>
-        <parameter name="protocol" type="text">
-            <label>Protocol:</label>
-            <description>Protocol (http, https) for accessing Surveillance Station</description>
-            <default>http</default>
-            <required>true</required>
-        </parameter>
-        <parameter name="host" type="text">
-            <label>IP-Address:</label>
-            <description>IP of Surveillance Station</description>
-            <required>true</required>
-        </parameter>
-        <parameter name="port" type="text">
-            <label>Port:</label>
-            <description>Port for accessing Surveillance Station</description>
-            <default>5000</default>
-            <required>true</required>
-        </parameter>
-        <parameter name="username" type="text">
-            <label>User name:</label>
-            <description>User name for accessing camera</description>
-            <required>true</required>
-        </parameter>
-        <parameter name="password" type="text">
-            <label>Password:</label>
-            <context>password</context>
-            <description>Password for accessing camera</description>
-            <required>true</required>
-        </parameter>
-        <parameter name="poll" unit="s" type="integer">
-            <label>Poll time:</label>
-            <description>Interval of image being refreshed in seconds</description>
-            <default>5</default>
-            <required>true</required>
-        </parameter>
+	        <parameter name="protocol" type="text">
+	            <label>Protocol:</label>
+	            <description>Protocol (http, https) for accessing Surveillance Station</description>
+	            <default>http</default>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="host" type="text">
+	            <label>IP-Address:</label>
+	            <description>IP of Surveillance Station</description>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="port" type="text">
+	            <label>Port:</label>
+	            <description>Port for accessing Surveillance Station</description>
+	            <default>5000</default>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="username" type="text">
+	            <label>User name:</label>
+	            <description>User name for accessing camera</description>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="password" type="text">
+	            <label>Password:</label>
+	            <context>password</context>
+	            <description>Password for accessing camera</description>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="poll" unit="s" type="integer">
+	            <label>Poll time:</label>
+	            <description>Interval of image being refreshed in seconds</description>
+	            <default>5</default>
+	            <required>true</required>
+	        </parameter>
         </config-description>
     </bridge-type>
 

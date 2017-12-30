@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -23,30 +23,27 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
-import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link SynologySurveillanceStationHandlerFactory} is responsible for creating things and thing
+ * The {@link SynoHandlerFactory} is responsible for creating things and thing
  * handlers.
  *
  * @author Nils - Initial contribution
  */
-@Component(service = ThingHandlerFactory.class, immediate = true, configurationPid = "binding.synologysurveillancestation")
 @NonNullByDefault
-public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerFactory {
+public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
-    private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationHandlerFactory.class);
+    private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
 
     @Override
     protected void activate(ComponentContext componentContext) {
@@ -68,8 +65,7 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
-            SynologySurveillanceStationBridgeHandler bridgeHandler = new SynologySurveillanceStationBridgeHandler(
-                    (Bridge) thing);
+            SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing);
             CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
             this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(
@@ -78,7 +74,7 @@ public class SynologySurveillanceStationHandlerFactory extends BaseThingHandlerF
             return bridgeHandler;
         } else if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
             boolean isPtz = thing.getProperties().getOrDefault(SynoApiResponse.PROP_PTZ, "false").equals("true");
-            return new SynologySurveillanceStationHandler(thing, isPtz);
+            return new SynoStationHandler(thing, isPtz);
         }
         return null;
     }

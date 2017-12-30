@@ -17,13 +17,13 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 
 /**
- * The {@link SynologySurveillanceStationBindingConstants} class defines common constants, which are
+ * The {@link SynoBindingConstants} class defines common constants, which are
  * used across the whole binding.
  *
  * @author Nils
  */
 @NonNullByDefault
-public class SynologySurveillanceStationBindingConstants {
+public class SynoBindingConstants {
 
     public static final String BINDING_ID = "synologysurveillancestation";
 
@@ -49,7 +49,7 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";
 
     // List of all Channel ids
-    public static final String CHANNEL_IMAGE = "common#image";
+    public static final String CHANNEL_SNAPSHOT = "common#snapshot";
     public static final String CHANNEL_RECORD = "common#record";
     public static final String CHANNEL_ENABLE = "common#enable";
     public static final String CHANNEL_ZOOM = "ptz#zoom";

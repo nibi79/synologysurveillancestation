@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.thread;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.CHANNEL_IMAGE;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.CHANNEL_SNAPSHOT;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,7 +17,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.RawType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +30,14 @@ import org.slf4j.LoggerFactory;
 public class SynoApiThreadSnapshot extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
 
-    public SynoApiThreadSnapshot(SynologySurveillanceStationHandler handler, int refreshRate) {
+    public SynoApiThreadSnapshot(SynoStationHandler handler, int refreshRate) {
         super(handler, refreshRate);
     }
 
     @Override
     public boolean refresh() {
-        if (getHandler().isLinked(CHANNEL_IMAGE)) {
-            Channel channel = getHandler().getThing().getChannel(CHANNEL_IMAGE);
+        if (getHandler().isLinked(CHANNEL_SNAPSHOT)) {
+            Channel channel = getHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
             Thing thing = getHandler().getThing();
 
             logger.trace("Will update: {}::{}::{}", thing.getUID().getId(), channel.getChannelTypeUID().getId(),

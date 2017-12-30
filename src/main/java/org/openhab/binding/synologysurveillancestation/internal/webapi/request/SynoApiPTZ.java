@@ -11,7 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
@@ -48,7 +48,7 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
     /**
      * @param config
      */
-    public SynoApiPTZ(Config config, String sessionID) {
+    public SynoApiPTZ(SynoConfig config, String sessionID) {
         super(apiConfig, config, sessionID);
     }
 

@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.THING_TYPE_CAMERA;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.THING_TYPE_CAMERA;
 
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +19,8 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
-import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
+import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
+import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
@@ -40,7 +40,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(CameraDiscoveryService.class);
 
-    private SynologySurveillanceStationBridgeHandler bridgeHandler = null;
+    private SynoBridgeHandler bridgeHandler = null;
 
     /**
      * Maximum time to search for devices in seconds.
@@ -48,10 +48,10 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
     private static final int SEARCH_TIME = 20;
 
     public CameraDiscoveryService() {
-        super(SynologySurveillanceStationBindingConstants.SUPPORTED_CAMERA_TYPES, SEARCH_TIME);
+        super(SynoBindingConstants.SUPPORTED_CAMERA_TYPES, SEARCH_TIME);
     }
 
-    public CameraDiscoveryService(SynologySurveillanceStationBridgeHandler bridgeHandler)
+    public CameraDiscoveryService(SynoBridgeHandler bridgeHandler)
             throws IllegalArgumentException {
         super(SEARCH_TIME);
         this.bridgeHandler = bridgeHandler;
@@ -66,7 +66,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        return SynologySurveillanceStationBindingConstants.SUPPORTED_THING_TYPES;
+        return SynoBindingConstants.SUPPORTED_THING_TYPES;
     }
 
     @Override

@@ -19,7 +19,7 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.config.discovery.mdns.MDNSDiscoveryParticipant;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
-import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
+import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypeUIDs() {
-        return SynologySurveillanceStationBindingConstants.SUPPORTED_BRIDGE_TYPES;
+        return SynoBindingConstants.SUPPORTED_BRIDGE_TYPES;
     }
 
     @Override
@@ -57,9 +57,9 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
                 if (name != null && ip != null && model != null && serial != null && port != null) {
                     String label = String.format("%s (%s)", name, model);
                     Map<String, Object> properties = new HashMap<>();
-                    properties.put(SynologySurveillanceStationBindingConstants.PROTOCOL, "http");
-                    properties.put(SynologySurveillanceStationBindingConstants.PORT, port);
-                    properties.put(SynologySurveillanceStationBindingConstants.HOST, ip);
+                    properties.put(SynoBindingConstants.PROTOCOL, "http");
+                    properties.put(SynoBindingConstants.PORT, port);
+                    properties.put(SynoBindingConstants.HOST, ip);
 
                     DiscoveryResult result = DiscoveryResultBuilder.create(uid).withProperties(properties)
                             .withRepresentationProperty(serial.toLowerCase()).withLabel(label).build();
@@ -76,7 +76,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
         String serial = service.getPropertyString("serial");
         if (vendor != null && serial != null) {
             if (vendor.startsWith("Synology")) {
-                return new ThingUID(SynologySurveillanceStationBindingConstants.THING_TYPE_STATION,
+                return new ThingUID(SynoBindingConstants.THING_TYPE_STATION,
                         serial.toLowerCase());
             }
 

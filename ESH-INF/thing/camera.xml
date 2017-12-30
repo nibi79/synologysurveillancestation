@@ -13,11 +13,11 @@
 
         <channel-groups>
             <channel-group id="common" typeId="common" />
+            <channel-group id="ptz" typeId="ptz" />
             <channel-group id="event" typeId="event">
                 <label>Camera events</label>
                 <description>Events of your camera</description>            
             </channel-group>
-            <channel-group id="ptz" typeId="ptz" />
         </channel-groups>
 
         <config-description>
@@ -36,17 +36,26 @@
         </config-description>
 	</thing-type>
 
-    <channel-group-type id="common" >
+    <channel-group-type id="common">
         <label>Common channels</label>
         <description>Common channels of your camera</description>
         <channels>
-            <channel id="image" typeId="image-channel" />
+            <channel id="snapshot" typeId="snapshot-channel" />
             <channel id="record" typeId="recording-channel" />
             <channel id="enable" typeId="enable-channel" />
         </channels>
     </channel-group-type>
+    
+    <channel-group-type id="ptz">
+        <label>PTZ channels</label>
+        <description>Pan/Tilt/Zoom channels of your camera</description>
+        <channels>
+            <channel id="zoom" typeId="zoom-channel" />
+            <channel id="move" typeId="move-channel" />
+        </channels>
+    </channel-group-type>
 
-    <channel-group-type id="event" >
+    <channel-group-type id="event">
         <label>Event</label>
         <description>Event of your camera</description>
         <channels>
@@ -64,30 +73,21 @@
             </channel>
         </channels>
     </channel-group-type>
-    
-    <channel-group-type id="ptz">
-        <label>PTZ channels</label>
-        <description>Pan/Tilt/Zoom channels of your camera</description>
-        <channels>
-            <channel id="zoom" typeId="zoom-channel" />
-            <channel id="move" typeId="move-channel" />
-        </channels>
-    </channel-group-type>
 
-	<channel-type id="image-channel">
+	<channel-type id="snapshot-channel">
 		<item-type>Image</item-type>
-		<label>Image</label>
-		<description>Image channel for Camera Binding</description>
+		<label>Snapshot</label>
+		<description>Current snapshot of your camera</description>
 	</channel-type>
 	<channel-type id="enable-channel">
 		<item-type>Switch</item-type>
-		<label>Enable</label>
-		<description>Enable channel for Camera Binding</description>
+		<label>Camera enabled</label>
+		<description>Enable or disable your camera</description>
 	</channel-type>
 	<channel-type id="recording-channel">
 		<item-type>Switch</item-type>
-		<label>Record</label>
-		<description>Recording channel for Camera Binding</description>
+		<label>Manual record</label>
+		<description>Start manual recording</description>
 	</channel-type>
 	<channel-type id="zoom-channel">
 		<item-type>String</item-type>
@@ -114,6 +114,7 @@
 			</options>
 		</state>
 	</channel-type>
+	
     <channel-type id="event-channel">
         <item-type>Switch</item-type>
         <label>Event detected</label>

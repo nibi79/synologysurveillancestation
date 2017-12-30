@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
@@ -34,7 +34,7 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
     /**
      * @param config
      */
-    public SynoApiEvent(Config config, String sessionID) {
+    public SynoApiEvent(SynoConfig config, String sessionID) {
         super(apiConfig, config, sessionID);
     }
 

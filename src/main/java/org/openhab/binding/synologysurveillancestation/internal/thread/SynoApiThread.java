@@ -17,8 +17,8 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class SynoApiThread {
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
     private int refreshRate = 0;
-    private final SynologySurveillanceStationHandler handler;
+    private final SynoStationHandler handler;
 
     /**
      * Defines a runnable for a refresh job
@@ -63,7 +63,7 @@ public class SynoApiThread {
      * @param refreshRate refresh rate of this thread in milliseconds
      * @param handler camera handler
      */
-    public SynoApiThread(SynologySurveillanceStationHandler handler, int refreshRate) {
+    public SynoApiThread(SynoStationHandler handler, int refreshRate) {
         this.handler = handler;
         this.refreshRate = refreshRate;
     }
@@ -133,7 +133,7 @@ public class SynoApiThread {
     /**
      * @return the handler
      */
-    public SynologySurveillanceStationHandler getHandler() {
+    public SynoStationHandler getHandler() {
         return handler;
     }
 
@@ -143,7 +143,7 @@ public class SynoApiThread {
     public @Nullable SynoWebApiHandler getApiHandler() {
         Bridge bridge = handler.getBridge();
         if (bridge != null) {
-            SynologySurveillanceStationBridgeHandler bridgeHandler = ((SynologySurveillanceStationBridgeHandler) bridge
+            SynoBridgeHandler bridgeHandler = ((SynoBridgeHandler) bridge
                     .getHandler());
             if (bridgeHandler != null) {
                 return bridgeHandler.getSynoWebApiHandler();

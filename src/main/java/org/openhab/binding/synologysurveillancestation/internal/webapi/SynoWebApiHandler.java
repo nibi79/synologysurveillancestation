@@ -8,14 +8,14 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
@@ -36,7 +36,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  */
 public class SynoWebApiHandler implements SynoWebApi {
 
-    private Config config = null;
+    private SynoConfig config = null;
     private String sessionID = null;
 
     // APIs
@@ -51,14 +51,14 @@ public class SynoWebApiHandler implements SynoWebApi {
     /**
      * @param config
      */
-    public SynoWebApiHandler(Config config) {
+    public SynoWebApiHandler(SynoConfig config) {
         this.config = config;
     }
 
     /**
      * @return
      */
-    public Config getConfig() {
+    public SynoConfig getConfig() {
         return config;
     }
 

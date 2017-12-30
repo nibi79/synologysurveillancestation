@@ -17,7 +17,7 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -27,13 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link SynologySurveillanceStationBridgeHandler} is a Bridge handler for camera Things
+ * The {@link SynoBridgeHandler} is a Bridge handler for camera Things
  *
  * @author Nils
  */
-public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler {
+public class SynoBridgeHandler extends BaseBridgeHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationBridgeHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(SynoBridgeHandler.class);
     private CameraDiscoveryService discoveryService;
     /**
      * Defines a runnable for a discovery
@@ -49,7 +49,7 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
 
     private SynoWebApiHandler apiHandler = null;
 
-    public SynologySurveillanceStationBridgeHandler(Bridge bridge) {
+    public SynoBridgeHandler(Bridge bridge) {
         super(bridge);
     }
 
@@ -73,7 +73,7 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
 
-            Config config = getConfigAs(Config.class);
+            SynoConfig config = getConfigAs(SynoConfig.class);
             apiHandler = new SynoWebApiHandler(config);
             apiHandler.connect();
 

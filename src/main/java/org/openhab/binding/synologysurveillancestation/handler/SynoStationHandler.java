@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.handler;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,22 +36,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link SynologySurveillanceStationHandler} is responsible for handling commands, which are
+ * The {@link SynoStationHandler} is responsible for handling commands, which are
  * sent to one of the channels.
  *
  * @author Nils
  */
 @NonNullByDefault
-public class SynologySurveillanceStationHandler extends BaseThingHandler {
+public class SynoStationHandler extends BaseThingHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(SynologySurveillanceStationHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(SynoStationHandler.class);
     private String cameraId = "";
     private boolean isPtz = false;
 
     private final SynoApiThreadSnapshot threadSnapshot;
     private final SynoApiThreadEvent threadEvent;
 
-    public SynologySurveillanceStationHandler(Thing thing, boolean isPtz) {
+    public SynoStationHandler(Thing thing, boolean isPtz) {
         super(thing);
         this.isPtz = isPtz;
         int refreshRateSnapshot = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
@@ -69,7 +69,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
     public void handleCommand(ChannelUID channelUID, Command command) {
         try {
             switch (channelUID.getId()) {
-                case CHANNEL_IMAGE:
+                case CHANNEL_SNAPSHOT:
                     if (command.toString().equals("REFRESH")) {
                         threadSnapshot.refresh();
                     }
@@ -85,7 +85,7 @@ public class SynologySurveillanceStationHandler extends BaseThingHandler {
                 case CHANNEL_ENABLE:
                 case CHANNEL_ZOOM:
                 case CHANNEL_MOVE:
-                    SynologySurveillanceStationBridgeHandler bridge = ((SynologySurveillanceStationBridgeHandler) getBridge()
+                    SynoBridgeHandler bridge = ((SynoBridgeHandler) getBridge()
                             .getHandler());
                     bridge.getSynoWebApiHandler().execute(cameraId, channelUID.getId(), command.toString());
                     break;

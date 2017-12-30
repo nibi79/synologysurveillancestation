@@ -25,7 +25,7 @@ import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
     final Class<T> typeParameterClass;
 
-    private Config config = null;
+    private SynoConfig config = null;
     private String sessionId = null;
 
     /**
@@ -57,7 +57,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @param sessionId
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(SynoApiConfig apiConfig, Config config, String sessionId) {
+    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId) {
 
         super();
 
@@ -92,7 +92,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
     /**
      * @return
      */
-    protected Config getConfig() {
+    protected SynoConfig getConfig() {
         return config;
     }
 

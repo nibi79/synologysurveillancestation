@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.DEVICE_ID;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.DEVICE_ID;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

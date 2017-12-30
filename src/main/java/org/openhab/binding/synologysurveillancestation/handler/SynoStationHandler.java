@@ -28,12 +28,12 @@ import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
+import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadCamera;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadEvent;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadSnapshot;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,6 +52,7 @@ public class SynoStationHandler extends BaseThingHandler {
 
     private final SynoApiThreadSnapshot threadSnapshot;
     private final SynoApiThreadEvent threadEvent;
+    private final SynoApiThreadCamera threadCamera;
     private @Nullable SynoWebApiHandler apiHandler;
 
     public SynoStationHandler(Thing thing, boolean isPtz) {
@@ -61,6 +62,7 @@ public class SynoStationHandler extends BaseThingHandler {
         threadSnapshot = new SynoApiThreadSnapshot(this, refreshRateSnapshot);
         int refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
         threadEvent = new SynoApiThreadEvent(this, refreshRateEvents);
+        threadCamera = new SynoApiThreadCamera(this, refreshRateEvents);
     }
 
     @Override
@@ -85,13 +87,6 @@ public class SynoStationHandler extends BaseThingHandler {
                     }
                     break;
                 case CHANNEL_ENABLE:
-                    if (command.toString().equals("REFRESH")) {
-                        CameraResponse response = apiHandler.getInfo(cameraId);
-                        updateState(channelUID, response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
-                    } else {
-                        apiHandler.execute(cameraId, channelUID.getId(), command.toString());
-                    }
-                    break;
                 case CHANNEL_RECORD:
                 case CHANNEL_ZOOM:
                 case CHANNEL_MOVE:
@@ -130,6 +125,7 @@ public class SynoStationHandler extends BaseThingHandler {
                 updateStatus(ThingStatus.ONLINE);
                 threadSnapshot.start();
                 threadEvent.start();
+                threadCamera.start();
 
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
@@ -156,6 +152,7 @@ public class SynoStationHandler extends BaseThingHandler {
         threadSnapshot.setRefreshRate(refreshRateSnapshot);
         int refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
         threadEvent.setRefreshRate(refreshRateEvents);
+        threadCamera.setRefreshRate(refreshRateEvents);
     }
 
     @Override

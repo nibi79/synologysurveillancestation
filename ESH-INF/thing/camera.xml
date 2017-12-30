@@ -86,13 +86,13 @@
 	</channel-type>
 	<channel-type id="recording-channel">
 		<item-type>Switch</item-type>
-		<label>Manual record</label>
+		<label>Camera recording</label>
 		<description>Start manual recording</description>
 	</channel-type>
 	<channel-type id="zoom-channel">
 		<item-type>String</item-type>
 		<label>Zoom</label>
-		<description>Zooming channel for Camera Binding</description>
+		<description>Zooming channel for your camera</description>
 		<state>
 			<options>
 				<option value="IN">in</option>
@@ -103,7 +103,7 @@
 	<channel-type id="move-channel">
 		<item-type>String</item-type>
 		<label>Move</label>
-		<description>Moving channel for Camera Binding</description>
+		<description>Moving channel for your camera</description>
 		<state>
 			<options>
 				<option value="UP">up</option>

@@ -74,6 +74,23 @@ public class CameraResponse extends SimpleResponse {
     }
 
     /**
+     * If the camera is recording
+     *
+     * @param cameraId
+     */
+    public boolean isRecording(String cameraId) {
+        for (JsonElement jcamera : getCameras()) {
+            if (jcamera.isJsonObject()) {
+                JsonObject camera = jcamera.getAsJsonObject();
+                if (camera.get("id").getAsString().equals(cameraId)) {
+                    return (camera.get("recStatus").getAsInt() > 0);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Creates all relevant properties from response as key/value map.
      *
      * @param cameraId

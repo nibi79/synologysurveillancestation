@@ -28,6 +28,7 @@ Import-Package:
  org.jupnp.model.meta,
  org.openhab.binding.synologysurveillancestation,
  org.openhab.binding.synologysurveillancestation.handler,
+ org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.component,
  org.osgi.service.component.annotations;resolution:=optional,

@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -50,7 +49,7 @@ public interface SynoWebApi {
      * @throws IOException
      * @throws UnsupportedOperationException
      */
-    public ByteArrayOutputStream getSnapshot(String cameraId)
+    public byte[] getSnapshot(String cameraId)
             throws WebApiException, UnsupportedOperationException, IOException, URISyntaxException;
 
     /**

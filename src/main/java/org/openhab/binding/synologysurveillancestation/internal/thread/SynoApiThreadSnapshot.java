@@ -17,6 +17,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.RawType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.slf4j.Logger;
@@ -44,8 +45,12 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
                     thing.getLabel());
 
             try {
-                byte[] snapshot = getApiHandler().getSnapshot(getHandler().getCameraId()).toByteArray();
-                getHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
+                byte[] snapshot = getApiHandler().getSnapshot(getHandler().getCameraId());
+                if (snapshot.length < 1000) {
+                    getHandler().updateState(channel.getUID(), UnDefType.UNDEF);
+                } else {
+                    getHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
+                }
                 return true;
             } catch (URISyntaxException | IOException | WebApiException | NullPointerException e) {
                 logger.error("could not get snapshot: {}", thing, e);

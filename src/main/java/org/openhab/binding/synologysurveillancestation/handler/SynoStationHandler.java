@@ -31,7 +31,9 @@ import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadEvent;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadSnapshot;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +52,7 @@ public class SynoStationHandler extends BaseThingHandler {
 
     private final SynoApiThreadSnapshot threadSnapshot;
     private final SynoApiThreadEvent threadEvent;
+    private @Nullable SynoWebApiHandler apiHandler;
 
     public SynoStationHandler(Thing thing, boolean isPtz) {
         super(thing);
@@ -81,13 +84,18 @@ public class SynoStationHandler extends BaseThingHandler {
                         updateState(channelUID, OnOffType.OFF);
                     }
                     break;
-                case CHANNEL_RECORD:
                 case CHANNEL_ENABLE:
+                    if (command.toString().equals("REFRESH")) {
+                        CameraResponse response = apiHandler.getInfo(cameraId);
+                        updateState(channelUID, response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
+                    } else {
+                        apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                    }
+                    break;
+                case CHANNEL_RECORD:
                 case CHANNEL_ZOOM:
                 case CHANNEL_MOVE:
-                    SynoBridgeHandler bridge = ((SynoBridgeHandler) getBridge()
-                            .getHandler());
-                    bridge.getSynoWebApiHandler().execute(cameraId, channelUID.getId(), command.toString());
+                    apiHandler.execute(cameraId, channelUID.getId(), command.toString());
                     break;
             }
         } catch (WebApiException e) {
@@ -117,6 +125,8 @@ public class SynoStationHandler extends BaseThingHandler {
             }
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
+                apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
+
                 updateStatus(ThingStatus.ONLINE);
                 threadSnapshot.start();
                 threadEvent.start();

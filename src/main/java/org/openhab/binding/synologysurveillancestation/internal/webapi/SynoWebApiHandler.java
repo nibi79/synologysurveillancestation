@@ -245,7 +245,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      * String)
      */
     @Override
-    public ByteArrayOutputStream getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
+    public byte[] getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
 
         return apiCamera.getSnapshot(cameraId);
     }

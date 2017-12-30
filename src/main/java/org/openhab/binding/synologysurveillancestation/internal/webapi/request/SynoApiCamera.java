@@ -115,7 +115,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws URISyntaxException
      *
      */
-    public ByteArrayOutputStream getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
+    public byte[] getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -136,7 +136,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                 InputStream is = new ByteArrayInputStream(response.getContent());
                 IOUtils.copy(is, baos);
             }
-            return baos;
+            return baos.toByteArray();
         } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {
             throw new WebApiException(e);

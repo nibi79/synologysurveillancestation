@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SynologySurveillanceStation Binding
 Bundle-SymbolicName: org.openhab.binding.synologysurveillancestation;singleton:=true
 Bundle-Vendor: openHAB
-Bundle-Version: 2.2.0.a13
+Bundle-Version: 2.2.0.a15
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Import-Package: 
@@ -28,7 +28,6 @@ Import-Package:
  org.jupnp.model.meta,
  org.openhab.binding.synologysurveillancestation,
  org.openhab.binding.synologysurveillancestation.handler,
- org.openhab.core.types,
  org.osgi.framework,
  org.osgi.service.component,
  org.osgi.service.component.annotations;resolution:=optional,

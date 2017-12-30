@@ -51,10 +51,8 @@ public class SynoApiThreadEvent extends SynoApiThread {
                         SynoEvent event = events.get(eventType);
                         Channel channel = getHandler().getThing().getChannel(eventType);
                         if (response.hasEvent(event.getReason())) {
-                            System.err.println("run5");
                             SynoEvent responseEvent = response.getEvent(event.getReason());
                             if (responseEvent.getEventId() != event.getEventId()) {
-                                System.err.println("run6");
                                 event.setEventId(responseEvent.getEventId());
                                 event.setEventCompleted(responseEvent.isEventCompleted());
                                 getHandler().updateState(channel.getUID(), OnOffType.ON);

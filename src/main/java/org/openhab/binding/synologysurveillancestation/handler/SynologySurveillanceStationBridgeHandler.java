@@ -13,7 +13,6 @@ import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
@@ -103,13 +102,5 @@ public class SynologySurveillanceStationBridgeHandler extends BaseBridgeHandler 
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
         super.handleConfigurationUpdate(configurationParameters);
-        for (Thing thing : getThing().getThings()) {
-            try {
-                SynologySurveillanceStationHandler handler = (SynologySurveillanceStationHandler) thing.getHandler();
-                handler.handleConfigurationUpdate();
-            } catch (Exception e) {
-                logger.error("Error updating child configuration", e);
-            }
-        }
     }
 }

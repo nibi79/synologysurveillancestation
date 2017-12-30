@@ -45,7 +45,8 @@ public class SynologySurveillanceStationBindingConstants {
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
     public static final String SESSION_ID = "sessionID";
-    public static final String POLL = "poll";
+    public static final String REFRESH_RATE_SNAPSHOT = "refresh-rate-snapshot";
+    public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";
 
     // List of all Channel ids
     public static final String CHANNEL_IMAGE = "common#image";

@@ -23,7 +23,6 @@ public class Config {
     private String port = null;
     private String username = null;
     private String password = null;
-    private int poll = 10000;
 
     /**
      * Creates a new {@link Config} and set the given protocoll, hostAddress, username, password.
@@ -146,28 +145,10 @@ public class Config {
         this.password = password;
     }
 
-    /**
-     * Returns the poll.
-     *
-     * @return poll
-     */
-    public int getPoll() {
-        return poll;
-    }
-
-    /**
-     * Sets the poll.
-     *
-     * @param poll
-     */
-    public void setPoll(int poll) {
-        this.poll = poll;
-    }
-
     @Override
     public String toString() {
         return "Config [protocoll=" + protocol + ", host=" + host + ", port=" + port + ", username=" + username
-                + ", password=" + "*****" + ", poll=" + poll + "]";
+                + ", password=" + "********]";
     }
 
 }

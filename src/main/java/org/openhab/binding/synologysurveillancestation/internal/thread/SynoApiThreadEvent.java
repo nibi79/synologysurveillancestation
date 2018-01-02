@@ -35,53 +35,55 @@ public class SynoApiThreadEvent extends SynoApiThread {
     private Map<String, SynoEvent> events = new HashMap<>();
 
     public SynoApiThreadEvent(SynoStationHandler handler, int refreshRate) {
-        super(handler, refreshRate);
+        super("Event", handler, refreshRate);
         lastEventTime = ZonedDateTime.now().minusSeconds(refreshRate * 2).toEpochSecond();
     }
 
     @Override
+    public boolean isNeeded() {
+        return (!events.isEmpty());
+    }
+
+    @Override
     public boolean refresh() {
-        if (!events.isEmpty()) {
-            Thing thing = getHandler().getThing();
-            try {
-                EventResponse response = getApiHandler().getEventResponse(getHandler().getCameraId(), lastEventTime,
-                        events);
-                if (response.isSuccess()) {
-                    for (String eventType : events.keySet()) {
-                        SynoEvent event = events.get(eventType);
-                        Channel channel = getHandler().getThing().getChannel(eventType);
-                        if (response.hasEvent(event.getReason())) {
-                            SynoEvent responseEvent = response.getEvent(event.getReason());
-                            if (responseEvent.getEventId() != event.getEventId()) {
-                                event.setEventId(responseEvent.getEventId());
-                                event.setEventCompleted(responseEvent.isEventCompleted());
-                                getHandler().updateState(channel.getUID(), OnOffType.ON);
-                                if (responseEvent.isEventCompleted()) {
-                                    getHandler().updateState(channel.getUID(), OnOffType.OFF);
-                                }
-                            } else if (responseEvent.getEventId() == event.getEventId()
-                                    && responseEvent.isEventCompleted() && !event.isEventCompleted()) {
-                                event.setEventCompleted(true);
+        Thing thing = getHandler().getThing();
+        try {
+            EventResponse response = getApiHandler().getEventResponse(getHandler().getCameraId(), lastEventTime,
+                    events);
+            if (response.isSuccess()) {
+                for (String eventType : events.keySet()) {
+                    SynoEvent event = events.get(eventType);
+                    Channel channel = getHandler().getThing().getChannel(eventType);
+                    if (response.hasEvent(event.getReason())) {
+                        SynoEvent responseEvent = response.getEvent(event.getReason());
+                        if (responseEvent.getEventId() != event.getEventId()) {
+                            event.setEventId(responseEvent.getEventId());
+                            event.setEventCompleted(responseEvent.isEventCompleted());
+                            getHandler().updateState(channel.getUID(), OnOffType.ON);
+                            if (responseEvent.isEventCompleted()) {
                                 getHandler().updateState(channel.getUID(), OnOffType.OFF);
                             }
-                        } else {
+                        } else if (responseEvent.getEventId() == event.getEventId() && responseEvent.isEventCompleted()
+                                && !event.isEventCompleted()) {
                             event.setEventCompleted(true);
                             getHandler().updateState(channel.getUID(), OnOffType.OFF);
                         }
+                    } else {
+                        event.setEventCompleted(true);
+                        getHandler().updateState(channel.getUID(), OnOffType.OFF);
                     }
-
-                    lastEventTime = response.getTimestamp();
-                    return true;
-                } else {
-                    return false;
                 }
 
-            } catch (WebApiException | NullPointerException e) {
-                logger.error("could not get event {}: {}", thing, e);
+                lastEventTime = response.getTimestamp();
+                return true;
+            } else {
                 return false;
             }
+
+        } catch (WebApiException | NullPointerException e) {
+            logger.error("could not get event {}: {}", thing, e);
+            return false;
         }
-        return true;
     }
 
     /**

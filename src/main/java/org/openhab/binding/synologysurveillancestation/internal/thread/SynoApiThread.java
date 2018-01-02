@@ -37,6 +37,7 @@ public class SynoApiThread {
     private @Nullable ScheduledFuture<?> future;
     private int refreshRate = 0;
     private final SynoStationHandler handler;
+    private final String name;
 
     /**
      * Defines a runnable for a refresh job
@@ -46,12 +47,16 @@ public class SynoApiThread {
         public void run() {
             try {
                 if (refreshInProgress.compareAndSet(false, true)) {
-                    boolean success = refresh();
-                    updateStatus(success);
+                    if (isNeeded()) {
+                        boolean success = refresh();
+                        updateStatus(success);
+                    }
                     refreshInProgress.set(false);
                 }
+            } catch (IllegalStateException e) {
+                logger.debug("Thread {}: Refreshing Thing failed, handler might be OFFLINE", name);
             } catch (Exception e) {
-                logger.error("Error on refresh: {}", e);
+                logger.error("Thread {}: Unknown error", name, e);
             }
         }
     };
@@ -63,7 +68,8 @@ public class SynoApiThread {
      * @param refreshRate refresh rate of this thread in milliseconds
      * @param handler camera handler
      */
-    public SynoApiThread(SynoStationHandler handler, int refreshRate) {
+    public SynoApiThread(String name, SynoStationHandler handler, int refreshRate) {
+        this.name = name;
         this.handler = handler;
         this.refreshRate = refreshRate;
     }
@@ -107,7 +113,7 @@ public class SynoApiThread {
         if (success && !handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
             handler.updateStatus(ThingStatus.ONLINE);
         } else if (!success && handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
-            handler.updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Communication error");
+            handler.updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
         }
 
     }
@@ -143,13 +149,20 @@ public class SynoApiThread {
     public @Nullable SynoWebApiHandler getApiHandler() {
         Bridge bridge = handler.getBridge();
         if (bridge != null) {
-            SynoBridgeHandler bridgeHandler = ((SynoBridgeHandler) bridge
-                    .getHandler());
+            SynoBridgeHandler bridgeHandler = ((SynoBridgeHandler) bridge.getHandler());
             if (bridgeHandler != null) {
                 return bridgeHandler.getSynoWebApiHandler();
             }
         }
         return null;
+    }
+
+    /**
+     *
+     * @return if thread has to be run
+     */
+    public boolean isNeeded() {
+        return false;
     }
 
 }

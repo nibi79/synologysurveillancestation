@@ -23,7 +23,7 @@ public abstract class SynoApiResponse {
     public static final String PROP_HOST = "host";
     public static final String PROP_RESOLUTION = "resolution";
     public static final String PROP_TYPE = "type";
-    public static final String PROP_CAMERANUMBER = "cameraNumber";
+    // public static final String PROP_CAMERANUMBER = "cameraNumber";
 
     // PTZ capabilities
     public static final String PROP_PTZ = "ptz";

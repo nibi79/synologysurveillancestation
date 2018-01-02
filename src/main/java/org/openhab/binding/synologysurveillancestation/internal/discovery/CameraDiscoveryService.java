@@ -51,8 +51,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         super(SynoBindingConstants.SUPPORTED_CAMERA_TYPES, SEARCH_TIME);
     }
 
-    public CameraDiscoveryService(SynoBridgeHandler bridgeHandler)
-            throws IllegalArgumentException {
+    public CameraDiscoveryService(SynoBridgeHandler bridgeHandler) throws IllegalArgumentException {
         super(SEARCH_TIME);
         this.bridgeHandler = bridgeHandler;
     }
@@ -82,6 +81,9 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         try {
 
             SynoWebApiHandler apiHandler = bridgeHandler.getSynoWebApiHandler();
+            if (apiHandler == null) {
+                return;
+            }
 
             CameraResponse response = apiHandler.list();
 

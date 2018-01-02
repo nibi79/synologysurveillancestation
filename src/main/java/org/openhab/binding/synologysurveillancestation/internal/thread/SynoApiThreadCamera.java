@@ -28,36 +28,38 @@ public class SynoApiThreadCamera extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadCamera.class);
 
     public SynoApiThreadCamera(SynoStationHandler handler, int refreshRate) {
-        super(handler, refreshRate);
+        super("CameraInfo", handler, refreshRate);
+    }
+
+    @Override
+    public boolean isNeeded() {
+        return (getHandler().isLinked(CHANNEL_ENABLE) || getHandler().isLinked(CHANNEL_RECORD));
     }
 
     @Override
     public boolean refresh() {
-        if (getHandler().isLinked(CHANNEL_ENABLE) || getHandler().isLinked(CHANNEL_RECORD)) {
-            String cameraId = getHandler().getCameraId();
-            try {
-                CameraResponse response = getApiHandler().getInfo(cameraId);
-                if (response.isSuccess()) {
-                    if (getHandler().isLinked(CHANNEL_ENABLE)) {
-                        Channel channel = getHandler().getThing().getChannel(CHANNEL_ENABLE);
-                        getHandler().updateState(channel.getUID(),
-                                response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
-                    }
-                    if (getHandler().isLinked(CHANNEL_RECORD)) {
-                        Channel channel = getHandler().getThing().getChannel(CHANNEL_RECORD);
-                        getHandler().updateState(channel.getUID(),
-                                response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
-                    }
-                    return true;
-                } else {
-                    return false;
+        String cameraId = getHandler().getCameraId();
+        try {
+            CameraResponse response = getApiHandler().getInfo(cameraId);
+            if (response.isSuccess()) {
+                if (getHandler().isLinked(CHANNEL_ENABLE)) {
+                    Channel channel = getHandler().getThing().getChannel(CHANNEL_ENABLE);
+                    getHandler().updateState(channel.getUID(),
+                            response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
                 }
-            } catch (WebApiException | NullPointerException e) {
-                logger.error("Could not get camera info: {}", e);
+                if (getHandler().isLinked(CHANNEL_RECORD)) {
+                    Channel channel = getHandler().getThing().getChannel(CHANNEL_RECORD);
+                    getHandler().updateState(channel.getUID(),
+                            response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
+                }
+                return true;
+            } else {
                 return false;
             }
+        } catch (WebApiException | NullPointerException e) {
+            logger.error("Could not get camera info: {}", e);
+            return false;
         }
-        return true;
     }
 
 }

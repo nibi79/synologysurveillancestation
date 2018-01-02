@@ -32,32 +32,34 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
 
     public SynoApiThreadSnapshot(SynoStationHandler handler, int refreshRate) {
-        super(handler, refreshRate);
+        super("Snapshot", handler, refreshRate);
+    }
+
+    @Override
+    public boolean isNeeded() {
+        return (getHandler().isLinked(CHANNEL_SNAPSHOT));
     }
 
     @Override
     public boolean refresh() {
-        if (getHandler().isLinked(CHANNEL_SNAPSHOT)) {
-            Channel channel = getHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
-            Thing thing = getHandler().getThing();
+        Channel channel = getHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
+        Thing thing = getHandler().getThing();
 
-            logger.trace("Will update: {}::{}::{}", thing.getUID().getId(), channel.getChannelTypeUID().getId(),
-                    thing.getLabel());
+        logger.trace("Will update: {}::{}::{}", thing.getUID().getId(), channel.getChannelTypeUID().getId(),
+                thing.getLabel());
 
-            try {
-                byte[] snapshot = getApiHandler().getSnapshot(getHandler().getCameraId());
-                if (snapshot.length < 1000) {
-                    getHandler().updateState(channel.getUID(), UnDefType.UNDEF);
-                } else {
-                    getHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
-                }
-                return true;
-            } catch (URISyntaxException | IOException | WebApiException | NullPointerException e) {
-                logger.error("could not get snapshot: {}", thing, e);
-                return false;
+        try {
+            byte[] snapshot = getApiHandler().getSnapshot(getHandler().getCameraId());
+            if (snapshot.length < 1000) {
+                getHandler().updateState(channel.getUID(), UnDefType.UNDEF);
+            } else {
+                getHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
             }
+            return true;
+        } catch (URISyntaxException | IOException | WebApiException | NullPointerException e) {
+            logger.error("could not get snapshot: {}", thing, e);
+            return false;
         }
-        return true;
     }
 
 }

@@ -21,8 +21,6 @@ import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,9 +75,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
             apiHandler = new SynoWebApiHandler(config);
             apiHandler.connect();
 
-            InfoResponse infoResponse = apiHandler.getInfo();
-            getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,
-                    infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
+            // InfoResponse infoResponse = apiHandler.getInfo();
+            // getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,
+            // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
             // TODO if needed add other infos
 
             updateStatus(ThingStatus.ONLINE);

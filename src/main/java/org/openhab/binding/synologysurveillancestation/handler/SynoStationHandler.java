@@ -58,9 +58,15 @@ public class SynoStationHandler extends BaseThingHandler {
     public SynoStationHandler(Thing thing, boolean isPtz) {
         super(thing);
         this.isPtz = isPtz;
-        int refreshRateSnapshot = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
+        int refreshRateSnapshot = 10;
+        int refreshRateEvents = 3;
+        try {
+            refreshRateSnapshot = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
+            refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
+        } catch (Exception ex) {
+            logger.error("Error parsing camera Thing configuration");
+        }
         threadSnapshot = new SynoApiThreadSnapshot(this, refreshRateSnapshot);
-        int refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
         threadEvent = new SynoApiThreadEvent(this, refreshRateEvents);
         threadCamera = new SynoApiThreadCamera(this, refreshRateEvents);
     }

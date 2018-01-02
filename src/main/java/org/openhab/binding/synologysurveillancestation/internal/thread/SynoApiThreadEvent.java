@@ -16,7 +16,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
@@ -34,7 +34,7 @@ public class SynoApiThreadEvent extends SynoApiThread {
     private long lastEventTime;
     private Map<String, SynoEvent> events = new HashMap<>();
 
-    public SynoApiThreadEvent(SynoStationHandler handler, int refreshRate) {
+    public SynoApiThreadEvent(SynoCameraHandler handler, int refreshRate) {
         super("Event", handler, refreshRate);
         lastEventTime = ZonedDateTime.now().minusSeconds(refreshRate * 2).toEpochSecond();
     }

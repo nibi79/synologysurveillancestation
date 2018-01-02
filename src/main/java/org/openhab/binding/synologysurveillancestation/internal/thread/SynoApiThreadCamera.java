@@ -13,7 +13,7 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.Channel;
-import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class SynoApiThreadCamera extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadCamera.class);
 
-    public SynoApiThreadCamera(SynoStationHandler handler, int refreshRate) {
+    public SynoApiThreadCamera(SynoCameraHandler handler, int refreshRate) {
         super("CameraInfo", handler, refreshRate);
     }
 

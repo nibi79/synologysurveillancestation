@@ -18,7 +18,7 @@ import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
-import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class SynoApiThread {
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
     private int refreshRate = 0;
-    private final SynoStationHandler handler;
+    private final SynoCameraHandler handler;
     private final String name;
 
     /**
@@ -68,7 +68,7 @@ public class SynoApiThread {
      * @param refreshRate refresh rate of this thread in milliseconds
      * @param handler camera handler
      */
-    public SynoApiThread(String name, SynoStationHandler handler, int refreshRate) {
+    public SynoApiThread(String name, SynoCameraHandler handler, int refreshRate) {
         this.name = name;
         this.handler = handler;
         this.refreshRate = refreshRate;
@@ -139,7 +139,7 @@ public class SynoApiThread {
     /**
      * @return the handler
      */
-    public SynoStationHandler getHandler() {
+    public SynoCameraHandler getHandler() {
         return handler;
     }
 

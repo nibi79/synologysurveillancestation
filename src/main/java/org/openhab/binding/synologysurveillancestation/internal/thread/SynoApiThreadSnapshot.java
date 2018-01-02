@@ -18,7 +18,7 @@ import org.eclipse.smarthome.core.library.types.RawType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.types.UnDefType;
-import org.openhab.binding.synologysurveillancestation.handler.SynoStationHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 public class SynoApiThreadSnapshot extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
 
-    public SynoApiThreadSnapshot(SynoStationHandler handler, int refreshRate) {
+    public SynoApiThreadSnapshot(SynoCameraHandler handler, int refreshRate) {
         super("Snapshot", handler, refreshRate);
     }
 

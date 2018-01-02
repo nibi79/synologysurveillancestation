@@ -38,15 +38,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link SynoStationHandler} is responsible for handling commands, which are
+ * The {@link SynoCameraHandler} is responsible for handling commands, which are
  * sent to one of the channels.
  *
  * @author Nils
  */
 @NonNullByDefault
-public class SynoStationHandler extends BaseThingHandler {
+public class SynoCameraHandler extends BaseThingHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(SynoStationHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(SynoCameraHandler.class);
     private String cameraId = "";
     private boolean isPtz = false;
 
@@ -55,7 +55,7 @@ public class SynoStationHandler extends BaseThingHandler {
     private final SynoApiThreadCamera threadCamera;
     private @Nullable SynoWebApiHandler apiHandler;
 
-    public SynoStationHandler(Thing thing, boolean isPtz) {
+    public SynoCameraHandler(Thing thing, boolean isPtz) {
         super(thing);
         this.isPtz = isPtz;
         int refreshRateSnapshot = 10;

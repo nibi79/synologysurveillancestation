@@ -109,6 +109,7 @@ public class SynoCameraHandler extends BaseThingHandler {
     public void dispose() {
         threadSnapshot.stop();
         threadEvent.stop();
+        threadCamera.stop();
     }
 
     @Override

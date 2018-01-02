@@ -56,7 +56,10 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
                 getHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
             }
             return true;
-        } catch (URISyntaxException | IOException | WebApiException | NullPointerException e) {
+        } catch (WebApiException e) {
+            logger.error("Snapshot: Handler gone offline");
+            return false;
+        } catch (URISyntaxException | IOException | NullPointerException e) {
             logger.error("could not get snapshot: {}", thing, e);
             return false;
         }

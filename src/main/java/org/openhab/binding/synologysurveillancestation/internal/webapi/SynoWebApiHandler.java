@@ -10,7 +10,6 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
 import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -78,8 +77,6 @@ public class SynoWebApiHandler implements SynoWebApi {
     public boolean connect() throws WebApiException {
 
         apiAuth = new SynoApiAuth(config);
-        System.err.println("Creating connect");
-
         boolean connected = createSession();
 
         // initialize APIs

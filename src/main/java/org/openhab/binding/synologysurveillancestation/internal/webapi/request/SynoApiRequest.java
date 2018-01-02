@@ -194,7 +194,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
         try {
 
-            System.err.println(request.getURI());
+            // System.err.println(request.getURI());
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {

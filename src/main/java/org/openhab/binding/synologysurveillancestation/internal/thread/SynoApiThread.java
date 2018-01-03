@@ -33,6 +33,10 @@ import org.slf4j.LoggerFactory;
 public class SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThread.class);
 
+    public static final String THREAD_SNAPSHOT = "snapshot";
+    public static final String THREAD_EVENT = "event";
+    public static final String THREAD_CAMERA = "camera";
+
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
     private int refreshRate = 0;

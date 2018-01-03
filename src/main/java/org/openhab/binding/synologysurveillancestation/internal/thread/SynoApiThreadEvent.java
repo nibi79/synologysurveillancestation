@@ -35,7 +35,7 @@ public class SynoApiThreadEvent extends SynoApiThread {
     private Map<String, SynoEvent> events = new HashMap<>();
 
     public SynoApiThreadEvent(SynoCameraHandler handler, int refreshRate) {
-        super("Event", handler, refreshRate);
+        super(SynoApiThread.THREAD_EVENT, handler, refreshRate);
         lastEventTime = ZonedDateTime.now().minusSeconds(refreshRate * 2).toEpochSecond();
     }
 

@@ -32,7 +32,7 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
 
     public SynoApiThreadSnapshot(SynoCameraHandler handler, int refreshRate) {
-        super("Snapshot", handler, refreshRate);
+        super(SynoApiThread.THREAD_SNAPSHOT, handler, refreshRate);
     }
 
     @Override

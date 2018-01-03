@@ -28,7 +28,7 @@ public class SynoApiThreadCamera extends SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThreadCamera.class);
 
     public SynoApiThreadCamera(SynoCameraHandler handler, int refreshRate) {
-        super("CameraInfo", handler, refreshRate);
+        super(SynoApiThread.THREAD_CAMERA, handler, refreshRate);
     }
 
     @Override

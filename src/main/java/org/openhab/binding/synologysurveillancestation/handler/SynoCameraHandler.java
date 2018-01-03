@@ -10,6 +10,7 @@ package org.openhab.binding.synologysurveillancestation.handler;
 
 import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
@@ -28,6 +29,7 @@ import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
+import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadCamera;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadEvent;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadSnapshot;
@@ -50,9 +52,8 @@ public class SynoCameraHandler extends BaseThingHandler {
     private String cameraId = "";
     private boolean isPtz = false;
 
-    private final SynoApiThreadSnapshot threadSnapshot;
-    private final SynoApiThreadEvent threadEvent;
-    private final SynoApiThreadCamera threadCamera;
+    private final Map<String, SynoApiThread> threads = new HashMap<>();
+
     private @Nullable SynoWebApiHandler apiHandler;
 
     public SynoCameraHandler(Thing thing, boolean isPtz) {
@@ -66,9 +67,9 @@ public class SynoCameraHandler extends BaseThingHandler {
         } catch (Exception ex) {
             logger.error("Error parsing camera Thing configuration");
         }
-        threadSnapshot = new SynoApiThreadSnapshot(this, refreshRateSnapshot);
-        threadEvent = new SynoApiThreadEvent(this, refreshRateEvents);
-        threadCamera = new SynoApiThreadCamera(this, refreshRateEvents);
+        threads.put(SynoApiThread.THREAD_SNAPSHOT, new SynoApiThreadSnapshot(this, refreshRateSnapshot));
+        threads.put(SynoApiThread.THREAD_EVENT, new SynoApiThreadEvent(this, refreshRateEvents));
+        threads.put(SynoApiThread.THREAD_CAMERA, new SynoApiThreadCamera(this, refreshRateEvents));
     }
 
     @Override
@@ -82,7 +83,7 @@ public class SynoCameraHandler extends BaseThingHandler {
             switch (channelUID.getId()) {
                 case CHANNEL_SNAPSHOT:
                     if (command.toString().equals("REFRESH")) {
-                        threadSnapshot.refresh();
+                        threads.get(SynoApiThread.THREAD_CAMERA).refresh();
                     }
                     break;
                 case CHANNEL_EVENT_MOTION:
@@ -109,9 +110,9 @@ public class SynoCameraHandler extends BaseThingHandler {
 
     @Override
     public void dispose() {
-        threadSnapshot.stop();
-        threadEvent.stop();
-        threadCamera.stop();
+        for (SynoApiThread thread : threads.values()) {
+            thread.stop();
+        }
     }
 
     @Override
@@ -132,9 +133,9 @@ public class SynoCameraHandler extends BaseThingHandler {
                 apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
                 updateStatus(ThingStatus.ONLINE);
-                threadSnapshot.start();
-                threadEvent.start();
-                threadCamera.start();
+                for (SynoApiThread thread : threads.values()) {
+                    thread.start();
+                }
 
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
@@ -158,10 +159,11 @@ public class SynoCameraHandler extends BaseThingHandler {
         updateConfiguration(configuration);
 
         int refreshRateSnapshot = Integer.parseInt(configurationParameters.get(REFRESH_RATE_SNAPSHOT).toString());
-        threadSnapshot.setRefreshRate(refreshRateSnapshot);
         int refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
-        threadEvent.setRefreshRate(refreshRateEvents);
-        threadCamera.setRefreshRate(refreshRateEvents);
+
+        threads.get(SynoApiThread.THREAD_SNAPSHOT).setRefreshRate(refreshRateSnapshot);
+        threads.get(SynoApiThread.THREAD_EVENT).setRefreshRate(refreshRateEvents);
+        threads.get(SynoApiThread.THREAD_CAMERA).setRefreshRate(refreshRateEvents);
     }
 
     @Override
@@ -169,13 +171,16 @@ public class SynoCameraHandler extends BaseThingHandler {
         String id = channelUID.getId();
         switch (id) {
             case CHANNEL_EVENT_MOTION:
-                threadEvent.getEvents().put(id, new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
+                ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().put(id,
+                        new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
                 break;
             case CHANNEL_EVENT_ALARM:
-                threadEvent.getEvents().put(id, new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
+                ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().put(id,
+                        new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
                 break;
             case CHANNEL_EVENT_MANUAL:
-                threadEvent.getEvents().put(id, new SynoEvent(SynoEvent.EVENT_REASON_MANUAL));
+                ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().put(id,
+                        new SynoEvent(SynoEvent.EVENT_REASON_MANUAL));
                 break;
         }
         handleCommand(channelUID, RefreshType.REFRESH);
@@ -184,7 +189,7 @@ public class SynoCameraHandler extends BaseThingHandler {
     @Override
     public void channelUnlinked(ChannelUID channelUID) {
         String id = channelUID.getId();
-        threadEvent.getEvents().remove(id);
+        ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().remove(id);
     }
 
     @Override

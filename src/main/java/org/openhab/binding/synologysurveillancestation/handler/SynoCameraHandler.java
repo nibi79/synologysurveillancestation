@@ -96,7 +96,9 @@ public class SynoCameraHandler extends BaseThingHandler {
                 case CHANNEL_RECORD:
                 case CHANNEL_ZOOM:
                 case CHANNEL_MOVE:
-                    apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                    if (apiHandler != null) {
+                        apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                    }
                     break;
             }
         } catch (WebApiException e) {

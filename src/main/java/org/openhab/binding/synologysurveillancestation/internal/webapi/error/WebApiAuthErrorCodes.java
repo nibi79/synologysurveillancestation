@@ -17,6 +17,7 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
 
     UNKNOWN_ERROR(100, "Unknown error."),
     PARAM_NOT_SPECIFIED(101, "The account parameter is not specified."),
+    INSUFFICIENT_PRIVILEGE(105, "Insufficient user privilege / not logged in"),
     INVALID_PASSWORD(400, "Invalid password."),
     DISABLED_ACCOUNT(401, "Guest or disabled account."),
     PERMISSION_DENIED(402, "Permission denied."),

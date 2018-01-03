@@ -47,7 +47,9 @@ public class SynoApiThread {
         public void run() {
             try {
                 if (refreshInProgress.compareAndSet(false, true)) {
-                    if (isNeeded()) {
+                    if (getApiHandler() == null) {
+                        logger.error("Thread {}: Handler not (yet) initialized", name);
+                    } else if (isNeeded()) {
                         boolean success = refresh();
                         updateStatus(success);
                     }

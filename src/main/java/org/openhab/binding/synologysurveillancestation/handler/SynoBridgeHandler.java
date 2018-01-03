@@ -86,7 +86,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
             scheduler.submit(runnable);
 
         } catch (WebApiException e) {
-            if (e.getErrorCode() == 400) {
+            if (e.getCause() instanceof java.util.concurrent.TimeoutException) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Connection timeout");
+            } else if (e.getErrorCode() == 400) {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                         "Please add or check your credentials");
             } else {

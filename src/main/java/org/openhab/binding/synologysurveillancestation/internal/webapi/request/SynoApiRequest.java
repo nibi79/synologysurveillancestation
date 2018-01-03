@@ -70,7 +70,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
         SslContextFactory sslContextFactory = new SslContextFactory();
         httpClient = new HttpClient(sslContextFactory);
-        httpClient.setConnectTimeout(1000);
+        httpClient.setConnectTimeout(3000);
         try {
             httpClient.start();
         } catch (Exception e) {
@@ -155,7 +155,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
             URI uri = getWebApiUrlBuilder();
 
-            Request request = httpClient.newRequest(uri).timeout(1, TimeUnit.SECONDS);
+            Request request = httpClient.newRequest(uri).timeout(3000, TimeUnit.MILLISECONDS);
 
             // API data
             request.param("api", apiConfig.getName());

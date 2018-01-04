@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Pav
+ * @author Pavion
  *
  */
 @NonNullByDefault
@@ -33,23 +33,23 @@ public class SynoApiThreadCamera extends SynoApiThread {
 
     @Override
     public boolean isNeeded() {
-        return (getHandler().isLinked(CHANNEL_ENABLE) || getHandler().isLinked(CHANNEL_RECORD));
+        return (getAsCameraHandler().isLinked(CHANNEL_ENABLE) || getAsCameraHandler().isLinked(CHANNEL_RECORD));
     }
 
     @Override
     public boolean refresh() {
-        String cameraId = getHandler().getCameraId();
+        String cameraId = getAsCameraHandler().getCameraId();
         try {
             CameraResponse response = getApiHandler().getInfo(cameraId);
             if (response.isSuccess()) {
-                if (getHandler().isLinked(CHANNEL_ENABLE)) {
-                    Channel channel = getHandler().getThing().getChannel(CHANNEL_ENABLE);
-                    getHandler().updateState(channel.getUID(),
+                if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
+                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_ENABLE);
+                    getAsCameraHandler().updateState(channel.getUID(),
                             response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
                 }
-                if (getHandler().isLinked(CHANNEL_RECORD)) {
-                    Channel channel = getHandler().getThing().getChannel(CHANNEL_RECORD);
-                    getHandler().updateState(channel.getUID(),
+                if (getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
+                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_RECORD);
+                    getAsCameraHandler().updateState(channel.getUID(),
                             response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
                 }
                 return true;

@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Pav
+ * @author Pavion
  *
  */
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
@@ -76,8 +76,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
         String serial = service.getPropertyString("serial");
         if (vendor != null && serial != null) {
             if (vendor.startsWith("Synology")) {
-                return new ThingUID(SynoBindingConstants.THING_TYPE_STATION,
-                        serial.toLowerCase());
+                return new ThingUID(SynoBindingConstants.THING_TYPE_STATION, serial.toLowerCase());
             }
 
         }

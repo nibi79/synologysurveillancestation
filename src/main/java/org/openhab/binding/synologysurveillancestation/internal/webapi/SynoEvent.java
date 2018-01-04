@@ -11,7 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
- * @author Pav
+ * @author Pavion
  *
  */
 @NonNullByDefault

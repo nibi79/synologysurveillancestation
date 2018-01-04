@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Pav
+ * @author Pavion
  *
  */
 @NonNullByDefault
@@ -46,31 +46,31 @@ public class SynoApiThreadEvent extends SynoApiThread {
 
     @Override
     public boolean refresh() {
-        Thing thing = getHandler().getThing();
+        Thing thing = getAsCameraHandler().getThing();
         try {
-            EventResponse response = getApiHandler().getEventResponse(getHandler().getCameraId(), lastEventTime,
+            EventResponse response = getApiHandler().getEventResponse(getAsCameraHandler().getCameraId(), lastEventTime,
                     events);
             if (response.isSuccess()) {
                 for (String eventType : events.keySet()) {
                     SynoEvent event = events.get(eventType);
-                    Channel channel = getHandler().getThing().getChannel(eventType);
+                    Channel channel = getAsCameraHandler().getThing().getChannel(eventType);
                     if (response.hasEvent(event.getReason())) {
                         SynoEvent responseEvent = response.getEvent(event.getReason());
                         if (responseEvent.getEventId() != event.getEventId()) {
                             event.setEventId(responseEvent.getEventId());
                             event.setEventCompleted(responseEvent.isEventCompleted());
-                            getHandler().updateState(channel.getUID(), OnOffType.ON);
+                            getAsCameraHandler().updateState(channel.getUID(), OnOffType.ON);
                             if (responseEvent.isEventCompleted()) {
-                                getHandler().updateState(channel.getUID(), OnOffType.OFF);
+                                getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
                             }
                         } else if (responseEvent.getEventId() == event.getEventId() && responseEvent.isEventCompleted()
                                 && !event.isEventCompleted()) {
                             event.setEventCompleted(true);
-                            getHandler().updateState(channel.getUID(), OnOffType.OFF);
+                            getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
                         }
                     } else {
                         event.setEventCompleted(true);
-                        getHandler().updateState(channel.getUID(), OnOffType.OFF);
+                        getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
                     }
                 }
 

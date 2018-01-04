@@ -8,17 +8,25 @@
  */
 package org.openhab.binding.synologysurveillancestation.handler;
 
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
+
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
+import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
+import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadHomeMode;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.slf4j.Logger;
@@ -33,6 +41,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynoBridgeHandler.class);
     private CameraDiscoveryService discoveryService;
+
+    private final Map<String, SynoApiThread> threads = new HashMap<>();
+
     /**
      * Defines a runnable for a discovery
      */
@@ -49,6 +60,13 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
 
     public SynoBridgeHandler(Bridge bridge) {
         super(bridge);
+        int refreshRateEvents = 3;
+        try {
+            refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
+        } catch (Exception ex) {
+            logger.error("Error parsing Bridge configuration");
+        }
+        threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
     }
 
     public SynoWebApiHandler getSynoWebApiHandler() {
@@ -57,7 +75,20 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
 
     @Override
     public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
-        // There is nothing to handle in the bridge handler
+        try {
+            switch (channelUID.getId()) {
+                case CHANNEL_HOMEMODE:
+                    if (command.toString().equals("REFRESH")) {
+                        threads.get(SynoApiThread.THREAD_HOMEMODE).refresh();
+                    } else if (apiHandler != null) {
+                        boolean state = command.toString().equals("ON");
+                        apiHandler.setHomeMode(state);
+                    }
+                    break;
+            }
+        } catch (Exception e) {
+            logger.error("handle command: {}::{}::{}", getThing().getLabel(), getThing().getUID());
+        }
     }
 
     public void setDiscovery(CameraDiscoveryService discoveryService) {
@@ -80,6 +111,10 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
             // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
             // TODO if needed add other infos
 
+            for (SynoApiThread thread : threads.values()) {
+                thread.start();
+            }
+
             updateStatus(ThingStatus.ONLINE);
 
             // Trigger discovery of cameras
@@ -100,7 +135,47 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
     }
 
     @Override
+    public void dispose() {
+        for (SynoApiThread thread : threads.values()) {
+            thread.stop();
+        }
+        try {
+            apiHandler.logout();
+        } catch (Exception ex) {
+        }
+    }
+
+    @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
         super.handleConfigurationUpdate(configurationParameters);
+        int refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
+        threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(refreshRateEvents);
+    }
+
+    @Override
+    public boolean isLinked(String channelId) {
+        return super.isLinked(channelId);
+    }
+
+    @Override
+    public void updateStatus(ThingStatus status, ThingStatusDetail statusDetail, @Nullable String description) {
+        super.updateStatus(status, statusDetail, description);
+    }
+
+    @Override
+    public void updateStatus(ThingStatus status) {
+        super.updateStatus(status);
+    }
+
+    @Override
+    public void updateState(ChannelUID channelUID, State state) {
+        super.updateState(channelUID, state);
+    }
+
+    /**
+     * @return service scheduler of this Thing
+     */
+    public ScheduledExecutorService getScheduler() {
+        return scheduler;
     }
 }

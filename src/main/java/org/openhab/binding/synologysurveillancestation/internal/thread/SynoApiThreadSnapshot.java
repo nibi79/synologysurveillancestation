@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Pav
+ * @author Pavion
  *
  */
 @NonNullByDefault
@@ -37,23 +37,23 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
 
     @Override
     public boolean isNeeded() {
-        return (getHandler().isLinked(CHANNEL_SNAPSHOT));
+        return (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT));
     }
 
     @Override
     public boolean refresh() {
-        Channel channel = getHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
-        Thing thing = getHandler().getThing();
+        Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
+        Thing thing = getAsCameraHandler().getThing();
 
         logger.trace("Will update: {}::{}::{}", thing.getUID().getId(), channel.getChannelTypeUID().getId(),
                 thing.getLabel());
 
         try {
-            byte[] snapshot = getApiHandler().getSnapshot(getHandler().getCameraId());
+            byte[] snapshot = getApiHandler().getSnapshot(getAsCameraHandler().getCameraId());
             if (snapshot.length < 1000) {
-                getHandler().updateState(channel.getUID(), UnDefType.UNDEF);
+                getAsCameraHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             } else {
-                getHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
+                getAsCameraHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
             }
             return true;
         } catch (WebApiException e) {

@@ -20,11 +20,13 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.request.S
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalRecording;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiHomeMode;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiInfo;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiPTZ;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
@@ -44,6 +46,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     // private SynoApiCameraGetSnapshot apiCameraGetSnapshot = null;
     private SynoApiCamera apiCamera = null;
     private SynoApiEvent apiEvent = null;
+    private SynoApiHomeMode apiHomeMode = null;
     private SynoApiExternalRecording apiExternalRecording = null;
     private SynoApiPTZ apiPTZ = null;
 
@@ -85,6 +88,7 @@ public class SynoWebApiHandler implements SynoWebApi {
         apiEvent = new SynoApiEvent(config, sessionID);
         apiExternalRecording = new SynoApiExternalRecording(config, sessionID);
         apiPTZ = new SynoApiPTZ(config, sessionID);
+        apiHomeMode = new SynoApiHomeMode(config, sessionID);
 
         return connected;
     }
@@ -461,6 +465,17 @@ public class SynoWebApiHandler implements SynoWebApi {
         EventResponse response = apiEvent.query(cameraId, lastEventTime, events);
 
         return response;
+    }
+
+    @Override
+    public HomeModeResponse getHomeModeResponce() {
+        HomeModeResponse response = apiHomeMode.query();
+        return response;
+    }
+
+    @Override
+    public SimpleResponse setHomeMode(boolean mode) throws WebApiException {
+        return apiHomeMode.setHomeMode(mode);
     }
 
 }

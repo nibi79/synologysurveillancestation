@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.thread;
 
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,6 +18,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
+import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
@@ -26,21 +28,22 @@ import org.slf4j.LoggerFactory;
 /**
  * Class for thread management (events, snapshot)
  *
- * @author Pav
+ * @author Pavion
  *
  */
 @NonNullByDefault
 public class SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThread.class);
 
-    public static final String THREAD_SNAPSHOT = "snapshot";
-    public static final String THREAD_EVENT = "event";
-    public static final String THREAD_CAMERA = "camera";
+    public static final String THREAD_SNAPSHOT = "Snapshot";
+    public static final String THREAD_EVENT = "Event";
+    public static final String THREAD_CAMERA = "Camera";
+    public static final String THREAD_HOMEMODE = "HomeMode";
 
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
     private int refreshRate = 0;
-    private final SynoCameraHandler handler;
+    private final BaseThingHandler handler;
     private final String name;
 
     /**
@@ -74,7 +77,7 @@ public class SynoApiThread {
      * @param refreshRate refresh rate of this thread in milliseconds
      * @param handler camera handler
      */
-    public SynoApiThread(String name, SynoCameraHandler handler, int refreshRate) {
+    public SynoApiThread(String name, BaseThingHandler handler, int refreshRate) {
         this.name = name;
         this.handler = handler;
         this.refreshRate = refreshRate;
@@ -85,7 +88,15 @@ public class SynoApiThread {
      */
     public void start() {
         if (refreshRate > 0) {
-            future = handler.getScheduler().scheduleAtFixedRate(runnable, 0, refreshRate, TimeUnit.SECONDS);
+            ScheduledExecutorService scheduler = null;
+            if (handler instanceof SynoCameraHandler) {
+                scheduler = ((SynoCameraHandler) handler).getScheduler();
+            } else if (handler instanceof SynoBridgeHandler) {
+                scheduler = ((SynoBridgeHandler) handler).getScheduler();
+            }
+            if (scheduler != null) {
+                future = scheduler.scheduleAtFixedRate(runnable, 0, refreshRate, TimeUnit.SECONDS);
+            }
         }
     }
 
@@ -117,9 +128,19 @@ public class SynoApiThread {
      */
     private void updateStatus(boolean success) {
         if (success && !handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
-            handler.updateStatus(ThingStatus.ONLINE);
+            if (handler instanceof SynoCameraHandler) {
+                ((SynoCameraHandler) handler).updateStatus(ThingStatus.ONLINE);
+            } else if (handler instanceof SynoBridgeHandler) {
+                ((SynoBridgeHandler) handler).updateStatus(ThingStatus.ONLINE);
+            }
         } else if (!success && handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
-            handler.updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
+            if (handler instanceof SynoCameraHandler) {
+                ((SynoCameraHandler) handler).updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "Thread " + name);
+            } else if (handler instanceof SynoBridgeHandler) {
+                ((SynoBridgeHandler) handler).updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "Thread " + name);
+            }
         }
 
     }
@@ -143,22 +164,33 @@ public class SynoApiThread {
     }
 
     /**
-     * @return the handler
+     * @return the SynoCameraHandler
      */
-    public SynoCameraHandler getHandler() {
-        return handler;
+    public SynoCameraHandler getAsCameraHandler() {
+        return (SynoCameraHandler) handler;
+    }
+
+    /**
+     * @return the SynoCameraHandler
+     */
+    public SynoBridgeHandler getAsBridgeHandler() {
+        return (SynoBridgeHandler) handler;
     }
 
     /**
      * @return the API handler
      */
     public @Nullable SynoWebApiHandler getApiHandler() {
-        Bridge bridge = handler.getBridge();
-        if (bridge != null) {
-            SynoBridgeHandler bridgeHandler = ((SynoBridgeHandler) bridge.getHandler());
-            if (bridgeHandler != null) {
-                return bridgeHandler.getSynoWebApiHandler();
+        if (handler instanceof SynoCameraHandler) {
+            Bridge bridge = ((SynoCameraHandler) handler).getBridge();
+            if (bridge != null) {
+                SynoBridgeHandler bridgeHandler = ((SynoBridgeHandler) bridge.getHandler());
+                if (bridgeHandler != null) {
+                    return bridgeHandler.getSynoWebApiHandler();
+                }
             }
+        } else if (handler instanceof SynoBridgeHandler) {
+            return ((SynoBridgeHandler) handler).getSynoWebApiHandler();
         }
         return null;
     }

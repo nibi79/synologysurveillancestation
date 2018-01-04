@@ -15,6 +15,7 @@ import java.util.Map;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
@@ -163,4 +164,18 @@ public interface SynoWebApi {
      */
     public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
             throws WebApiException;
+
+    /**
+     *
+     * @return
+     */
+    public HomeModeResponse getHomeModeResponce();
+
+    /**
+     *
+     * @param mode
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse setHomeMode(boolean mode) throws WebApiException;
 }

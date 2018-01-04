@@ -48,6 +48,9 @@ public class SynoBindingConstants {
     public static final String REFRESH_RATE_SNAPSHOT = "refresh-rate-snapshot";
     public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";
 
+    // List of all Bridge Channels
+    public static final String CHANNEL_HOMEMODE = "homemode";
+
     // List of all Channel ids
     public static final String CHANNEL_SNAPSHOT = "common#snapshot";
     public static final String CHANNEL_RECORD = "common#record";

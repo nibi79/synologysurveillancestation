@@ -10,7 +10,6 @@ package org.openhab.binding.synologysurveillancestation.internal;
 
 import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.config.core.Configuration;
 
 /**
@@ -18,13 +17,12 @@ import org.eclipse.smarthome.config.core.Configuration;
  *
  * @author Nils
  */
-@NonNullByDefault
 public class SynoConfig {
-    private String protocol;
-    private String host;
-    private String port;
-    private String username;
-    private String password;
+    private String protocol = null;
+    private String host = null;
+    private String port = null;
+    private String username = null;
+    private String password = null;
 
     /**
      * Creates a new {@link SynoConfig} and set the given values
@@ -54,6 +52,13 @@ public class SynoConfig {
         this.port = configuration.get(PORT).toString();
         this.username = configuration.get(USER_NAME).toString();
         this.password = configuration.get(PASSWORD).toString();
+    }
+
+    /**
+     * Creates a {@link SynoConfig} with default values.
+     */
+    public SynoConfig() {
+        // config with default values
     }
 
     /**

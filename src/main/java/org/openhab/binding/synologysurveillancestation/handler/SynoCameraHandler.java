@@ -78,11 +78,12 @@ public class SynoCameraHandler extends BaseThingHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
+        System.err.println(command.toFullString());
         try {
             switch (channelUID.getId()) {
                 case CHANNEL_SNAPSHOT:
                     if (command.toString().equals("REFRESH")) {
-                        threads.get(SynoApiThread.THREAD_CAMERA).refresh();
+                        threads.get(SynoApiThread.THREAD_SNAPSHOT).refresh();
                     }
                     break;
                 case CHANNEL_EVENT_MOTION:

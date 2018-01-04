@@ -169,7 +169,7 @@ public interface SynoWebApi {
      *
      * @return
      */
-    public HomeModeResponse getHomeModeResponce();
+    public HomeModeResponse getHomeModeResponse();
 
     /**
      *

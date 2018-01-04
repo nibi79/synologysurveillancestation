@@ -169,7 +169,7 @@ public abstract class SynoApiThread {
     }
 
     /**
-     * @return the SynoCameraHandler
+     * @return the SynoBridgeHandler
      */
     public SynoBridgeHandler getAsBridgeHandler() {
         return (SynoBridgeHandler) handler;

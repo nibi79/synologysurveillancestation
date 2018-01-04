@@ -38,7 +38,7 @@ public class SynoApiThreadHomeMode extends SynoApiThread {
     @Override
     public boolean refresh() {
         try {
-            HomeModeResponse response = getApiHandler().getHomeModeResponce();
+            HomeModeResponse response = getApiHandler().getHomeModeResponse();
             if (response.isSuccess()) {
                 if (getAsBridgeHandler().isLinked(CHANNEL_HOMEMODE)) {
                     Channel channel = getAsBridgeHandler().getThing().getChannel(CHANNEL_HOMEMODE);

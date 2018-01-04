@@ -105,7 +105,7 @@ public abstract class SynoApiThread {
      */
     public void stop() {
         if (future != null) {
-            future.cancel(true);
+            future.cancel(false);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

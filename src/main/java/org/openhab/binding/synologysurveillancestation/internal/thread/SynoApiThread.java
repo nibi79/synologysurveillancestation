@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 @NonNullByDefault
-public class SynoApiThread {
+public abstract class SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThread.class);
 
     public static final String THREAD_SNAPSHOT = "Snapshot";
@@ -117,9 +117,7 @@ public class SynoApiThread {
     /**
      * Dummy for a refresh function
      */
-    public boolean refresh() {
-        return true;
-    }
+    public abstract boolean refresh();
 
     /**
      * Update handler status on runnable feedback
@@ -199,8 +197,6 @@ public class SynoApiThread {
      *
      * @return if thread has to be run
      */
-    public boolean isNeeded() {
-        return false;
-    }
+    public abstract boolean isNeeded();
 
 }

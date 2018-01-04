@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
@@ -20,7 +19,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * The {@link SynoConfig} is class for handling the binding configuration
+ * The {@link SynoWebApi} is an interface for the Web API
  *
  * @author Nils
  */
@@ -158,8 +157,8 @@ public interface SynoWebApi {
     public SimpleResponse moveHome(String cameraId) throws WebApiException;
 
     /**
-     * @param cameraId
-     * @return
+     * @param cameraId ID of the camera
+     * @return Response with current events
      * @throws WebApiException
      */
     public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
@@ -167,13 +166,14 @@ public interface SynoWebApi {
 
     /**
      *
-     * @return
+     * @return Home Mode state
      */
     public HomeModeResponse getHomeModeResponse();
 
     /**
+     * Turns the Home Mode on/off
      *
-     * @param mode
+     * @param mode on/off
      * @return
      * @throws WebApiException
      */

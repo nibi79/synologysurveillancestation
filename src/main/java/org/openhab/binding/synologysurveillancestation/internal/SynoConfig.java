@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@ package org.openhab.binding.synologysurveillancestation.internal;
 
 import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.config.core.Configuration;
 
 /**
@@ -17,20 +18,22 @@ import org.eclipse.smarthome.config.core.Configuration;
  *
  * @author Nils
  */
+@NonNullByDefault
 public class SynoConfig {
-    private String protocol = null;
-    private String host = null;
-    private String port = null;
-    private String username = null;
-    private String password = null;
+    private String protocol;
+    private String host;
+    private String port;
+    private String username;
+    private String password;
 
     /**
-     * Creates a new {@link SynoConfig} and set the given protocoll, hostAddress, username, password.
+     * Creates a new {@link SynoConfig} and set the given values
      *
-     * @param hostAddress
-     * @param username
-     * @param password
-     * @param sessionID
+     * @param protocoll Protocol of the DiskStation (http/https)
+     * @param hostAddress IP or host address of the DiskStation
+     * @param port Port of the DiskStation
+     * @param username User name with sufficient rights to run Surveillance Station
+     * @param password User password
      */
     public SynoConfig(String protocoll, String hostAddress, String port, String username, String password) {
         this.protocol = protocoll;
@@ -40,19 +43,17 @@ public class SynoConfig {
         this.password = password;
     }
 
+    /**
+     * Creates a new {@link SynoConfig} from a configuration object
+     *
+     * @param configuration
+     */
     public SynoConfig(Configuration configuration) {
         this.protocol = configuration.get(PROTOCOL).toString();
         this.host = configuration.get(HOST).toString();
         this.port = configuration.get(PORT).toString();
         this.username = configuration.get(USER_NAME).toString();
         this.password = configuration.get(PASSWORD).toString();
-    }
-
-    /**
-     * Creates a {@link SynoConfig} with default values.
-     */
-    public SynoConfig() {
-        // config with default values
     }
 
     /**

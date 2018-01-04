@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -43,7 +43,6 @@ public class SynoWebApiHandler implements SynoWebApi {
     // APIs
     private SynoApiAuth apiAuth = null;
     private SynoApiInfo apiInfo = null;
-    // private SynoApiCameraGetSnapshot apiCameraGetSnapshot = null;
     private SynoApiCamera apiCamera = null;
     private SynoApiEvent apiEvent = null;
     private SynoApiHomeMode apiHomeMode = null;

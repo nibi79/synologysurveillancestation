@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The {@link SynoCameraHandler} is responsible for handling commands, which are
- * sent to one of the channels.
+ * sent to one of the channels of a camera Thing.
  *
  * @author Nils
  */
@@ -51,11 +51,15 @@ public class SynoCameraHandler extends BaseThingHandler {
     private final Logger logger = LoggerFactory.getLogger(SynoCameraHandler.class);
     private String cameraId = "";
     private boolean isPtz = false;
-
     private final Map<String, SynoApiThread> threads = new HashMap<>();
-
     private @Nullable SynoWebApiHandler apiHandler;
 
+    /**
+     * Camera handler main constructor
+     *
+     * @param thing Thing to handle
+     * @param isPtz PTZ support?
+     */
     public SynoCameraHandler(Thing thing, boolean isPtz) {
         super(thing);
         this.isPtz = isPtz;
@@ -70,11 +74,6 @@ public class SynoCameraHandler extends BaseThingHandler {
         threads.put(SynoApiThread.THREAD_SNAPSHOT, new SynoApiThreadSnapshot(this, refreshRateSnapshot));
         threads.put(SynoApiThread.THREAD_EVENT, new SynoApiThreadEvent(this, refreshRateEvents));
         threads.put(SynoApiThread.THREAD_CAMERA, new SynoApiThreadCamera(this, refreshRateEvents));
-    }
-
-    @Override
-    public boolean isLinked(String channelId) {
-        return super.isLinked(channelId);
     }
 
     @Override
@@ -106,13 +105,6 @@ public class SynoCameraHandler extends BaseThingHandler {
             logger.error("handle command: {}::{}::{}", getThing().getLabel(), getThing().getUID());
         }
 
-    }
-
-    @Override
-    public void dispose() {
-        for (SynoApiThread thread : threads.values()) {
-            thread.stop();
-        }
     }
 
     @Override
@@ -148,6 +140,13 @@ public class SynoCameraHandler extends BaseThingHandler {
             logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
         }
 
+    }
+
+    @Override
+    public void dispose() {
+        for (SynoApiThread thread : threads.values()) {
+            thread.stop();
+        }
     }
 
     @Override
@@ -210,6 +209,11 @@ public class SynoCameraHandler extends BaseThingHandler {
     @Override
     public void updateState(ChannelUID channelUID, State state) {
         super.updateState(channelUID, state);
+    }
+
+    @Override
+    public boolean isLinked(String channelId) {
+        return super.isLinked(channelId);
     }
 
     /**

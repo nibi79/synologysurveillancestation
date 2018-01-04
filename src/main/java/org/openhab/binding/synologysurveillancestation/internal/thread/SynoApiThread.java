@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -26,15 +26,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class for thread management (events, snapshot)
+ * The {@link SynoApiThread} is an abstract class for thread management (events, snapshot and so on)
  *
  * @author Pavion
- *
  */
 @NonNullByDefault
 public abstract class SynoApiThread {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThread.class);
 
+    /**
+     * Thread types. Each thread has its refresh rate and polls the Station for events
+     */
     public static final String THREAD_SNAPSHOT = "Snapshot";
     public static final String THREAD_EVENT = "Event";
     public static final String THREAD_CAMERA = "Camera";
@@ -42,9 +44,9 @@ public abstract class SynoApiThread {
 
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
-    private int refreshRate = 0;
-    private final BaseThingHandler handler;
-    private final String name;
+    private int refreshRate; // Refresh rate in seconds
+    private final BaseThingHandler handler; // Bridge or Camera Thing handler
+    private final String name; // Thread name / type
 
     /**
      * Defines a runnable for a refresh job
@@ -74,8 +76,8 @@ public abstract class SynoApiThread {
      * Main constructor
      *
      * @param threadId ID of this thread for logging purposes
-     * @param refreshRate refresh rate of this thread in milliseconds
-     * @param handler camera handler
+     * @param refreshRate Refresh rate of this thread in seconds
+     * @param handler Camera or bridge handler
      */
     public SynoApiThread(String name, BaseThingHandler handler, int refreshRate) {
         this.name = name;
@@ -115,14 +117,14 @@ public abstract class SynoApiThread {
     }
 
     /**
-     * Dummy for a refresh function
+     * Abstract dummy for a refresh function
      */
     public abstract boolean refresh();
 
     /**
      * Update handler status on runnable feedback
      *
-     * @param success
+     * @param success if runnable was successful
      */
     private void updateStatus(boolean success) {
         if (success && !handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
@@ -151,7 +153,7 @@ public abstract class SynoApiThread {
     }
 
     /**
-     * @param refreshRate the refreshRate to set
+     * @param refreshRate The refreshRate to be set
      */
     public void setRefreshRate(int refreshRate) {
         if (this.refreshRate != refreshRate) {
@@ -194,7 +196,6 @@ public abstract class SynoApiThread {
     }
 
     /**
-     *
      * @return if thread has to be run
      */
     public abstract boolean isNeeded();

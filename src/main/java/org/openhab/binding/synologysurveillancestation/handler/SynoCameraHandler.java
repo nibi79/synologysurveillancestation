@@ -78,7 +78,6 @@ public class SynoCameraHandler extends BaseThingHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        System.err.println(command.toFullString());
         try {
             switch (channelUID.getId()) {
                 case CHANNEL_SNAPSHOT:

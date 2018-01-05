@@ -79,7 +79,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
             switch (channelUID.getId()) {
                 case CHANNEL_HOMEMODE:
                     if (command.toString().equals("REFRESH")) {
-                        threads.get(SynoApiThread.THREAD_HOMEMODE).refresh();
+                        threads.get(SynoApiThread.THREAD_HOMEMODE).runOnce();
                     } else if (apiHandler != null) {
                         boolean state = command.toString().equals("ON");
                         apiHandler.setHomeMode(state);

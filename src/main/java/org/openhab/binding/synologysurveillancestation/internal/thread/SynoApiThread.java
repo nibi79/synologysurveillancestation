@@ -56,12 +56,7 @@ public abstract class SynoApiThread {
         public void run() {
             try {
                 if (refreshInProgress.compareAndSet(false, true)) {
-                    if (getApiHandler() == null) {
-                        logger.error("Thread {}: Handler not (yet) initialized", name);
-                    } else if (isNeeded()) {
-                        boolean success = refresh();
-                        updateStatus(success);
-                    }
+                    runOnce();
                     refreshInProgress.set(false);
                 }
             } catch (IllegalStateException e) {
@@ -120,6 +115,18 @@ public abstract class SynoApiThread {
      * Abstract dummy for a refresh function
      */
     public abstract boolean refresh();
+
+    /**
+     * Run the runnable just once (for manual refresh)
+     */
+    public void runOnce() {
+        if (getApiHandler() == null) {
+            logger.error("Thread {}: Handler not (yet) initialized", name);
+        } else if (isNeeded()) {
+            boolean success = refresh();
+            updateStatus(success);
+        }
+    }
 
     /**
      * Update handler status on runnable feedback

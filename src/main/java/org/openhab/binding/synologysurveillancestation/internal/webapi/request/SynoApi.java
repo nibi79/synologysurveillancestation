@@ -47,5 +47,7 @@ public interface SynoApi {
     public static final String METHOD_MOVE = "Move";
     public static final String METHOD_SWITCH = "Switch";
 
+    public static final int API_CONNECTION_TIMEOUT = 4000;
+
     public SynoApiConfig getApiConfig();
 }

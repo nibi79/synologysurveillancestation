@@ -15,17 +15,15 @@ import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Thread for getting Surveillance Station Home Mode state
- * 
+ *
  * @author Pavion
  */
 @NonNullByDefault
 public class SynoApiThreadHomeMode extends SynoApiThread {
-    private final Logger logger = LoggerFactory.getLogger(SynoApiThreadHomeMode.class);
+    // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadHomeMode.class);
 
     public SynoApiThreadHomeMode(SynoBridgeHandler handler, int refreshRate) {
         super(SynoApiThread.THREAD_HOMEMODE, handler, refreshRate);
@@ -37,21 +35,16 @@ public class SynoApiThreadHomeMode extends SynoApiThread {
     }
 
     @Override
-    public boolean refresh() {
-        try {
-            HomeModeResponse response = getApiHandler().getHomeModeResponse();
-            if (response.isSuccess()) {
-                if (getAsBridgeHandler().isLinked(CHANNEL_HOMEMODE)) {
-                    Channel channel = getAsBridgeHandler().getThing().getChannel(CHANNEL_HOMEMODE);
-                    getAsBridgeHandler().updateState(channel.getUID(),
-                            response.isHomeMode() ? OnOffType.ON : OnOffType.OFF);
-                }
-                return true;
-            } else {
-                return false;
+    public boolean refresh() throws Exception {
+        HomeModeResponse response = getApiHandler().getHomeModeResponse();
+        if (response.isSuccess()) {
+            if (getAsBridgeHandler().isLinked(CHANNEL_HOMEMODE)) {
+                Channel channel = getAsBridgeHandler().getThing().getChannel(CHANNEL_HOMEMODE);
+                getAsBridgeHandler().updateState(channel.getUID(),
+                        response.isHomeMode() ? OnOffType.ON : OnOffType.OFF);
             }
-        } catch (Exception e) {
-            logger.error("Could not get bridge info: {}", e);
+            return true;
+        } else {
             return false;
         }
     }

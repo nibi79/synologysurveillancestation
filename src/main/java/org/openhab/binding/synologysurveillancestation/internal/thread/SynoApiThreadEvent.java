@@ -18,19 +18,16 @@ import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Thread for getting camera events (motion, alarm)
- * 
+ *
  * @author Pavion
  */
 @NonNullByDefault
 public class SynoApiThreadEvent extends SynoApiThread {
-    private final Logger logger = LoggerFactory.getLogger(SynoApiThreadEvent.class);
+    // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadEvent.class);
 
     private long lastEventTime;
     private Map<String, SynoEvent> events = new HashMap<>();
@@ -46,43 +43,38 @@ public class SynoApiThreadEvent extends SynoApiThread {
     }
 
     @Override
-    public boolean refresh() {
+    public boolean refresh() throws Exception {
         Thing thing = getAsCameraHandler().getThing();
-        try {
-            EventResponse response = getApiHandler().getEventResponse(getAsCameraHandler().getCameraId(), lastEventTime,
-                    events);
-            if (response.isSuccess()) {
-                for (String eventType : events.keySet()) {
-                    SynoEvent event = events.get(eventType);
-                    Channel channel = getAsCameraHandler().getThing().getChannel(eventType);
-                    if (response.hasEvent(event.getReason())) {
-                        SynoEvent responseEvent = response.getEvent(event.getReason());
-                        if (responseEvent.getEventId() != event.getEventId()) {
-                            event.setEventId(responseEvent.getEventId());
-                            event.setEventCompleted(responseEvent.isEventCompleted());
-                            getAsCameraHandler().updateState(channel.getUID(), OnOffType.ON);
-                            if (responseEvent.isEventCompleted()) {
-                                getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
-                            }
-                        } else if (responseEvent.getEventId() == event.getEventId() && responseEvent.isEventCompleted()
-                                && !event.isEventCompleted()) {
-                            event.setEventCompleted(true);
+
+        EventResponse response = getApiHandler().getEventResponse(getAsCameraHandler().getCameraId(), lastEventTime,
+                events);
+        if (response.isSuccess()) {
+            for (String eventType : events.keySet()) {
+                SynoEvent event = events.get(eventType);
+                Channel channel = getAsCameraHandler().getThing().getChannel(eventType);
+                if (response.hasEvent(event.getReason())) {
+                    SynoEvent responseEvent = response.getEvent(event.getReason());
+                    if (responseEvent.getEventId() != event.getEventId()) {
+                        event.setEventId(responseEvent.getEventId());
+                        event.setEventCompleted(responseEvent.isEventCompleted());
+                        getAsCameraHandler().updateState(channel.getUID(), OnOffType.ON);
+                        if (responseEvent.isEventCompleted()) {
                             getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
                         }
-                    } else {
+                    } else if (responseEvent.getEventId() == event.getEventId() && responseEvent.isEventCompleted()
+                            && !event.isEventCompleted()) {
                         event.setEventCompleted(true);
                         getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
                     }
+                } else {
+                    event.setEventCompleted(true);
+                    getAsCameraHandler().updateState(channel.getUID(), OnOffType.OFF);
                 }
-
-                lastEventTime = response.getTimestamp();
-                return true;
-            } else {
-                return false;
             }
 
-        } catch (WebApiException | NullPointerException e) {
-            logger.error("could not get event {}: {}", thing, e);
+            lastEventTime = response.getTimestamp();
+            return true;
+        } else {
             return false;
         }
     }

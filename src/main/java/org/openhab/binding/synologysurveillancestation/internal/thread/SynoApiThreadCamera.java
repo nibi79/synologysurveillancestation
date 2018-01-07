@@ -14,19 +14,16 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Thread for getting camera state (enabled, recording)
- * 
+ *
  * @author Pavion
  */
 @NonNullByDefault
 public class SynoApiThreadCamera extends SynoApiThread {
-    private final Logger logger = LoggerFactory.getLogger(SynoApiThreadCamera.class);
+    // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadCamera.class);
 
     public SynoApiThreadCamera(SynoCameraHandler handler, int refreshRate) {
         super(SynoApiThread.THREAD_CAMERA, handler, refreshRate);
@@ -38,27 +35,23 @@ public class SynoApiThreadCamera extends SynoApiThread {
     }
 
     @Override
-    public boolean refresh() {
+    public boolean refresh() throws Exception {
         String cameraId = getAsCameraHandler().getCameraId();
-        try {
-            CameraResponse response = getApiHandler().getInfo(cameraId);
-            if (response.isSuccess()) {
-                if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
-                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_ENABLE);
-                    getAsCameraHandler().updateState(channel.getUID(),
-                            response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
-                }
-                if (getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
-                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_RECORD);
-                    getAsCameraHandler().updateState(channel.getUID(),
-                            response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
-                }
-                return true;
-            } else {
-                return false;
+
+        CameraResponse response = getApiHandler().getInfo(cameraId);
+        if (response.isSuccess()) {
+            if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
+                Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_ENABLE);
+                getAsCameraHandler().updateState(channel.getUID(),
+                        response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
             }
-        } catch (WebApiException | NullPointerException e) {
-            logger.error("Could not get camera info: {}", e);
+            if (getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
+                Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_RECORD);
+                getAsCameraHandler().updateState(channel.getUID(),
+                        response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
+            }
+            return true;
+        } else {
             return false;
         }
     }

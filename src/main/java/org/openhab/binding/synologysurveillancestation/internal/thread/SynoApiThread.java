@@ -22,6 +22,8 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +116,7 @@ public abstract class SynoApiThread {
     /**
      * Abstract dummy for a refresh function
      */
-    public abstract boolean refresh();
+    public abstract boolean refresh() throws Exception;
 
     /**
      * Run the runnable just once (for manual refresh)
@@ -123,7 +125,20 @@ public abstract class SynoApiThread {
         if (getApiHandler() == null) {
             logger.error("Thread {}: Handler not (yet) initialized", name);
         } else if (isNeeded()) {
-            boolean success = refresh();
+
+            boolean success = false;
+            try {
+                success = refresh();
+            } catch (WebApiException e) {
+                if (e.getCause() instanceof java.util.concurrent.TimeoutException) {
+                    logger.error("Thread {}: Connection timeout ({} ms)", name, SynoApi.API_CONNECTION_TIMEOUT);
+                } else {
+                    logger.error("Thread {}: Handler gone offline", name);
+                }
+            } catch (Exception e) {
+                logger.error("Thread {}: Critical error:\n {}", name, e);
+            }
+
             updateStatus(success);
         }
     }

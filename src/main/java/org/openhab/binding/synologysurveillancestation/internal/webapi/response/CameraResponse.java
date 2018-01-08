@@ -57,6 +57,18 @@ public class CameraResponse extends SimpleResponse {
         return getData().getAsJsonArray("cameras");
     }
 
+    public String getSnapshotPath(String cameraId) {
+        for (JsonElement jcamera : getCameras()) {
+            if (jcamera.isJsonObject()) {
+                JsonObject camera = jcamera.getAsJsonObject();
+                if (camera.get("id").getAsString().equals(cameraId)) {
+                    return camera.get("snapshot_path").getAsString();
+                }
+            }
+        }
+        return "";
+    }
+
     /**
      * If the camera is enabled
      *

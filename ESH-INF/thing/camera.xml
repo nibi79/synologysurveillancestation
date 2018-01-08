@@ -43,6 +43,7 @@
             <channel id="snapshot" typeId="snapshot-channel" />
             <channel id="record" typeId="recording-channel" />
             <channel id="enable" typeId="enable-channel" />
+            <channel id="snapshot-uri" typeId="snapshot-uri-channel" />
         </channels>
     </channel-group-type>
     
@@ -89,6 +90,12 @@
 		<label>Camera recording</label>
 		<description>Start manual recording</description>
 	</channel-type>
+    <channel-type id="snapshot-uri-channel" advanced="true">
+        <item-type>String</item-type>
+        <label>Current snapshot URI</label>
+        <description>Current snapshot URI of your camera</description>
+        <state readOnly="true"></state>
+    </channel-type>
 	<channel-type id="zoom-channel">
 		<item-type>String</item-type>
 		<label>Zoom</label>

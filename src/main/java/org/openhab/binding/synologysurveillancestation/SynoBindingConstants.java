@@ -52,6 +52,7 @@ public class SynoBindingConstants {
     public static final String CHANNEL_HOMEMODE = "homemode";
 
     // List of all Channel ids
+    public static final String CHANNEL_SNAPSHOT_URI = "common#snapshot-uri";
     public static final String CHANNEL_SNAPSHOT = "common#snapshot";
     public static final String CHANNEL_RECORD = "common#record";
     public static final String CHANNEL_ENABLE = "common#enable";

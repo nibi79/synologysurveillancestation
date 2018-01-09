@@ -67,7 +67,7 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         // API parameters
         params.put("cameraId", cameraId);
         params.put("control", control);
-        params.put("moveType", "Start");
+        // params.put("moveType", "Start");
 
         return callApi(METHOD_ZOOM, params);
     }
@@ -89,7 +89,7 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         params.put("cameraId", cameraId);
         params.put("direction", direction);
         params.put("speed", String.valueOf(speed));
-        params.put("moveType", "Start");
+        // params.put("moveType", "Start");
 
         return callApi(METHOD_MOVE, params);
     }

@@ -57,14 +57,17 @@ Currently following **Channels** are supported on the **Camera**:
 
 ## Advanced: Using file based configuration
 
-#.things file 
+### .things file ###
 
+````
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
 Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ deviceID="1", ptz="true/false" ]
 }
+```
 
-#.items file
+### .items file ###
 
+```
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
 
 Image Surveillance_Snapshot "Snapshot" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot"}
@@ -75,3 +78,4 @@ Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestati
 Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveillancestation:camera:diskstation:1:event#motion"}
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
+```

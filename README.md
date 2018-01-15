@@ -79,3 +79,9 @@ Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveil
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
 ```
+
+### .sitemap ###
+
+```
+Image item=Surveillance_Snapshot_Uri url="[%s]" refresh=5000
+```

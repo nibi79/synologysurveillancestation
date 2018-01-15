@@ -49,6 +49,7 @@ public abstract class SynoApiThread {
     private int refreshRate; // Refresh rate in seconds
     private final BaseThingHandler handler; // Bridge or Camera Thing handler
     private final String name; // Thread name / type
+    private final String deviceId; // Thread name / type
 
     /**
      * Defines a runnable for a refresh job
@@ -80,6 +81,7 @@ public abstract class SynoApiThread {
         this.name = name;
         this.handler = handler;
         this.refreshRate = refreshRate;
+        this.deviceId = handler.getThing().getProperties().getOrDefault("deviceID", "Bridge");
     }
 
     /**
@@ -123,20 +125,23 @@ public abstract class SynoApiThread {
      */
     public void runOnce() {
         if (getApiHandler() == null) {
-            logger.error("Thread {}: Handler not (yet) initialized", name);
+            logger.error("DeviceId: {}; Thread: {}; Handler not (yet) initialized", deviceId, name);
         } else if (isNeeded()) {
-
             boolean success = false;
             try {
+                System.err.println(1);
+                Thread.sleep(9000);
+                System.err.println(2);
                 success = refresh();
             } catch (WebApiException e) {
                 if (e.getCause() instanceof java.util.concurrent.TimeoutException) {
-                    logger.error("Thread {}: Connection timeout ({} ms)", name, SynoApi.API_CONNECTION_TIMEOUT);
+                    logger.error("DeviceId: {}; Thread: {}; Connection timeout ({} ms)", deviceId, name,
+                            SynoApi.API_CONNECTION_TIMEOUT);
                 } else {
-                    logger.error("Thread {}: Handler gone offline", name);
+                    logger.error("DeviceId: {}; Thread: {}; Handler gone offline", deviceId, name);
                 }
             } catch (Exception e) {
-                logger.error("Thread {}: Critical error:\n {}", name, e);
+                logger.error("DeviceId: {}; Thread: {}; Critical error:\n {}", deviceId, name, e);
             }
 
             updateStatus(success);

@@ -467,7 +467,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     }
 
     @Override
-    public HomeModeResponse getHomeModeResponse() {
+    public HomeModeResponse getHomeModeResponse() throws WebApiException {
         HomeModeResponse response = apiHomeMode.query();
         return response;
     }

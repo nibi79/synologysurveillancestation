@@ -168,7 +168,7 @@ public interface SynoWebApi {
      *
      * @return Home Mode state
      */
-    public HomeModeResponse getHomeModeResponse();
+    public HomeModeResponse getHomeModeResponse() throws WebApiException;
 
     /**
      * Turns the Home Mode on/off

@@ -129,9 +129,6 @@ public abstract class SynoApiThread {
         } else if (isNeeded()) {
             boolean success = false;
             try {
-                System.err.println(1);
-                Thread.sleep(9000);
-                System.err.println(2);
                 success = refresh();
             } catch (WebApiException e) {
                 if (e.getCause() instanceof java.util.concurrent.TimeoutException) {

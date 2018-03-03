@@ -19,6 +19,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.OnOffType;
+import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -98,6 +99,13 @@ public class SynoCameraHandler extends BaseThingHandler {
                 case CHANNEL_MOVE:
                     if (apiHandler != null) {
                         apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                    }
+                    break;
+                case CHANNEL_SNAPSHOT_URI_STATIC:
+                    if (apiHandler != null) {
+                        int streamId = Integer.parseInt(this.getThing().getConfiguration().get(STREAM_ID).toString());
+                        String uri = apiHandler.getSnapshotUri(cameraId, streamId);
+                        updateState(channelUID, new StringType(uri));
                     }
                     break;
             }

@@ -34,16 +34,16 @@ public class SynoApiThreadCamera extends SynoApiThread {
     @Override
     public boolean isNeeded() {
         return (getAsCameraHandler().isLinked(CHANNEL_ENABLE) || getAsCameraHandler().isLinked(CHANNEL_RECORD)
-                || getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI));
+                || getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC));
     }
 
     @Override
     public boolean refresh() throws Exception {
         String cameraId = getAsCameraHandler().getCameraId();
 
-        if (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI)) {
+        if (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)) {
 
-            Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT_URI);
+            Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT_URI_DYNAMIC);
             Thing thing = getAsCameraHandler().getThing();
             int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
 

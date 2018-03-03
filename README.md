@@ -47,6 +47,8 @@ Currently following **Channels** are supported on the **Bridge**:
 Currently following **Channels** are supported on the **Camera**:
 
 - Snapshot _IMAGE_
+- Snapshot static URI _STRING_ 
+- Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
 - Camera recording _SWITCH_
 - Enable camera _SWITCH_
 - Zoom _IN/OUT_ (PTZ cameras only)
@@ -61,7 +63,7 @@ Currently following **Channels** are supported on the **Camera**:
 
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
-Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ deviceID="1", ptz="true/false", snapshot-stream-id="1" ]
+Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, snapshot-stream-id=1 ]
 }
 ```
 
@@ -71,7 +73,8 @@ Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ 
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
 
 Image Surveillance_Snapshot "Snapshot" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot"}
-String Surveillance_Snapshot_Uri "Snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri"} 
+String Surveillance_Snapshot_Uri_Dynamic "Dynamic snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-dynamic"} 
+String Surveillance_Snapshot_Uri_Static "Static snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"} 
 Switch Surveillance_Recording "Camera recording" {channel="synologysurveillancestation:camera:diskstation:1:common#record"}
 Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestation:camera:diskstation:1:common#enable"}
 
@@ -83,5 +86,5 @@ Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveil
 ### .sitemap ###
 
 ```
-Image item=Surveillance_Snapshot_Uri url="[%s]" refresh=5000
+Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
 ```

@@ -49,7 +49,14 @@
             <channel id="snapshot" typeId="snapshot-channel" />
             <channel id="record" typeId="recording-channel" />
             <channel id="enable" typeId="enable-channel" />
-            <channel id="snapshot-uri" typeId="snapshot-uri-channel" />
+            <channel id="snapshot-uri-dynamic" typeId="snapshot-uri-channel">
+                <label>Dynamic snapshot URI</label>
+                <description>Dynamic URL of the current snapshot (events refresh rate)</description>
+            </channel>
+            <channel id="snapshot-uri-static" typeId="snapshot-uri-channel">
+                <label>Static snapshot URI</label>
+                <description>Static URL of the current snapshot</description>
+            </channel>
         </channels>
     </channel-group-type>
     

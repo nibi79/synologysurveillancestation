@@ -16,6 +16,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.LiveUriResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
@@ -185,11 +186,16 @@ public interface SynoWebApi {
 
     /**
      * Returns snapshot URI without polling the API
-     * 
+     *
      * @param cameraId ID of the camera
      * @param streamId ID of the stream
-     * @return snapshot URI 
+     * @return snapshot URI
      * @throws WebApiException
      */
     public String getSnapshotUri(String cameraId, int streamId) throws WebApiException;
+
+    /**
+     * Returns a response with live feed URIs
+     */
+    public LiveUriResponse getLiveUriResponse(String cameraId) throws WebApiException;
 }

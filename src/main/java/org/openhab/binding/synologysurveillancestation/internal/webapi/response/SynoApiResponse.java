@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -54,6 +55,13 @@ public abstract class SynoApiResponse {
      */
     public JsonObject getData() {
         return jsonResponse.getAsJsonObject("data");
+    }
+
+    /**
+     * @return
+     */
+    public JsonArray getDataAsArray() {
+        return jsonResponse.getAsJsonArray("data");
     }
 
     /**

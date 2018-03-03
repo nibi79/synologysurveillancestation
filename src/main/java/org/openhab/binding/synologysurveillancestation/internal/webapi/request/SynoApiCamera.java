@@ -152,6 +152,15 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
     }
 
+    /**
+     * Get snapshot URI of the selected camera
+     *
+     * @throws WebApiException
+     * @throws IOException
+     * @throws UnsupportedOperationException
+     * @throws URISyntaxException
+     *
+     */
     public String getSnapshotUri(String cameraId, int streamId) throws WebApiException {
         try {
             Map<String, String> params = new HashMap<>();

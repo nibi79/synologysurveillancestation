@@ -57,6 +57,10 @@
                 <label>Static snapshot URI</label>
                 <description>Static URL of the current snapshot</description>
             </channel>
+            <channel id="live-uri-rtsp" typeId="snapshot-uri-channel">
+                <label>Live feed URI (rtsp)</label>
+                <description>Live feed URI (rtsp)</description>
+            </channel>
         </channels>
     </channel-group-type>
     

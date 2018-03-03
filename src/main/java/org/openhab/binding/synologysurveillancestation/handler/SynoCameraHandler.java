@@ -108,6 +108,12 @@ public class SynoCameraHandler extends BaseThingHandler {
                         updateState(channelUID, new StringType(uri));
                     }
                     break;
+                case CHANNEL_LIVE_URI_RTSP:
+                    if (apiHandler != null) {
+                        String uri = apiHandler.getLiveUriResponse(cameraId).getRtsp();
+                        updateState(channelUID, new StringType(uri));
+                    }
+                    break;
             }
         } catch (WebApiException e) {
             logger.error("handle command: {}::{}::{}", getThing().getLabel(), getThing().getUID());

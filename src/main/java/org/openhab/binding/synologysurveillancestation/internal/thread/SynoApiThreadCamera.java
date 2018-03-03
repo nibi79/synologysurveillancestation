@@ -11,12 +11,11 @@ package org.openhab.binding.synologysurveillancestation.internal.thread;
 import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jetty.util.URIUtil;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Channel;
+import org.eclipse.smarthome.core.thing.Thing;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
-import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 
 /**
@@ -42,31 +41,37 @@ public class SynoApiThreadCamera extends SynoApiThread {
     public boolean refresh() throws Exception {
         String cameraId = getAsCameraHandler().getCameraId();
 
-        CameraResponse response = getApiHandler().getInfo(cameraId);
-        if (response.isSuccess()) {
-            if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
-                Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_ENABLE);
-                getAsCameraHandler().updateState(channel.getUID(),
-                        response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
-            }
-            if (getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
-                Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_RECORD);
-                getAsCameraHandler().updateState(channel.getUID(),
-                        response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
-            }
-            if (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI)) {
-                Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT_URI);
-                SynoConfig config = getApiHandler().getConfig();
-                StringBuilder sb = URIUtil.newURIBuilder(config.getProtocol(), config.getHost(),
-                        Integer.parseInt(config.getPort()));
-                String path = sb.toString() + response.getSnapshotPath(cameraId) + "&_sid="
-                        + getApiHandler().getSessionID();
-                getAsCameraHandler().updateState(channel.getUID(), new StringType(path));
-            }
+        if (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI)) {
+
+            Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT_URI);
+            Thing thing = getAsCameraHandler().getThing();
+            int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
+
+            String path = getApiHandler().getSnapshotUri(cameraId, streamId);
+            path += "&timestamp=" + String.valueOf(System.currentTimeMillis());
+            getAsCameraHandler().updateState(channel.getUID(), new StringType(path));
             return true;
+
         } else {
-            return false;
+
+            CameraResponse response = getApiHandler().getInfo(cameraId);
+            if (response.isSuccess()) {
+                if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
+                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_ENABLE);
+                    getAsCameraHandler().updateState(channel.getUID(),
+                            response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
+                }
+                if (getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
+                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_RECORD);
+                    getAsCameraHandler().updateState(channel.getUID(),
+                            response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
+
     }
 
 }

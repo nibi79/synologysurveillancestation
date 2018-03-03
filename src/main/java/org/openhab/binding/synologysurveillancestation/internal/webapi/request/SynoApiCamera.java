@@ -143,14 +143,29 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                 InputStream is = new ByteArrayInputStream(response.getContent());
                 IOUtils.copy(is, baos);
             }
-            logger.debug("Device: {}, API response time: {} ms, stream id: {}", cameraId, responseTime,
-                    streamId);
+            logger.debug("Device: {}, API response time: {} ms, stream id: {}", cameraId, responseTime, streamId);
             return baos.toByteArray();
         } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {
             throw new WebApiException(e);
         }
 
+    }
+
+    public String getSnapshotUri(String cameraId, int streamId) throws WebApiException {
+        try {
+            Map<String, String> params = new HashMap<>();
+
+            // API parameters
+            params.put("cameraId", cameraId);
+            params.put("camStm", String.valueOf(streamId));
+
+            Request request = getWebApiUrl(METHOD_GETSNAPSHOT, params);
+            return request.getURI().toString();
+
+        } catch (Exception e) {
+            throw new WebApiException(e);
+        }
     }
 
     /**

@@ -256,6 +256,21 @@ public class SynoWebApiHandler implements SynoWebApi {
     /*
      * (non-Javadoc)
      *
+     * @see
+     * org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getSnapshotUri(java.lang.
+     * String, java.lang.Integer streamId)
+     */
+    @Override
+    public String getSnapshotUri(String cameraId, int streamId) throws WebApiException {
+        if (apiCamera == null) {
+            return "";
+        }
+        return apiCamera.getSnapshotUri(cameraId, streamId);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#list()
      */
     @Override

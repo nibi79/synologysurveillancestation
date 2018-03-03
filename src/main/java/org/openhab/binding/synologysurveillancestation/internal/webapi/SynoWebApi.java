@@ -43,7 +43,11 @@ public interface SynoWebApi {
     // ----------------------------
 
     /**
+     * Returns snapshot as binary byte array
      *
+     * @param cameraId ID of the camera
+     * @param timeout API request timeout
+     * @param streamId ID of the stream
      * @return
      * @throws URISyntaxException
      * @throws IOException
@@ -178,4 +182,14 @@ public interface SynoWebApi {
      * @throws WebApiException
      */
     public SimpleResponse setHomeMode(boolean mode) throws WebApiException;
+
+    /**
+     * Returns snapshot URI without polling the API
+     * 
+     * @param cameraId ID of the camera
+     * @param streamId ID of the stream
+     * @return snapshot URI 
+     * @throws WebApiException
+     */
+    public String getSnapshotUri(String cameraId, int streamId) throws WebApiException;
 }

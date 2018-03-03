@@ -49,7 +49,7 @@ public interface SynoWebApi {
      * @throws IOException
      * @throws UnsupportedOperationException
      */
-    public byte[] getSnapshot(String cameraId)
+    public byte[] getSnapshot(String cameraId, int timeout)
             throws WebApiException, UnsupportedOperationException, IOException, URISyntaxException;
 
     /**

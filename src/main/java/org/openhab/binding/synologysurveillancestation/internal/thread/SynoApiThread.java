@@ -23,7 +23,6 @@ import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,8 +131,10 @@ public abstract class SynoApiThread {
                 success = refresh();
             } catch (WebApiException e) {
                 if (e.getCause() instanceof java.util.concurrent.TimeoutException) {
-                    logger.error("DeviceId: {}; Thread: {}; Connection timeout ({} ms)", deviceId, name,
-                            SynoApi.API_CONNECTION_TIMEOUT);
+                    logger.debug(
+                            "DeviceId: {}; {} API timeout, consider to increase refresh rate ({} s) if seen frequently",
+                            deviceId, name, refreshRate);
+                    success = true;
                 } else {
                     logger.error("DeviceId: {}; Thread: {}; Handler gone offline", deviceId, name);
                 }

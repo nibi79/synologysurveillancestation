@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
@@ -24,6 +25,8 @@ import org.eclipse.jetty.client.api.Request;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SYNO.SurveillanceStation.Camera
@@ -54,6 +57,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  *
  */
 public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
+    private final Logger logger = LoggerFactory.getLogger(SynoApiCamera.class);
 
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera";
@@ -115,7 +119,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws URISyntaxException
      *
      */
-    public byte[] getSnapshot(String cameraId) throws IOException, URISyntaxException, WebApiException {
+    public byte[] getSnapshot(String cameraId, int timeout) throws IOException, URISyntaxException, WebApiException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -130,12 +134,16 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
             Request request = getWebApiUrl(METHOD_GETSNAPSHOT, params);
 
-            ContentResponse response = request.send();
+            long responseTime = System.currentTimeMillis();
 
+            ContentResponse response = request.timeout(timeout, TimeUnit.SECONDS).send();
+
+            responseTime = System.currentTimeMillis() - responseTime;
             if (response.getStatus() == 200) {
                 InputStream is = new ByteArrayInputStream(response.getContent());
                 IOUtils.copy(is, baos);
             }
+            logger.debug("Device: {}, API response time: {} ms", cameraId, responseTime);
             return baos.toByteArray();
         } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {

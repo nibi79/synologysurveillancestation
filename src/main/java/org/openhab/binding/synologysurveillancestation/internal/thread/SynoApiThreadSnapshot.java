@@ -40,7 +40,7 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
         Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
         Thing thing = getAsCameraHandler().getThing();
 
-        byte[] snapshot = getApiHandler().getSnapshot(getAsCameraHandler().getCameraId());
+        byte[] snapshot = getApiHandler().getSnapshot(getAsCameraHandler().getCameraId(), getRefreshRate());
         if (snapshot.length < 1000) {
             getAsCameraHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             return false;

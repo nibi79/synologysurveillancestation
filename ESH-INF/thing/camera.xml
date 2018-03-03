@@ -49,15 +49,15 @@
             <channel id="snapshot" typeId="snapshot-channel" />
             <channel id="record" typeId="recording-channel" />
             <channel id="enable" typeId="enable-channel" />
-            <channel id="snapshot-uri-dynamic" typeId="snapshot-uri-channel">
+            <channel id="snapshot-uri-dynamic" typeId="uri-channel">
                 <label>Dynamic snapshot URI</label>
                 <description>Dynamic URL of the current snapshot (events refresh rate)</description>
             </channel>
-            <channel id="snapshot-uri-static" typeId="snapshot-uri-channel">
+            <channel id="snapshot-uri-static" typeId="uri-channel">
                 <label>Static snapshot URI</label>
                 <description>Static URL of the current snapshot</description>
             </channel>
-            <channel id="live-uri-rtsp" typeId="snapshot-uri-channel">
+            <channel id="live-uri-rtsp" typeId="uri-channel">
                 <label>Live feed URI (rtsp)</label>
                 <description>Live feed URI (rtsp)</description>
             </channel>
@@ -107,10 +107,10 @@
 		<label>Camera recording</label>
 		<description>Start manual recording</description>
 	</channel-type>
-    <channel-type id="snapshot-uri-channel" advanced="true">
+    <channel-type id="uri-channel" advanced="true">
         <item-type>String</item-type>
-        <label>Current snapshot URI</label>
-        <description>Current snapshot URI of your camera</description>
+        <label>URI</label>
+        <description>Current snapshot/live URI of your camera</description>
         <state readOnly="true"></state>
     </channel-type>
 	<channel-type id="zoom-channel">

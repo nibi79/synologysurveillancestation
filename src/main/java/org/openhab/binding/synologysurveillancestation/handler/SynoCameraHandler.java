@@ -116,7 +116,7 @@ public class SynoCameraHandler extends BaseThingHandler {
                     break;
             }
         } catch (WebApiException e) {
-            logger.error("handle command: {}::{}::{}", getThing().getLabel(), getThing().getUID());
+            logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
         }
 
     }

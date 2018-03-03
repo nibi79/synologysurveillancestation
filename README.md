@@ -36,7 +36,7 @@ Following options can be set for the **Bridge**:
 Following options can be set for the **Camera**:
 
 - Snapshot refresh rate 
-- Refresh rate for all **Camera** events 
+- Refresh rate for all other **Camera** events and dynamic channels 
 
 ## Channels
 
@@ -49,6 +49,7 @@ Currently following **Channels** are supported on the **Camera**:
 - Snapshot _IMAGE_
 - Snapshot static URI _STRING_ 
 - Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
+- Snapshot static live feed URI _STRING_ 
 - Camera recording _SWITCH_
 - Enable camera _SWITCH_
 - Zoom _IN/OUT_ (PTZ cameras only)
@@ -74,7 +75,9 @@ Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:s
 
 Image Surveillance_Snapshot "Snapshot" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot"}
 String Surveillance_Snapshot_Uri_Dynamic "Dynamic snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-dynamic"} 
-String Surveillance_Snapshot_Uri_Static "Static snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"} 
+String Surveillance_Snapshot_Uri_Static "Static snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"}
+String Surveillance_Snapshot_Live_Uri_Rtsp "Live feed URI (rtsp)" {channel="synologysurveillancestation:camera:diskstation:1:common#live-uri-rtsp"} 
+
 Switch Surveillance_Recording "Camera recording" {channel="synologysurveillancestation:camera:diskstation:1:common#record"}
 Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestation:camera:diskstation:1:common#enable"}
 

@@ -87,7 +87,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
                     break;
             }
         } catch (Exception e) {
-            logger.error("handle command: {}::{}::{}", getThing().getLabel(), getThing().getUID());
+            logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
         }
     }
 

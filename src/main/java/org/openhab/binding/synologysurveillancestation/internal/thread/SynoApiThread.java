@@ -139,7 +139,7 @@ public abstract class SynoApiThread {
                     logger.error("DeviceId: {}; Thread: {}; Handler gone offline", deviceId, name);
                 }
             } catch (Exception e) {
-                logger.error("DeviceId: {}; Thread: {}; Critical error:\n {}", deviceId, name, e);
+                logger.error("DeviceId: {}; Thread: {}; Critical error:\n", deviceId, name, e);
             }
 
             updateStatus(success);

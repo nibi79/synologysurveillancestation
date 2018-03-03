@@ -101,7 +101,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         params.put("basic", API_TRUE);
         params.put("streamInfo", API_TRUE);
         params.put("blPrivilege", API_FALSE);
-        params.put("camStm", "1");
+        // params.put("camStm", "1");
 
         if (cameraId != null) {
             params.put("cameraIds", cameraId);
@@ -119,7 +119,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws URISyntaxException
      *
      */
-    public byte[] getSnapshot(String cameraId, int timeout) throws IOException, URISyntaxException, WebApiException {
+    public byte[] getSnapshot(String cameraId, int timeout, int streamId)
+            throws IOException, URISyntaxException, WebApiException {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -129,8 +130,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
             // API parameters
             params.put("cameraId", cameraId);
-            // 0 - High quality, 1 - Balanced, 2 - Low bandwidth
-            params.put("profileType", "1");
+            params.put("camStm", String.valueOf(streamId));
 
             Request request = getWebApiUrl(METHOD_GETSNAPSHOT, params);
 
@@ -143,7 +143,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                 InputStream is = new ByteArrayInputStream(response.getContent());
                 IOUtils.copy(is, baos);
             }
-            logger.debug("Device: {}, API response time: {} ms", cameraId, responseTime);
+            logger.debug("Device: {}, API response time: {} ms, stream id: {}", cameraId, responseTime,
+                    streamId);
             return baos.toByteArray();
         } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {

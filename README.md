@@ -61,7 +61,7 @@ Currently following **Channels** are supported on the **Camera**:
 
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
-Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ deviceID="1", ptz="true/false" ]
+Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ deviceID="1", ptz="true/false", snapshot-stream-id="1" ]
 }
 ```
 

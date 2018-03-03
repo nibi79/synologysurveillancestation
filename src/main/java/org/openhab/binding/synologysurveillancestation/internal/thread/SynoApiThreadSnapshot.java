@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.thread;
 
-import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.CHANNEL_SNAPSHOT;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.RawType;
@@ -40,7 +40,9 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
         Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
         Thing thing = getAsCameraHandler().getThing();
 
-        byte[] snapshot = getApiHandler().getSnapshot(getAsCameraHandler().getCameraId(), getRefreshRate());
+        int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
+        byte[] snapshot = getApiHandler().getSnapshot(getAsCameraHandler().getCameraId(), getRefreshRate(),
+                streamId);
         if (snapshot.length < 1000) {
             getAsCameraHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             return false;

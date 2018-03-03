@@ -47,6 +47,7 @@ public class SynoBindingConstants {
     public static final String SESSION_ID = "sessionID";
     public static final String REFRESH_RATE_SNAPSHOT = "refresh-rate-snapshot";
     public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";
+    public static final String STREAM_ID = "snapshot-stream-id";
 
     // List of all Bridge Channels
     public static final String CHANNEL_HOMEMODE = "homemode";

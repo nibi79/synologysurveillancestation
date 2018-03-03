@@ -50,10 +50,8 @@ public class SynoApiThreadCamera extends SynoApiThread {
             String path = getApiHandler().getSnapshotUri(cameraId, streamId);
             path += "&timestamp=" + String.valueOf(System.currentTimeMillis());
             getAsCameraHandler().updateState(channel.getUID(), new StringType(path));
-            return true;
-
-        } else {
-
+        }
+        if (getAsCameraHandler().isLinked(CHANNEL_ENABLE) || getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
             CameraResponse response = getApiHandler().getInfo(cameraId);
             if (response.isSuccess()) {
                 if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
@@ -71,6 +69,7 @@ public class SynoApiThreadCamera extends SynoApiThread {
                 return false;
             }
         }
+        return true;
 
     }
 

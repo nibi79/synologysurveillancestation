@@ -61,6 +61,10 @@
                 <label>Live feed URI (rtsp)</label>
                 <description>Live feed URI (rtsp)</description>
             </channel>
+            <channel id="live-uri-mjpeg-http" typeId="uri-channel">
+                <label>Live feed URI (mjpeg over http)</label>
+                <description>Live feed URI (mjpeg over http)</description>
+            </channel>
         </channels>
     </channel-group-type>
     

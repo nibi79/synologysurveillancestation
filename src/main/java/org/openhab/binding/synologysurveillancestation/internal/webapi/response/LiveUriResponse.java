@@ -33,7 +33,6 @@ public class LiveUriResponse extends SimpleResponse {
     /**
      * Return rtsp URI
      *
-     * @param cameraId
      */
     public String getRtsp() {
         for (JsonElement jUri : getUris()) {
@@ -45,4 +44,17 @@ public class LiveUriResponse extends SimpleResponse {
         return "";
     }
 
+    /**
+     * Return mjpeg over http URI
+     *
+     */
+    public String getMjpegHttp() {
+        for (JsonElement jUri : getUris()) {
+            if (jUri.isJsonObject()) {
+                JsonObject uri = jUri.getAsJsonObject();
+                return uri.get("mjpegHttpPath").getAsString().replace("\"", "");
+            }
+        }
+        return "";
+    }
 }

@@ -149,6 +149,14 @@ public class SynoCameraHandler extends BaseThingHandler {
                     thread.start();
                 }
 
+                // Workaround for text configuration, whereby items are linked even before the handler initialization
+                for (String channelID : STATIC_CHANNELS) {
+                    if (isLinked(channelID)) {
+                        ChannelUID channelUID = new ChannelUID(thing.getUID(), channelID);
+                        handleCommand(channelUID, RefreshType.REFRESH);
+                    }
+                }
+
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
             }

@@ -58,6 +58,10 @@ public class SynoBindingConstants {
     public static final String CHANNEL_LIVE_URI_RTSP = "common#live-uri-rtsp";
     public static final String CHANNEL_LIVE_URI_MJPEG_HTTP = "common#live-uri-mjpeg-http";
 
+    public static final Set<String> STATIC_CHANNELS = Collections
+            .unmodifiableSet(Stream.of(CHANNEL_SNAPSHOT_URI_STATIC, CHANNEL_LIVE_URI_RTSP, CHANNEL_LIVE_URI_MJPEG_HTTP)
+                    .collect(Collectors.toSet()));
+
     public static final String CHANNEL_SNAPSHOT = "common#snapshot";
     public static final String CHANNEL_RECORD = "common#record";
     public static final String CHANNEL_ENABLE = "common#enable";

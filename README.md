@@ -49,7 +49,8 @@ Currently following **Channels** are supported on the **Camera**:
 - Snapshot _IMAGE_
 - Snapshot static URI _STRING_ 
 - Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
-- Snapshot static live feed URI _STRING_ 
+- Snapshot static live feed URI (rtsp) _STRING_ 
+- Snapshot static live feed URI (mjpeg over http) _STRING_ 
 - Camera recording _SWITCH_
 - Enable camera _SWITCH_
 - Zoom _IN/OUT_ (PTZ cameras only)
@@ -74,9 +75,11 @@ Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ 
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
 
 Image Surveillance_Snapshot "Snapshot" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot"}
+
 String Surveillance_Snapshot_Uri_Dynamic "Dynamic snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-dynamic"} 
 String Surveillance_Snapshot_Uri_Static "Static snapshot URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"}
 String Surveillance_Snapshot_Live_Uri_Rtsp "Live feed URI (rtsp)" {channel="synologysurveillancestation:camera:diskstation:1:common#live-uri-rtsp"} 
+String Surveillance_Snapshot_Live_Uri_Mjpeg_Http "Live feed URI (mjpeg over http)" {channel="synologysurveillancestation:camera:diskstation:1:common#live-uri-mjpeg-http"} 
 
 Switch Surveillance_Recording "Camera recording" {channel="synologysurveillancestation:camera:diskstation:1:common#record"}
 Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestation:camera:diskstation:1:common#enable"}
@@ -90,4 +93,5 @@ Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveil
 
 ```
 Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
+Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg" 
 ```

@@ -65,9 +65,10 @@ Currently following **Channels** are supported on the **Camera**:
 
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
-Thing synologysurveillancestation:camera:diskstation:1 "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, snapshot-stream-id=1 ]
+Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, snapshot-stream-id=1 ]
 }
 ```
+Here the **CameraID** is a numeric ID of your surveillance camera in Surveillance Station (e.g. 1) and snapshot stream ID is the ID of the preferred stream in Surveillance Station (e.g. 1 for 'Stream 1')  
 
 ### .items file ###
 
@@ -88,6 +89,7 @@ Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveil
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
 ```
+Here `:1` is yet again the numeric ID of your surveillance camera from a previous step.  
 
 ### .sitemap ###
 

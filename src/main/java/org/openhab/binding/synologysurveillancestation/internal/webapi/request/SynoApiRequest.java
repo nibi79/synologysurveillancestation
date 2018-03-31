@@ -9,6 +9,7 @@
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
@@ -17,7 +18,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jetty.client.HttpClient;
@@ -199,7 +199,10 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
             if (response.getStatus() == 200) {
 
-                String result = response.getContentAsString();
+                byte[] rawResponse = response.getContent();
+                String encoding = response.getEncoding().replaceAll("\"", "").trim();
+                String result = new String(rawResponse, encoding);
+
                 if (result.length() > 0) {
                     if (result.contains("\"success\":true")) {
                         logger.trace("RESPONSE: {}", result);
@@ -223,6 +226,8 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
                 | NoSuchMethodException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {
             throw new WebApiException(e);
+        } catch (UnsupportedEncodingException ee) {
+            throw new WebApiException(ee);
         }
 
     }

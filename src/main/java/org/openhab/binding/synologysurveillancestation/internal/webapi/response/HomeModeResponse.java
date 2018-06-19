@@ -8,18 +8,31 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
-/**
- * {@link SimpleResponse} is a simplest implementation of an API response
- *
- * @author Nils
- */
-public class SimpleResponse extends SynoApiResponse {
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
+/**
+ * {@link HomeModeResponse} provides response for Home Mode
+ *
+ * @author Pavion
+ */
+@NonNullByDefault
+public class HomeModeResponse extends SimpleResponse {
     /**
      * @param jsonResponse
      */
-    public SimpleResponse(String jsonResponse) {
+    public HomeModeResponse(String jsonResponse) {
         super(jsonResponse);
+    }
+
+    /**
+     * @return
+     */
+    public boolean isHomeMode() {
+        return getData().get("on").getAsBoolean();
+    }
+
+    public int getReason() {
+        return getData().get("reason").getAsInt();
     }
 
 }

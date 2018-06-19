@@ -11,62 +11,116 @@
 		<description>Synology Surveillance Station Camera</description>
 		<category>Camera</category>
 
-		<channels>
-			<channel id="image" typeId="image-channel" />
-			<channel id="record" typeId="recording-channel" />
-			<channel id="enable" typeId="enable-channel" />
-			
-			<!-- motion and alarm detection -->
-            <channel id="motiondetected" typeId="motion-detected-channel" />
-            <channel id="alarmdetected" typeId="alarm-detected-channel" />
-		</channels>
+        <channel-groups>
+            <channel-group id="common" typeId="common" />
+            <channel-group id="ptz" typeId="ptz" />
+            <channel-group id="event" typeId="event">
+                <label>Camera events</label>
+                <description>Events of your camera</description>            
+            </channel-group>
+        </channel-groups>
 
+        <config-description>
+            <parameter name="refresh-rate-snapshot" unit="s" type="integer">
+                <label>Snapshot refresh rate:</label>
+                <description>Refresh rate for camera snapshot in seconds (0 to disable)</description>
+                <default>10</default>
+                <required>true</required>
+            </parameter>
+            <parameter name="refresh-rate-events" unit="s" type="integer">
+                <label>Event refresh rate:</label>
+                <description>Refresh rate for events in seconds (0 to disable)</description>
+                <default>3</default>
+                <required>true</required>
+            </parameter>
+            <parameter name="snapshot-stream-id" type="integer">
+                <label>Snapshot stream ID:</label>
+                <description>Snapshot video stream ID according to Surveillance Station configuration (default: 1 for 'Stream 1')</description>
+                <default>1</default>
+                <required>true</required>
+            </parameter>
+        </config-description>
 	</thing-type>
 
-	<thing-type id="cameraptz">
-		<supported-bridge-type-refs>
-			<bridge-type-ref id="station" />
-		</supported-bridge-type-refs>
-		<label>Surveillance Station Camera PTZ</label>
-		<description>Synology Surveillance Station Camera PTZ</description>
-		<category>Camera</category>
+    <channel-group-type id="common">
+        <label>Common channels</label>
+        <description>Common channels of your camera</description>
+        <channels>
+            <channel id="snapshot" typeId="snapshot-channel" />
+            <channel id="record" typeId="recording-channel" />
+            <channel id="enable" typeId="enable-channel" />
+            <channel id="snapshot-uri-dynamic" typeId="uri-channel">
+                <label>Dynamic snapshot URI</label>
+                <description>Dynamic URL of the current snapshot (events refresh rate)</description>
+            </channel>
+            <channel id="snapshot-uri-static" typeId="uri-channel">
+                <label>Static snapshot URI</label>
+                <description>Static URL of the current snapshot</description>
+            </channel>
+            <channel id="live-uri-rtsp" typeId="uri-channel">
+                <label>Live feed URI (rtsp)</label>
+                <description>Live feed URI (rtsp)</description>
+            </channel>
+            <channel id="live-uri-mjpeg-http" typeId="uri-channel">
+                <label>Live feed URI (mjpeg over http)</label>
+                <description>Live feed URI (mjpeg over http)</description>
+            </channel>
+        </channels>
+    </channel-group-type>
+    
+    <channel-group-type id="ptz">
+        <label>PTZ channels</label>
+        <description>Pan/Tilt/Zoom channels of your camera</description>
+        <channels>
+            <channel id="zoom" typeId="zoom-channel" />
+            <channel id="move" typeId="move-channel" />
+        </channels>
+    </channel-group-type>
 
-		<channels>
-			<channel id="image" typeId="image-channel" />
-			<channel id="record" typeId="recording-channel" />
-			<channel id="enable" typeId="enable-channel" />
+    <channel-group-type id="event">
+        <label>Event</label>
+        <description>Event of your camera</description>
+        <channels>
+            <channel id="motion" typeId="event-channel" >
+                <label>Motion event</label>
+                <description>Last motion event</description>
+            </channel>
+            <channel id="alarm" typeId="event-advanced-channel" >
+                <label>Alarm event</label>
+                <description>Last alarm event</description>
+            </channel>
+            <channel id="manual" typeId="event-advanced-channel" >
+                <label>Manual event</label>
+                <description>Last manual event</description>
+            </channel>
+        </channels>
+    </channel-group-type>
 
-			<!-- channels for PTZ -->
-			<channel id="zoom" typeId="zoom-channel" />
-			<channel id="move" typeId="move-channel" />
-
-			<!-- motion and alarm detection -->
-            <channel id="motiondetected" typeId="motion-detected-channel" />
-            <channel id="alarmdetected" typeId="alarm-detected-channel" />
-		</channels>
-
-	</thing-type>
-
-	<!-- Sample Channel Type -->
-	<channel-type id="image-channel">
+	<channel-type id="snapshot-channel">
 		<item-type>Image</item-type>
-		<label>Image</label>
-		<description>Image channel for Camera Binding</description>
+		<label>Snapshot</label>
+		<description>Current snapshot of your camera</description>
 	</channel-type>
 	<channel-type id="enable-channel">
 		<item-type>Switch</item-type>
-		<label>Enable</label>
-		<description>Enable channel for Camera Binding</description>
+		<label>Camera enabled</label>
+		<description>Enable or disable your camera</description>
 	</channel-type>
 	<channel-type id="recording-channel">
 		<item-type>Switch</item-type>
-		<label>Record</label>
-		<description>Recording channel for Camera Binding</description>
+		<label>Camera recording</label>
+		<description>Start manual recording</description>
 	</channel-type>
+    <channel-type id="uri-channel" advanced="true">
+        <item-type>String</item-type>
+        <label>URI</label>
+        <description>Current snapshot/live URI of your camera</description>
+        <state readOnly="true"></state>
+    </channel-type>
 	<channel-type id="zoom-channel">
 		<item-type>String</item-type>
 		<label>Zoom</label>
-		<description>Zooming channel for Camera Binding</description>
+		<description>Zooming channel for your camera</description>
 		<state>
 			<options>
 				<option value="IN">in</option>
@@ -77,7 +131,7 @@
 	<channel-type id="move-channel">
 		<item-type>String</item-type>
 		<label>Move</label>
-		<description>Moving channel for Camera Binding</description>
+		<description>Moving channel for your camera</description>
 		<state>
 			<options>
 				<option value="UP">up</option>
@@ -88,16 +142,17 @@
 			</options>
 		</state>
 	</channel-type>
-    <channel-type id="motion-detected-channel">
+	
+    <channel-type id="event-channel">
         <item-type>Switch</item-type>
-        <label>Motion detected</label>
-        <description>Recording event on motion detection as in Timeline</description>
+        <label>Event detected</label>
+        <description>Event was detected</description>
         <state readOnly="true"></state>
     </channel-type>
-    <channel-type id="alarm-detected-channel">
+    <channel-type id="event-advanced-channel" advanced="true">
         <item-type>Switch</item-type>
-        <label>Alarm detected</label>
-        <description>Recording event on alarm detection as in Timeline</description>
+        <label>Event detected</label>
+        <description>Event was detected</description>
         <state readOnly="true"></state>
     </channel-type>
 

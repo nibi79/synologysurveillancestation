@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,10 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
@@ -50,7 +48,7 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
     /**
      * @param config
      */
-    public SynoApiPTZ(Config config, String sessionID) {
+    public SynoApiPTZ(SynoConfig config, String sessionID) {
         super(apiConfig, config, sessionID);
     }
 
@@ -64,12 +62,12 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      */
     private SimpleResponse callZoom(String cameraId, String control) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
 
         // API parameters
-        params.add(new BasicNameValuePair("cameraId", cameraId));
-        params.add(new BasicNameValuePair("control", control));
-        params.add(new BasicNameValuePair("moveType", "Start"));
+        params.put("cameraId", cameraId);
+        params.put("control", control);
+        // params.put("moveType", "Start");
 
         return callApi(METHOD_ZOOM, params);
     }
@@ -85,13 +83,13 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      */
     private SimpleResponse callMove(String cameraId, String direction, int speed) throws WebApiException {
 
-        List<NameValuePair> params = new ArrayList<>();
+        Map<String, String> params = new HashMap<>();
 
         // API Parameters
-        params.add(new BasicNameValuePair("cameraId", cameraId));
-        params.add(new BasicNameValuePair("direction", direction));
-        params.add(new BasicNameValuePair("speed", String.valueOf(speed)));
-        params.add(new BasicNameValuePair("moveType", "Start"));
+        params.put("cameraId", cameraId);
+        params.put("direction", direction);
+        params.put("speed", String.valueOf(speed));
+        // params.put("moveType", "Start");
 
         return callApi(METHOD_MOVE, params);
     }

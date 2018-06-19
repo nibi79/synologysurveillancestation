@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,8 +9,9 @@
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
 /**
- * @author Nils
+ * The {@link SynoApi} is an interface for Synology API codes
  *
+ * @author Nils
  */
 public interface SynoApi {
 
@@ -39,12 +40,15 @@ public interface SynoApi {
     public static final String METHOD_ENABLE = "Enable";
     public static final String METHOD_DISABLE = "Disable";
     public static final String METHOD_GETSNAPSHOT = "GetSnapshot";
-    public static final String METHOD_QUERY = "Query";
+    public static final String METHOD_LIVEVIEWPATH = "GetLiveViewPath";
 
     public static final String METHOD_RECORD = "Record";
 
     public static final String METHOD_ZOOM = "Zoom";
     public static final String METHOD_MOVE = "Move";
+    public static final String METHOD_SWITCH = "Switch";
+
+    public static final int CONNECTION_TIMEOUT = 5000;
 
     public SynoApiConfig getApiConfig();
 }

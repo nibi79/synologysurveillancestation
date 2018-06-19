@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.THING_TYPE_CAMERA;
 
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +19,8 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
-import org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants;
-import org.openhab.binding.synologysurveillancestation.handler.SynologySurveillanceStationBridgeHandler;
+import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
+import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
@@ -40,7 +40,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(CameraDiscoveryService.class);
 
-    private SynologySurveillanceStationBridgeHandler bridgeHandler = null;
+    private SynoBridgeHandler bridgeHandler = null;
 
     /**
      * Maximum time to search for devices in seconds.
@@ -48,11 +48,10 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
     private static final int SEARCH_TIME = 20;
 
     public CameraDiscoveryService() {
-        super(SynologySurveillanceStationBindingConstants.SUPPORTED_CAMERA_TYPES, SEARCH_TIME);
+        super(SynoBindingConstants.SUPPORTED_CAMERA_TYPES, SEARCH_TIME);
     }
 
-    public CameraDiscoveryService(SynologySurveillanceStationBridgeHandler bridgeHandler)
-            throws IllegalArgumentException {
+    public CameraDiscoveryService(SynoBridgeHandler bridgeHandler) throws IllegalArgumentException {
         super(SEARCH_TIME);
         this.bridgeHandler = bridgeHandler;
     }
@@ -66,7 +65,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        return SynologySurveillanceStationBindingConstants.SUPPORTED_THING_TYPES;
+        return SynoBindingConstants.SUPPORTED_THING_TYPES;
     }
 
     @Override
@@ -82,6 +81,9 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
         try {
 
             SynoWebApiHandler apiHandler = bridgeHandler.getSynoWebApiHandler();
+            if (apiHandler == null) {
+                return;
+            }
 
             CameraResponse response = apiHandler.list();
 
@@ -103,7 +105,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
                             CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
 
-                            ThingUID thingUID = createThingUID(bridgeUID, cameraId, cameraDetails);
+                            ThingUID thingUID = new ThingUID(THING_TYPE_CAMERA, bridgeUID, cameraId);
 
                             Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
 
@@ -119,35 +121,9 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                 }
             }
 
-        } catch (WebApiException e) {
+        } catch (WebApiException | NullPointerException e) {
             logger.error("Error in WebApiException", e);
         }
-    }
-
-    /**
-     * Creates ThingUID by evaluating camera PTZ support.
-     *
-     * @param bridgeUID
-     * @param cameraId
-     * @param cameraDetails
-     * @return
-     */
-    private ThingUID createThingUID(ThingUID bridgeUID, String cameraId, CameraResponse cameraDetails) {
-
-        JsonObject cameraDetail = cameraDetails.getCameras().get(0).getAsJsonObject();
-
-        int ptzCap = cameraDetail.get("ptzCap").getAsInt();
-
-        ThingTypeUID thingTypeUID = THING_TYPE_CAMERA;
-
-        // supports PTZ?
-        if (ptzCap > 0) {
-            thingTypeUID = THING_TYPE_CAMERA_PTZ;
-        }
-
-        ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, cameraId);
-
-        return thingUID;
     }
 
     @Override

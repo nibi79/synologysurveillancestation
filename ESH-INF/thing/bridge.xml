@@ -9,47 +9,57 @@
         <label>Bridge Synology Surveilance Station API</label>
         <description>Represents the API for Synology Surveilance Station.</description>
 
+        <channels>
+            <channel id="homemode" typeId="homemode-channel" />
+        </channels>
+
         <properties>
             <property name="vendor">Synology</property>
         </properties>
-        
+       
         <config-description>
-        <parameter name="protocol" type="text">
-            <label>Protocol:</label>
-            <description>Protocol (http, https) for accessing Surveillance Station</description>
-            <default>http</default>
-            <required>true</required>
-        </parameter>
-        <parameter name="host" type="text">
-            <label>IP-Address:</label>
-            <description>IP of Surveillance Station</description>
-            <required>true</required>
-        </parameter>
-        <parameter name="port" type="text">
-            <label>Port:</label>
-            <description>Port for accessing Surveillance Station</description>
-            <default>5000</default>
-            <required>true</required>
-        </parameter>
-        <parameter name="username" type="text">
-            <label>User name:</label>
-            <description>User name for accessing camera</description>
-            <required>true</required>
-        </parameter>
-        <parameter name="password" type="text">
-            <label>Password:</label>
-            <context>password</context>
-            <description>Password for accessing camera</description>
-            <required>true</required>
-        </parameter>
-        <parameter name="poll" unit="s" type="integer">
-            <label>Poll time:</label>
-            <description>Interval of image being refreshed in seconds</description>
-            <default>5</default>
-            <required>true</required>
-        </parameter>
+	        <parameter name="protocol" type="text">
+	            <label>Protocol:</label>
+	            <description>Protocol (http, https) for accessing Surveillance Station</description>
+	            <default>http</default>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="host" type="text">
+	            <label>IP-Address:</label>
+	            <description>IP of Surveillance Station</description>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="port" type="text">
+	            <label>Port:</label>
+	            <description>Port for accessing Surveillance Station</description>
+	            <default>5000</default>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="username" type="text">
+	            <label>User name:</label>
+	            <description>User name for accessing camera</description>
+	            <required>true</required>
+	        </parameter>
+	        <parameter name="password" type="text">
+	            <label>Password:</label>
+	            <context>password</context>
+	            <description>Password for accessing camera</description>
+	            <required>true</required>
+	        </parameter>
+            <parameter name="refresh-rate-events" unit="s" type="integer">
+                <label>Event refresh rate:</label>
+                <description>Refresh rate for station global events in seconds (0 to disable)</description>
+                <default>3</default>
+                <required>true</required>
+            </parameter>
         </config-description>
     </bridge-type>
+    
+    <channel-type id="homemode-channel" advanced="true">
+        <item-type>Switch</item-type>
+        <label>Home Mode</label>
+        <description>Home Mode of your Surveillance Station</description>
+    </channel-type>
 
 
 </thing:thing-descriptions>

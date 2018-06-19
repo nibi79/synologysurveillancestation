@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,18 +8,19 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
-import org.openhab.binding.synologysurveillancestation.internal.Config;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.LiveUriResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
- * The {@link Config} is class for handling the binding configuration
+ * The {@link SynoWebApi} is an interface for the Web API
  *
  * @author Nils
  */
@@ -43,13 +44,17 @@ public interface SynoWebApi {
     // ----------------------------
 
     /**
+     * Returns snapshot as binary byte array
      *
+     * @param cameraId ID of the camera
+     * @param timeout API request timeout
+     * @param streamId ID of the stream
      * @return
      * @throws URISyntaxException
      * @throws IOException
      * @throws UnsupportedOperationException
      */
-    public ByteArrayOutputStream getSnapshot(String cameraId)
+    public byte[] getSnapshot(String cameraId, int timeout, int streamId)
             throws WebApiException, UnsupportedOperationException, IOException, URISyntaxException;
 
     /**
@@ -157,9 +162,40 @@ public interface SynoWebApi {
     public SimpleResponse moveHome(String cameraId) throws WebApiException;
 
     /**
-     * @param cameraId
+     * @param cameraId ID of the camera
+     * @return Response with current events
+     * @throws WebApiException
+     */
+    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
+            throws WebApiException;
+
+    /**
+     *
+     * @return Home Mode state
+     */
+    public HomeModeResponse getHomeModeResponse() throws WebApiException;
+
+    /**
+     * Turns the Home Mode on/off
+     *
+     * @param mode on/off
      * @return
      * @throws WebApiException
      */
-    public EventResponse getEventResponse(String cameraId, long lastEventTime) throws WebApiException;
+    public SimpleResponse setHomeMode(boolean mode) throws WebApiException;
+
+    /**
+     * Returns snapshot URI without polling the API
+     *
+     * @param cameraId ID of the camera
+     * @param streamId ID of the stream
+     * @return snapshot URI
+     * @throws WebApiException
+     */
+    public String getSnapshotUri(String cameraId, int streamId) throws WebApiException;
+
+    /**
+     * Returns a response with live feed URIs
+     */
+    public LiveUriResponse getLiveUriResponse(String cameraId) throws WebApiException;
 }

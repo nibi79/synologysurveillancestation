@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,29 +8,24 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.openhab.binding.synologysurveillancestation.internal.Config;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.client.api.Request;
+import org.eclipse.jetty.util.URIUtil;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
+import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.slf4j.Logger;
@@ -49,10 +44,11 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
     protected static final String API_TRUE = Boolean.TRUE.toString();
     protected static final String API_FALSE = Boolean.FALSE.toString();
     private SynoApiConfig apiConfig = null;
+    private HttpClient httpClient;
 
     final Class<T> typeParameterClass;
 
-    private Config config = null;
+    private SynoConfig config = null;
     private String sessionId = null;
 
     /**
@@ -61,7 +57,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @param sessionId
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(SynoApiConfig apiConfig, Config config, String sessionId) {
+    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId) {
 
         super();
 
@@ -71,6 +67,16 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
         this.apiConfig = apiConfig;
         this.config = config;
         this.sessionId = sessionId;
+
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        httpClient = new HttpClient(sslContextFactory);
+        httpClient.setConnectTimeout(SynoApi.CONNECTION_TIMEOUT);
+        try {
+            httpClient.start();
+        } catch (Exception e) {
+            logger.debug("Error starting HTTP client");
+        }
+
     }
 
     /*
@@ -86,7 +92,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
     /**
      * @return
      */
-    protected Config getConfig() {
+    protected SynoConfig getConfig() {
         return config;
     }
 
@@ -102,13 +108,12 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      *
      * @return
      */
-    protected URIBuilder getWebApiUrlBuilder() {
-        URIBuilder b = new URIBuilder();
-
-        b.setScheme(getConfig().getProtocol());
-        b.setHost(getConfig().getHost());
-        b.setPort(Integer.parseInt(getConfig().getPort()));
-        return b;
+    protected URI getWebApiUrlBuilder() throws URISyntaxException {
+        StringBuilder sb = URIUtil.newURIBuilder(getConfig().getProtocol(), getConfig().getHost(),
+                Integer.parseInt(getConfig().getPort()));
+        URI uri = new URI(sb.toString());
+        uri = URIUtil.addPath(uri, apiConfig.getScriptpath());
+        return uri;
     }
 
     /**
@@ -123,19 +128,16 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
     }
 
     /**
-     * Calls the method with the passed paramters.
+     * Calls the method with the passed parameters.
      *
      * @param method
      * @param params
      * @return
      * @throws WebApiException
      */
-    protected T callApi(String method, List<NameValuePair> params) throws WebApiException {
-
-        URL url = getWebApiUrl(method, params);
-
-        return callWebApi(url.toString());
-
+    protected T callApi(String method, Map<String, String> params) throws WebApiException {
+        Request request = getWebApiUrl(method, params);
+        return callWebApi(request);
     }
 
     /**
@@ -147,34 +149,33 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws MalformedURLException
      * @throws URISyntaxException
      */
-    protected URL getWebApiUrl(String method, List<NameValuePair> params) throws WebApiException {
+    protected Request getWebApiUrl(String method, Map<String, String> params) throws WebApiException {
 
         try {
 
-            URIBuilder b = getWebApiUrlBuilder();
+            URI uri = getWebApiUrlBuilder();
 
-            // API script
-            b.setPath(apiConfig.getScriptpath());
+            Request request = httpClient.newRequest(uri);
 
             // API data
-            b.addParameter("api", apiConfig.getName());
-            b.addParameter("version", apiConfig.getVersion());
+            request.param("api", apiConfig.getName());
+            request.param("version", apiConfig.getVersion());
 
             // API method
-            b.addParameter("method", method);
-
-            // API parameters
-            if (params != null) {
-                b.addParameters(params);
-            }
+            request.param("method", method);
 
             // API session
-            b.addParameter("_sid", getSessionId());
+            request.param("_sid", getSessionId());
 
-            URL url = b.build().toURL();
-            return url;
+            if (params != null) {
+                for (String key : params.keySet()) {
+                    request.param(key, params.get(key));
+                }
+            }
 
-        } catch (URISyntaxException | IOException | UnsupportedOperationException e) {
+            return request;
+
+        } catch (URISyntaxException | UnsupportedOperationException e) {
             throw new WebApiException(e);
         }
     }
@@ -189,34 +190,26 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws UnsupportedOperationException
      * @throws IOException
      */
-    protected T callWebApi(String apiurl) throws WebApiException {
+    protected synchronized T callWebApi(Request request) throws WebApiException {
 
         try {
 
-            URL url = new URL(apiurl);
+            // System.err.println(request.getURI());
+            ContentResponse response = request.send();
 
-            URI uri = url.toURI();
-            HttpGet httpget = new HttpGet(uri);
-            RequestConfig defaultRequestConfig = RequestConfig.custom().setConnectTimeout(4000).setSocketTimeout(4000)
-                    .setConnectionRequestTimeout(4000).build();
-            CloseableHttpClient httpclient = HttpClients.custom().setDefaultRequestConfig(defaultRequestConfig).build();
-            HttpClientContext context = HttpClientContext.create();
-            CloseableHttpResponse response = httpclient.execute(httpget, context);
+            if (response.getStatus() == 200) {
 
-            HttpEntity entity = response.getEntity();
+                byte[] rawResponse = response.getContent();
+                String encoding = response.getEncoding().replaceAll("\"", "").trim();
+                String result = new String(rawResponse, encoding);
 
-            if (entity != null) {
-
-                // A Simple JSON Response Read
-                InputStream instream = entity.getContent();
-                String result = convertStreamToString(instream);
-                // now you have the string representation of the HTML request
                 if (result.length() > 0) {
-                    logger.debug("RESPONSE: {}", result.substring(0, result.length() - 2));
-                }
-                instream.close();
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    // netState.setLogginDone(true);
+                    if (result.contains("\"success\":true")) {
+                        logger.trace("RESPONSE: {}", result);
+                    } else {
+                        logger.debug("RESPONSE: {}", result);
+                    }
+
                 }
 
                 Constructor<T> ctor = typeParameterClass.getConstructor(String.class);
@@ -230,35 +223,13 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             }
 
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-                | NoSuchMethodException | SecurityException | IOException | URISyntaxException e) {
+                | NoSuchMethodException | SecurityException | ExecutionException | TimeoutException
+                | InterruptedException e) {
             throw new WebApiException(e);
+        } catch (UnsupportedEncodingException ee) {
+            throw new WebApiException(ee);
         }
 
     }
 
-    /**
-     * @param is
-     * @return
-     */
-    private String convertStreamToString(InputStream is) {
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
-    }
 }

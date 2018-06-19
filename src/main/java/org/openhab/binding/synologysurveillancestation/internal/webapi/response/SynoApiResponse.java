@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +8,14 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * @author Nils
+ * {@link SynoApiResponse} is an abstract class for an API response
  *
+ * @author Nils
  */
 public abstract class SynoApiResponse {
 
@@ -23,9 +25,10 @@ public abstract class SynoApiResponse {
     public static final String PROP_HOST = "host";
     public static final String PROP_RESOLUTION = "resolution";
     public static final String PROP_TYPE = "type";
-    public static final String PROP_CAMERANUMBER = "cameraNumber";
+    // public static final String PROP_CAMERANUMBER = "cameraNumber";
 
     // PTZ capabilities
+    public static final String PROP_PTZ = "ptz";
     public static final String PROP_PTZ_PAN = "ptz_pan";
     public static final String PROP_PTZ_TILT = "ptz_tilt";
     public static final String PROP_PTZ_ZOOM = "ptz_zoom";
@@ -52,6 +55,13 @@ public abstract class SynoApiResponse {
      */
     public JsonObject getData() {
         return jsonResponse.getAsJsonObject("data");
+    }
+
+    /**
+     * @return
+     */
+    public JsonArray getDataAsArray() {
+        return jsonResponse.getAsJsonArray("data");
     }
 
     /**

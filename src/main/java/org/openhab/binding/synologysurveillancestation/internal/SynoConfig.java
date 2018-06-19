@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,32 +8,32 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
 import org.eclipse.smarthome.config.core.Configuration;
 
 /**
- * The {@link Config} is class for handling the binding configuration
+ * The {@link SynoConfig} is class for handling the binding configuration
  *
  * @author Nils
  */
-public class Config {
+public class SynoConfig {
     private String protocol = null;
     private String host = null;
     private String port = null;
     private String username = null;
     private String password = null;
-    private int poll = 10000;
 
     /**
-     * Creates a new {@link Config} and set the given protocoll, hostAddress, username, password.
+     * Creates a new {@link SynoConfig} and set the given values
      *
-     * @param hostAddress
-     * @param username
-     * @param password
-     * @param sessionID
+     * @param protocoll Protocol of the DiskStation (http/https)
+     * @param hostAddress IP or host address of the DiskStation
+     * @param port Port of the DiskStation
+     * @param username User name with sufficient rights to run Surveillance Station
+     * @param password User password
      */
-    public Config(String protocoll, String hostAddress, String port, String username, String password) {
+    public SynoConfig(String protocoll, String hostAddress, String port, String username, String password) {
         this.protocol = protocoll;
         this.host = hostAddress;
         this.port = port;
@@ -41,7 +41,12 @@ public class Config {
         this.password = password;
     }
 
-    public Config(Configuration configuration) {
+    /**
+     * Creates a new {@link SynoConfig} from a configuration object
+     *
+     * @param configuration
+     */
+    public SynoConfig(Configuration configuration) {
         this.protocol = configuration.get(PROTOCOL).toString();
         this.host = configuration.get(HOST).toString();
         this.port = configuration.get(PORT).toString();
@@ -50,9 +55,9 @@ public class Config {
     }
 
     /**
-     * Creates a {@link Config} with default values.
+     * Creates a {@link SynoConfig} with default values.
      */
-    public Config() {
+    public SynoConfig() {
         // config with default values
     }
 
@@ -146,28 +151,10 @@ public class Config {
         this.password = password;
     }
 
-    /**
-     * Returns the poll.
-     *
-     * @return poll
-     */
-    public int getPoll() {
-        return poll;
-    }
-
-    /**
-     * Sets the poll.
-     *
-     * @param poll
-     */
-    public void setPoll(int poll) {
-        this.poll = poll;
-    }
-
     @Override
     public String toString() {
         return "Config [protocoll=" + protocol + ", host=" + host + ", port=" + port + ", username=" + username
-                + ", password=" + "*****" + ", poll=" + poll + "]";
+                + ", password=" + "********]";
     }
 
 }

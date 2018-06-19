@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2017 by the respective copyright holders.
+ * Copyright (c) 2010-2018 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
-import static org.openhab.binding.synologysurveillancestation.SynologySurveillanceStationBindingConstants.DEVICE_ID;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.DEVICE_ID;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,8 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 /**
- * @author Nils
+ * {@link CameraResponse} is a response for camera information
  *
+ * @author Nils
  */
 public class CameraResponse extends SimpleResponse {
 
@@ -54,6 +55,40 @@ public class CameraResponse extends SimpleResponse {
 
     public JsonArray getCameras() {
         return getData().getAsJsonArray("cameras");
+    }
+
+    /**
+     * If the camera is enabled
+     *
+     * @param cameraId
+     */
+    public boolean isEnabled(String cameraId) {
+        for (JsonElement jcamera : getCameras()) {
+            if (jcamera.isJsonObject()) {
+                JsonObject camera = jcamera.getAsJsonObject();
+                if (camera.get("id").getAsString().equals(cameraId)) {
+                    return camera.get("enabled").getAsBoolean();
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * If the camera is recording
+     *
+     * @param cameraId
+     */
+    public boolean isRecording(String cameraId) {
+        for (JsonElement jcamera : getCameras()) {
+            if (jcamera.isJsonObject()) {
+                JsonObject camera = jcamera.getAsJsonObject();
+                if (camera.get("id").getAsString().equals(cameraId)) {
+                    return (camera.get("recStatus").getAsInt() > 0);
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -108,6 +143,7 @@ public class CameraResponse extends SimpleResponse {
 
         // check PTZ capabilities
         int ptzCap = cam.get("ptzCap").getAsInt();
+        properties.put(SynoApiResponse.PROP_PTZ, (ptzCap > 0) ? "true" : "false");
 
         if (ptzCap > 0) {
 

@@ -88,6 +88,9 @@ Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestati
 Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveillancestation:camera:diskstation:1:event#motion"}
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
+
+String Surveillance_Zooming "Camera zooming" {channel="synologysurveillancestation:camera:diskstation:6:ptz#zoom"}
+String Surveillance_Moving "Camera moving" {channel="synologysurveillancestation:camera:diskstation:6:ptz#move"}
 ```
 Here `:1` is yet again the numeric ID of your surveillance camera from a previous step.
 

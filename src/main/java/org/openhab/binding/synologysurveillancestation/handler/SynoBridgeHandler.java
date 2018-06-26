@@ -44,7 +44,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private final Logger logger = LoggerFactory.getLogger(SynoBridgeHandler.class);
     private @Nullable CameraDiscoveryService discoveryService;
     private @Nullable SynoWebApiHandler apiHandler = null;
-    private final Map<String, SynoApiThread> threads = new HashMap<>();
+    private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
 
     /**
      * Defines a runnable for a discovery
@@ -112,7 +112,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
             // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
             // TODO if needed add other infos
 
-            for (SynoApiThread thread : threads.values()) {
+            for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
                 thread.start();
             }
 
@@ -137,7 +137,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     @Override
     public void dispose() {
-        for (SynoApiThread thread : threads.values()) {
+        for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
             thread.stop();
         }
         try {

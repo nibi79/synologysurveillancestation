@@ -52,7 +52,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     private final Logger logger = LoggerFactory.getLogger(SynoCameraHandler.class);
     private String cameraId = "";
     private boolean isPtz = false;
-    private final Map<String, SynoApiThread> threads = new HashMap<>();
+    private final Map<String, SynoApiThread<SynoCameraHandler>> threads = new HashMap<>();
     private @Nullable SynoWebApiHandler apiHandler;
 
     /**
@@ -145,7 +145,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
                 updateStatus(ThingStatus.ONLINE);
-                for (SynoApiThread thread : threads.values()) {
+                for (SynoApiThread<SynoCameraHandler> thread : threads.values()) {
                     thread.start();
                 }
 
@@ -172,7 +172,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void dispose() {
-        for (SynoApiThread thread : threads.values()) {
+        for (SynoApiThread<SynoCameraHandler> thread : threads.values()) {
             thread.stop();
         }
     }

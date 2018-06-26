@@ -26,7 +26,6 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
@@ -71,9 +70,9 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
                     DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
 
             return bridgeHandler;
+
         } else if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
-            boolean isPtz = thing.getProperties().getOrDefault(SynoApiResponse.PROP_PTZ, "false").equals("true");
-            return new SynoCameraHandler(thing, isPtz);
+            return new SynoCameraHandler(thing);
         }
         return null;
     }

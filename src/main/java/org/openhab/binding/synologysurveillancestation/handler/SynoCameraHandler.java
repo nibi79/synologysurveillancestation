@@ -37,6 +37,8 @@ import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiTh
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,17 +63,19 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @param thing Thing to handle
      * @param isPtz PTZ support?
      */
-    public SynoCameraHandler(Thing thing, boolean isPtz) {
+    public SynoCameraHandler(Thing thing) {
+
         super(thing);
-        this.isPtz = isPtz;
         int refreshRateSnapshot = 10;
         int refreshRateEvents = 3;
+
         try {
             refreshRateSnapshot = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
             refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
         } catch (Exception ex) {
             logger.error("Error parsing camera Thing configuration");
         }
+
         threads.put(SynoApiThread.THREAD_SNAPSHOT, new SynoApiThreadSnapshot(this, refreshRateSnapshot));
         threads.put(SynoApiThread.THREAD_EVENT, new SynoApiThreadEvent(this, refreshRateEvents));
         threads.put(SynoApiThread.THREAD_CAMERA, new SynoApiThreadCamera(this, refreshRateEvents));
@@ -129,20 +133,32 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void initialize() {
+
         if (getBridge() != null) {
+
             cameraId = getThing().getUID().getId();
 
             logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);
 
-            if (!isPtz) {
-                ThingBuilder thingBuilder = editThing();
-                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_ZOOM));
-                thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVE));
-                updateThing(thingBuilder.build());
-            }
-
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
                 apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
+
+                try {
+
+                    CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
+                    Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
+                    isPtz = properties.getOrDefault(SynoApiResponse.PROP_PTZ, "false").equals("true");
+
+                    if (!isPtz) {
+                        ThingBuilder thingBuilder = editThing();
+                        thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_ZOOM));
+                        thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVE));
+                        updateThing(thingBuilder.build());
+                    }
+                } catch (WebApiException e) {
+                    logger.error("initialize camera: id {} - {}::{}", cameraId, getThing().getLabel(),
+                            getThing().getUID());
+                }
 
                 updateStatus(ThingStatus.ONLINE);
                 for (SynoApiThread<SynoCameraHandler> thread : threads.values()) {

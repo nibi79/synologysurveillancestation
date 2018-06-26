@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author Nils
  */
 @NonNullByDefault
-public class SynoCameraHandler extends BaseThingHandler {
+public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynoCameraHandler.class);
     private String cameraId = "";
@@ -247,6 +247,7 @@ public class SynoCameraHandler extends BaseThingHandler {
     /**
      * @return service scheduler of this Thing
      */
+    @Override
     public ScheduledExecutorService getScheduler() {
         return scheduler;
     }
@@ -256,6 +257,11 @@ public class SynoCameraHandler extends BaseThingHandler {
      */
     public String getCameraId() {
         return cameraId;
+    }
+
+    @Override
+    public @Nullable SynoWebApiHandler getSynoWebApiHandler() {
+        return apiHandler;
     }
 
 }

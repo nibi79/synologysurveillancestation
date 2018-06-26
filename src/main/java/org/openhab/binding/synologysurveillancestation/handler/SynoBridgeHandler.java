@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * @author Nils
  */
 @NonNullByDefault
-public class SynoBridgeHandler extends BaseBridgeHandler {
+public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynoBridgeHandler.class);
     private @Nullable CameraDiscoveryService discoveryService;
@@ -69,6 +69,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
         threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
     }
 
+    @Override
     public @Nullable SynoWebApiHandler getSynoWebApiHandler() {
         return apiHandler;
     }
@@ -175,6 +176,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler {
     /**
      * @return service scheduler of this Thing
      */
+    @Override
     public ScheduledExecutorService getScheduler() {
         return scheduler;
     }

@@ -23,7 +23,7 @@ import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler
  * @author Pavion
  */
 @NonNullByDefault
-public class SynoApiThreadSnapshot extends SynoApiThread {
+public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
     // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
 
     public SynoApiThreadSnapshot(SynoCameraHandler handler, int refreshRate) {
@@ -32,22 +32,25 @@ public class SynoApiThreadSnapshot extends SynoApiThread {
 
     @Override
     public boolean isNeeded() {
-        return (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT));
+        return (getSynoHandler().isLinked(CHANNEL_SNAPSHOT));
     }
 
     @Override
     public boolean refresh() throws Exception {
-        Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT);
-        Thing thing = getAsCameraHandler().getThing();
+
+        SynoCameraHandler cameraHandler = getSynoHandler();
+
+        Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT);
+        Thing thing = cameraHandler.getThing();
 
         int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
-        byte[] snapshot = getApiHandler().getSnapshot(getAsCameraHandler().getCameraId(), getRefreshRate(),
-                streamId);
+        byte[] snapshot = cameraHandler.getSynoWebApiHandler().getSnapshot(getSynoHandler().getCameraId(),
+                getRefreshRate(), streamId);
         if (snapshot.length < 1000) {
-            getAsCameraHandler().updateState(channel.getUID(), UnDefType.UNDEF);
+            getSynoHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             return false;
         } else {
-            getAsCameraHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
+            getSynoHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
             return true;
         }
     }

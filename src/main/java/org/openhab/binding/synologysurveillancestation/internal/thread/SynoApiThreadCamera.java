@@ -24,7 +24,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Pavion
  */
 @NonNullByDefault
-public class SynoApiThreadCamera extends SynoApiThread {
+public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
     // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadCamera.class);
 
     public SynoApiThreadCamera(SynoCameraHandler handler, int refreshRate) {
@@ -33,35 +33,38 @@ public class SynoApiThreadCamera extends SynoApiThread {
 
     @Override
     public boolean isNeeded() {
-        return (getAsCameraHandler().isLinked(CHANNEL_ENABLE) || getAsCameraHandler().isLinked(CHANNEL_RECORD)
-                || getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC));
+        return (getSynoHandler().isLinked(CHANNEL_ENABLE) || getSynoHandler().isLinked(CHANNEL_RECORD)
+                || getSynoHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC));
     }
 
     @Override
     public boolean refresh() throws Exception {
-        String cameraId = getAsCameraHandler().getCameraId();
 
-        if (getAsCameraHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)) {
+        SynoCameraHandler cameraHandler = getSynoHandler();
+        String cameraId = cameraHandler.getCameraId();
 
-            Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_SNAPSHOT_URI_DYNAMIC);
-            Thing thing = getAsCameraHandler().getThing();
+        if (cameraHandler.isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)) {
+
+            Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT_URI_DYNAMIC);
+            Thing thing = cameraHandler.getThing();
             int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
 
-            String path = getApiHandler().getSnapshotUri(cameraId, streamId);
+            String path = cameraHandler.getSynoWebApiHandler().getSnapshotUri(cameraId, streamId);
             path += "&timestamp=" + String.valueOf(System.currentTimeMillis());
-            getAsCameraHandler().updateState(channel.getUID(), new StringType(path));
+            cameraHandler.updateState(channel.getUID(), new StringType(path));
         }
-        if (getAsCameraHandler().isLinked(CHANNEL_ENABLE) || getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
-            CameraResponse response = getApiHandler().getInfo(cameraId);
+
+        if (cameraHandler.isLinked(CHANNEL_ENABLE) || cameraHandler.isLinked(CHANNEL_RECORD)) {
+            CameraResponse response = cameraHandler.getSynoWebApiHandler().getInfo(cameraId);
             if (response.isSuccess()) {
-                if (getAsCameraHandler().isLinked(CHANNEL_ENABLE)) {
-                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_ENABLE);
-                    getAsCameraHandler().updateState(channel.getUID(),
+                if (cameraHandler.isLinked(CHANNEL_ENABLE)) {
+                    Channel channel = cameraHandler.getThing().getChannel(CHANNEL_ENABLE);
+                    cameraHandler.updateState(channel.getUID(),
                             response.isEnabled(cameraId) ? OnOffType.ON : OnOffType.OFF);
                 }
-                if (getAsCameraHandler().isLinked(CHANNEL_RECORD)) {
-                    Channel channel = getAsCameraHandler().getThing().getChannel(CHANNEL_RECORD);
-                    getAsCameraHandler().updateState(channel.getUID(),
+                if (cameraHandler.isLinked(CHANNEL_RECORD)) {
+                    Channel channel = cameraHandler.getThing().getChannel(CHANNEL_RECORD);
+                    cameraHandler.updateState(channel.getUID(),
                             response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
                 }
                 return true;
@@ -69,6 +72,7 @@ public class SynoApiThreadCamera extends SynoApiThread {
                 return false;
             }
         }
+
         return true;
 
     }

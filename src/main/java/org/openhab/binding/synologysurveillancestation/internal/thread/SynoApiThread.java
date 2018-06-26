@@ -15,13 +15,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
+import org.openhab.binding.synologysurveillancestation.handler.SynoHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author Pavion
  */
 @NonNullByDefault
-public abstract class SynoApiThread {
+public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
     private final Logger logger = LoggerFactory.getLogger(SynoApiThread.class);
 
     /**
@@ -46,7 +45,7 @@ public abstract class SynoApiThread {
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
     private int refreshRate; // Refresh rate in seconds
-    private final BaseThingHandler handler; // Bridge or Camera Thing handler
+    private final T synoHandler; // Bridge or Camera Thing handler
     private final String name; // Thread name / type
     private final String deviceId; // Thread name / type
 
@@ -72,15 +71,15 @@ public abstract class SynoApiThread {
     /**
      * Main constructor
      *
-     * @param threadId ID of this thread for logging purposes
+     * @param threadId    ID of this thread for logging purposes
      * @param refreshRate Refresh rate of this thread in seconds
-     * @param handler Camera or bridge handler
+     * @param handler     Camera or bridge handler
      */
-    public SynoApiThread(String name, BaseThingHandler handler, int refreshRate) {
+    public SynoApiThread(String name, T synoHandler, int refreshRate) {
         this.name = name;
-        this.handler = handler;
+        this.synoHandler = synoHandler;
         this.refreshRate = refreshRate;
-        this.deviceId = handler.getThing().getProperties().getOrDefault("deviceID", "Bridge");
+        this.deviceId = synoHandler.getThing().getProperties().getOrDefault("deviceID", "Bridge");
     }
 
     /**
@@ -88,12 +87,9 @@ public abstract class SynoApiThread {
      */
     public void start() {
         if (refreshRate > 0) {
-            ScheduledExecutorService scheduler = null;
-            if (handler instanceof SynoCameraHandler) {
-                scheduler = ((SynoCameraHandler) handler).getScheduler();
-            } else if (handler instanceof SynoBridgeHandler) {
-                scheduler = ((SynoBridgeHandler) handler).getScheduler();
-            }
+
+            ScheduledExecutorService scheduler = synoHandler.getScheduler();
+
             if (scheduler != null) {
                 future = scheduler.scheduleAtFixedRate(runnable, 0, refreshRate, TimeUnit.SECONDS);
             }
@@ -123,7 +119,7 @@ public abstract class SynoApiThread {
      * Run the runnable just once (for manual refresh)
      */
     public void runOnce() {
-        if (getApiHandler() == null) {
+        if (getSynoHandler().getSynoWebApiHandler() == null) {
             logger.error("DeviceId: {}; Thread: {}; Handler not (yet) initialized", deviceId, name);
         } else if (isNeeded()) {
             boolean success = false;
@@ -152,19 +148,19 @@ public abstract class SynoApiThread {
      * @param success if runnable was successful
      */
     private void updateStatus(boolean success) {
-        if (success && !handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
-            if (handler instanceof SynoCameraHandler) {
-                ((SynoCameraHandler) handler).updateStatus(ThingStatus.ONLINE);
-            } else if (handler instanceof SynoBridgeHandler) {
-                ((SynoBridgeHandler) handler).updateStatus(ThingStatus.ONLINE);
+        if (success && !synoHandler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
+            if (synoHandler instanceof SynoCameraHandler) {
+                ((SynoCameraHandler) synoHandler).updateStatus(ThingStatus.ONLINE);
+            } else if (synoHandler instanceof SynoBridgeHandler) {
+                ((SynoBridgeHandler) synoHandler).updateStatus(ThingStatus.ONLINE);
             }
-        } else if (!success && handler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
-            if (handler instanceof SynoCameraHandler) {
-                ((SynoCameraHandler) handler).updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                        "Thread " + name);
-            } else if (handler instanceof SynoBridgeHandler) {
-                ((SynoBridgeHandler) handler).updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                        "Thread " + name);
+        } else if (!success && synoHandler.getThing().getStatus().equals(ThingStatus.ONLINE)) {
+            if (synoHandler instanceof SynoCameraHandler) {
+                ((SynoCameraHandler) synoHandler).updateStatus(ThingStatus.OFFLINE,
+                        ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
+            } else if (synoHandler instanceof SynoBridgeHandler) {
+                ((SynoBridgeHandler) synoHandler).updateStatus(ThingStatus.OFFLINE,
+                        ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
             }
         }
 
@@ -191,33 +187,8 @@ public abstract class SynoApiThread {
     /**
      * @return the SynoCameraHandler
      */
-    public SynoCameraHandler getAsCameraHandler() {
-        return (SynoCameraHandler) handler;
-    }
-
-    /**
-     * @return the SynoBridgeHandler
-     */
-    public SynoBridgeHandler getAsBridgeHandler() {
-        return (SynoBridgeHandler) handler;
-    }
-
-    /**
-     * @return the API handler
-     */
-    public @Nullable SynoWebApiHandler getApiHandler() {
-        if (handler instanceof SynoCameraHandler) {
-            Bridge bridge = ((SynoCameraHandler) handler).getBridge();
-            if (bridge != null) {
-                SynoBridgeHandler bridgeHandler = ((SynoBridgeHandler) bridge.getHandler());
-                if (bridgeHandler != null) {
-                    return bridgeHandler.getSynoWebApiHandler();
-                }
-            }
-        } else if (handler instanceof SynoBridgeHandler) {
-            return ((SynoBridgeHandler) handler).getSynoWebApiHandler();
-        }
-        return null;
+    public T getSynoHandler() {
+        return synoHandler;
     }
 
     /**

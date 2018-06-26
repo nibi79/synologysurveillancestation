@@ -22,7 +22,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Pavion
  */
 @NonNullByDefault
-public class SynoApiThreadHomeMode extends SynoApiThread {
+public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
     // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadHomeMode.class);
 
     public SynoApiThreadHomeMode(SynoBridgeHandler handler, int refreshRate) {
@@ -31,17 +31,18 @@ public class SynoApiThreadHomeMode extends SynoApiThread {
 
     @Override
     public boolean isNeeded() {
-        return (getAsBridgeHandler().isLinked(CHANNEL_HOMEMODE));
+        return (getSynoHandler().isLinked(CHANNEL_HOMEMODE));
     }
 
     @Override
     public boolean refresh() throws Exception {
-        HomeModeResponse response = getApiHandler().getHomeModeResponse();
+
+        SynoBridgeHandler brdigeHandler = getSynoHandler();
+        HomeModeResponse response = brdigeHandler.getSynoWebApiHandler().getHomeModeResponse();
         if (response.isSuccess()) {
-            if (getAsBridgeHandler().isLinked(CHANNEL_HOMEMODE)) {
-                Channel channel = getAsBridgeHandler().getThing().getChannel(CHANNEL_HOMEMODE);
-                getAsBridgeHandler().updateState(channel.getUID(),
-                        response.isHomeMode() ? OnOffType.ON : OnOffType.OFF);
+            if (getSynoHandler().isLinked(CHANNEL_HOMEMODE)) {
+                Channel channel = getSynoHandler().getThing().getChannel(CHANNEL_HOMEMODE);
+                getSynoHandler().updateState(channel.getUID(), response.isHomeMode() ? OnOffType.ON : OnOffType.OFF);
             }
             return true;
         } else {

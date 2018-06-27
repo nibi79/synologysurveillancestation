@@ -97,6 +97,9 @@ Here `:1` is yet again the numeric ID of your surveillance camera from a previou
 ### .sitemap ###
 
 ```
+Switch item=Surveillance_Zooming mappings=[IN="IN", OUT="OUT"]
+Switch item=Surveillance_Moving mappings=[UP="UP", DOWN="DOWN", LEFT="LEFT", RIGHT="RIGHT"]
+
 Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
 Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 ```

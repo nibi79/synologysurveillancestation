@@ -46,6 +46,8 @@ public interface SynoApi {
 
     public static final String METHOD_ZOOM = "Zoom";
     public static final String METHOD_MOVE = "Move";
+    public static final String METHOD_LISTPRESET = "ListPreset";
+    public static final String METHOD_GOPRESET = "GoPreset";
     public static final String METHOD_SWITCH = "Switch";
 
     public static final int CONNECTION_TIMEOUT = 5000;

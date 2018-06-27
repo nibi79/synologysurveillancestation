@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -23,11 +22,15 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
+import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
+import org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,11 +40,13 @@ import org.slf4j.LoggerFactory;
  *
  * @author Nils - Initial contribution
  */
-@NonNullByDefault
+@Component(service = ThingHandlerFactory.class, configurationPid = "binding.binding.synologysurveillancestation")
 public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+
+    private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 
     @Override
     protected void activate(ComponentContext componentContext) {
@@ -72,7 +77,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
             return bridgeHandler;
 
         } else if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
-            return new SynoCameraHandler(thing);
+            return new SynoCameraHandler(thing, stateDescriptionProvider);
         }
         return null;
     }
@@ -89,4 +94,12 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
         super.removeHandler(handler);
     }
 
+    @Reference
+    protected void setDynamicStateDescriptionProvider(SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
+        this.stateDescriptionProvider = stateDescriptionProvider;
+    }
+
+    protected void unsetDynamicStateDescriptionProvider(SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
+        this.stateDescriptionProvider = null;
+    }
 }

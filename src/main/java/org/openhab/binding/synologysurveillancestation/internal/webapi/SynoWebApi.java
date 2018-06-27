@@ -47,7 +47,7 @@ public interface SynoWebApi {
      * Returns snapshot as binary byte array
      *
      * @param cameraId ID of the camera
-     * @param timeout API request timeout
+     * @param timeout  API request timeout
      * @param streamId ID of the stream
      * @return
      * @throws URISyntaxException
@@ -160,6 +160,24 @@ public interface SynoWebApi {
      * @throws WebApiException
      */
     public SimpleResponse moveHome(String cameraId) throws WebApiException;
+
+    /**
+     * List all presets of the PTZ camera.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse listPresets(String cameraId) throws WebApiException;
+
+    /**
+     * Move the camera lens to a pre-defined preset position.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse goPreset(String cameraId, String preset) throws WebApiException;
 
     /**
      * @param cameraId ID of the camera

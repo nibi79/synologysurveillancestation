@@ -34,11 +34,14 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
     @Override
     public boolean isNeeded() {
         return (getSynoHandler().isLinked(CHANNEL_ENABLE) || getSynoHandler().isLinked(CHANNEL_RECORD)
-                || getSynoHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC));
+                || getSynoHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)
+                || getSynoHandler().isLinked(CHANNEL_MOVEPRESET));
     }
 
     @Override
     public boolean refresh() throws Exception {
+
+        boolean ret = true;
 
         SynoCameraHandler cameraHandler = getSynoHandler();
         String cameraId = cameraHandler.getCameraId();
@@ -54,6 +57,8 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
             cameraHandler.updateState(channel.getUID(), new StringType(path));
         }
 
+        cameraHandler.updatePresets();
+
         if (cameraHandler.isLinked(CHANNEL_ENABLE) || cameraHandler.isLinked(CHANNEL_RECORD)) {
             CameraResponse response = cameraHandler.getSynoWebApiHandler().getInfo(cameraId);
             if (response.isSuccess()) {
@@ -67,13 +72,16 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
                     cameraHandler.updateState(channel.getUID(),
                             response.isRecording(cameraId) ? OnOffType.ON : OnOffType.OFF);
                 }
-                return true;
+
+                ret &= true;
+
             } else {
-                return false;
+
+                ret &= false;
             }
         }
 
-        return true;
+        return ret;
 
     }
 

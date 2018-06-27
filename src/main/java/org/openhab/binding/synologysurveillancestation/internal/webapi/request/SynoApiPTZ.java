@@ -178,4 +178,47 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         return callMove(cameraId, "home", 1);
     }
 
+    /**
+     * calls api method 'ListPreset' and list all presets for moving.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse listPresets(String cameraId) throws WebApiException {
+
+        Map<String, String> params = new HashMap<>();
+
+        // API Parameters
+        params.put("cameraId", cameraId);
+
+        SimpleResponse response = callApi(METHOD_LISTPRESET, params);
+
+        return response;
+    }
+
+    /**
+     * calls api method 'GoPreset' and move the camera lens to a pre-defined preset position.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse goPreset(String cameraId, String presetId) throws WebApiException {
+
+        Map<String, String> params = new HashMap<>();
+
+        // API Parameters
+        params.put("cameraId", cameraId);
+        params.put("presetId", presetId);
+//        params.put("position", presetId);
+//        params.put("speed", presetId);
+//        params.put("type", presetId);
+//        params.put("isPatrol", presetId);
+
+        SimpleResponse response = callApi(METHOD_GOPRESET, params);
+
+        return response;
+    }
+
 }

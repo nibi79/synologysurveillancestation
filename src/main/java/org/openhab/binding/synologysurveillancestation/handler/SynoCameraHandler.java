@@ -10,7 +10,9 @@ package org.openhab.binding.synologysurveillancestation.handler;
 
 import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,6 +32,8 @@ import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
+import org.eclipse.smarthome.core.types.StateOption;
+import org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadCamera;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadEvent;
@@ -38,9 +42,14 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 /**
  * The {@link SynoCameraHandler} is responsible for handling commands, which are
@@ -57,15 +66,20 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     private final Map<String, SynoApiThread<SynoCameraHandler>> threads = new HashMap<>();
     private @Nullable SynoWebApiHandler apiHandler;
 
+    private @Nullable SynoDynamicStateDescriptionProvider stateDescriptionProvider;
+
     /**
      * Camera handler main constructor
      *
      * @param thing Thing to handle
      * @param isPtz PTZ support?
      */
-    public SynoCameraHandler(Thing thing) {
+    public SynoCameraHandler(Thing thing, SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
 
         super(thing);
+
+        this.stateDescriptionProvider = stateDescriptionProvider;
+
         int refreshRateSnapshot = 10;
         int refreshRateEvents = 3;
 
@@ -103,6 +117,11 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 case CHANNEL_MOVE:
                     if (apiHandler != null) {
                         apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                    }
+                    break;
+                case CHANNEL_MOVEPRESET:
+                    if (apiHandler != null) {
+                        apiHandler.goPreset(cameraId, command.toString());
                     }
                     break;
                 case CHANNEL_SNAPSHOT_URI_STATIC:
@@ -155,6 +174,9 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVE));
                         updateThing(thingBuilder.build());
                     }
+
+                    updatePresets();
+
                 } catch (WebApiException e) {
                     logger.error("initialize camera: id {} - {}::{}", cameraId, getThing().getLabel(),
                             getThing().getUID());
@@ -280,4 +302,25 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         return apiHandler;
     }
 
+    /**
+     * load and update options for presets
+     *
+     * @return
+     * @throws WebApiException
+     */
+    public void updatePresets() throws WebApiException {
+
+        SimpleResponse listPresetResponse = apiHandler.listPresets(cameraId);
+
+        JsonArray presets = listPresetResponse.getData().getAsJsonArray("presets");
+
+        List<StateOption> options = new ArrayList<>();
+        for (JsonElement preset : presets) {
+            JsonObject op = preset.getAsJsonObject();
+            options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+        }
+
+        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), options);
+
+    }
 }

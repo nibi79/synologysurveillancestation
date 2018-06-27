@@ -475,6 +475,33 @@ public class SynoWebApiHandler implements SynoWebApi {
     /*
      * (non-Javadoc)
      *
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#listPresets(java.lang.String)
+     */
+    @Override
+    public SimpleResponse listPresets(String cameraId) throws WebApiException {
+
+        SimpleResponse response = apiPTZ.listPresets(cameraId);
+
+        return handleSimpleResponse(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#goPreset(java.lang.String,
+     * java.lang.String)
+     */
+    @Override
+    public SimpleResponse goPreset(String cameraId, String presetId) throws WebApiException {
+
+        SimpleResponse response = apiPTZ.goPreset(cameraId, presetId);
+
+        return handleSimpleResponse(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getEvents(java.lang.String)
      */
     @Override

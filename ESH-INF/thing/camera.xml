@@ -16,7 +16,7 @@
             <channel-group id="ptz" typeId="ptz" />
             <channel-group id="event" typeId="event">
                 <label>Camera events</label>
-                <description>Events of your camera</description>            
+                <description>Events of your camera</description>
             </channel-group>
         </channel-groups>
 
@@ -67,13 +67,14 @@
             </channel>
         </channels>
     </channel-group-type>
-    
+
     <channel-group-type id="ptz">
         <label>PTZ channels</label>
         <description>Pan/Tilt/Zoom channels of your camera</description>
         <channels>
             <channel id="zoom" typeId="zoom-channel" />
             <channel id="move" typeId="move-channel" />
+            <channel id="movepreset" typeId="movepreset-channel" />
         </channels>
     </channel-group-type>
 
@@ -142,7 +143,18 @@
 			</options>
 		</state>
 	</channel-type>
-	
+
+    <channel-type id="movepreset-channel">
+        <item-type>String</item-type>
+        <label>Move to preset</label>
+        <description>Move the camera lens to a pre-defined preset position.</description>
+        <state pattern="%s">
+            <options>
+                <option value="HOME">home</option>
+            </options>
+        </state>
+    </channel-type>
+
     <channel-type id="event-channel">
         <item-type>Switch</item-type>
         <label>Event detected</label>

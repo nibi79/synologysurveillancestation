@@ -75,6 +75,7 @@
             <channel id="zoom" typeId="zoom-channel" />
             <channel id="move" typeId="move-channel" />
             <channel id="movepreset" typeId="movepreset-channel" />
+            <channel id="runpatrol" typeId="runpatrol-channel" />
         </channels>
     </channel-group-type>
 
@@ -153,6 +154,12 @@
                 <option value="HOME">home</option>
             </options>
         </state>
+    </channel-type>
+
+    <channel-type id="runpatrol-channel">
+        <item-type>String</item-type>
+        <label>Run patrol</label>
+        <description>Force the camera to execute the specific patrol.</description>
     </channel-type>
 
     <channel-type id="event-channel">

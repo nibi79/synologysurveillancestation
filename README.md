@@ -56,6 +56,7 @@ Currently following **Channels** are supported on the **Camera**:
 - Zoom _IN/OUT_ (PTZ cameras only)
 - Move _UP/DOWN/LEFT/RIGHT/HOME_ (PTZ cameras only)
 - Move to preset
+- Run patrol
 - Motion event _SWITCH_ (read-only)
 - Alarm event _SWITCH_ (read-only)
 - Manual event _SWITCH_ (read-only)
@@ -93,6 +94,7 @@ Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveil
 String Surveillance_Zooming "Camera zooming" {channel="synologysurveillancestation:camera:diskstation:1:ptz#zoom"}
 String Surveillance_Moving "Camera moving" {channel="synologysurveillancestation:camera:diskstation:1:ptz#move"}
 String Surveillance_Presets "Camera moving to preset" {channel="synologysurveillancestation:camera:diskstation:1:ptz#movepreset"}
+String Surveillance_Patrols "Camera run patrol" {channel="synologysurveillancestation:camera:diskstation:1:ptz#runpatrol"}
 ```
 Here `:1` is yet again the numeric ID of your surveillance camera from a previous step.
 

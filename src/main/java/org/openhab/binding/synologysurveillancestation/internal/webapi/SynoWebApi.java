@@ -180,6 +180,24 @@ public interface SynoWebApi {
     public SimpleResponse goPreset(String cameraId, String preset) throws WebApiException;
 
     /**
+     * List all patrols of the PTZ camera.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse listPatrol(String cameraId) throws WebApiException;
+
+    /**
+     * Force the camera to execute the specific patrol.
+     *
+     * @param patrolId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse runPatrol(String cameraId, String patrolId) throws WebApiException;
+
+    /**
      * @param cameraId ID of the camera
      * @return Response with current events
      * @throws WebApiException

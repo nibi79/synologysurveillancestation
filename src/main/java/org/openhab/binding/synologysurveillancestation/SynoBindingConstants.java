@@ -68,6 +68,7 @@ public class SynoBindingConstants {
     public static final String CHANNEL_ZOOM = "ptz#zoom";
     public static final String CHANNEL_MOVE = "ptz#move";
     public static final String CHANNEL_MOVEPRESET = "ptz#movepreset";
+    public static final String CHANNEL_RUNPATROL = "ptz#runpatrol";
 
     // List of all event types (as in thing.xml)
     public static final String CHANNEL_EVENT_MOTION = "event#motion";

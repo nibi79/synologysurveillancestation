@@ -502,6 +502,33 @@ public class SynoWebApiHandler implements SynoWebApi {
     /*
      * (non-Javadoc)
      *
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#listPatrol(java.lang.String)
+     */
+    @Override
+    public SimpleResponse listPatrol(String cameraId) throws WebApiException {
+
+        SimpleResponse response = apiPTZ.listPatrol(cameraId);
+
+        return handleSimpleResponse(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#runPatrol(java.lang.String,
+     * java.lang.String)
+     */
+    @Override
+    public SimpleResponse runPatrol(String cameraId, String patrolId) throws WebApiException {
+
+        SimpleResponse response = apiPTZ.runPatrol(cameraId, patrolId);
+
+        return handleSimpleResponse(response);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getEvents(java.lang.String)
      */
     @Override

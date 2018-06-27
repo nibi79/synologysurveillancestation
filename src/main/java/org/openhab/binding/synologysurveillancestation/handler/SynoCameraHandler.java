@@ -124,6 +124,11 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         apiHandler.goPreset(cameraId, command.toString());
                     }
                     break;
+                case CHANNEL_RUNPATROL:
+                    if (apiHandler != null) {
+                        apiHandler.runPatrol(cameraId, command.toString());
+                    }
+                    break;
                 case CHANNEL_SNAPSHOT_URI_STATIC:
                     if (apiHandler != null) {
                         int streamId = Integer.parseInt(this.getThing().getConfiguration().get(STREAM_ID).toString());
@@ -172,10 +177,19 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         ThingBuilder thingBuilder = editThing();
                         thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_ZOOM));
                         thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVE));
+                        thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVEPRESET));
+                        thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_RUNPATROL));
                         updateThing(thingBuilder.build());
-                    }
+                    } else {
 
-                    updatePresets();
+                        if (isLinked(CHANNEL_MOVEPRESET)) {
+                            updatePresets();
+                        }
+
+                        if (isLinked(CHANNEL_RUNPATROL)) {
+                            updatePatrols();
+                        }
+                    }
 
                 } catch (WebApiException e) {
                     logger.error("initialize camera: id {} - {}::{}", cameraId, getThing().getLabel(),
@@ -321,6 +335,28 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         }
 
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), options);
+
+    }
+
+    /**
+     * load and update options for patrols
+     *
+     * @return
+     * @throws WebApiException
+     */
+    public void updatePatrols() throws WebApiException {
+
+        SimpleResponse listPatrolResponse = apiHandler.listPatrol(cameraId);
+
+        JsonArray patrols = listPatrolResponse.getData().getAsJsonArray("patrols");
+
+        List<StateOption> options = new ArrayList<>();
+        for (JsonElement patrol : patrols) {
+            JsonObject op = patrol.getAsJsonObject();
+            options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+        }
+
+        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), options);
 
     }
 }

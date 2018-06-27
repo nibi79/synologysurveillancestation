@@ -201,6 +201,7 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * calls api method 'GoPreset' and move the camera lens to a pre-defined preset position.
      *
      * @param cameraId
+     * @param presetId
      * @return
      * @throws WebApiException
      */
@@ -211,12 +212,52 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         // API Parameters
         params.put("cameraId", cameraId);
         params.put("presetId", presetId);
-//        params.put("position", presetId);
-//        params.put("speed", presetId);
-//        params.put("type", presetId);
-//        params.put("isPatrol", presetId);
+//        params.put("position", ???);
+//        params.put("speed", ???);
+//        params.put("type", ???);
+//        params.put("isPatrol", ???);
 
         SimpleResponse response = callApi(METHOD_GOPRESET, params);
+
+        return response;
+    }
+
+    /**
+     * calls api method 'ListPatrol' and list all patrols.
+     *
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse listPatrol(String cameraId) throws WebApiException {
+
+        Map<String, String> params = new HashMap<>();
+
+        // API Parameters
+        params.put("cameraId", cameraId);
+
+        SimpleResponse response = callApi(METHOD_LISTPATROL, params);
+
+        return response;
+    }
+
+    /**
+     * calls api method 'RunPatrol' and execute the given patrol.
+     *
+     * @param cameraId
+     * @param patrolId
+     * @return
+     * @throws WebApiException
+     */
+    public SimpleResponse runPatrol(String cameraId, String patrolId) throws WebApiException {
+
+        Map<String, String> params = new HashMap<>();
+
+        // API Parameters
+        params.put("cameraId", cameraId);
+        params.put("patrolId", patrolId);
+
+        SimpleResponse response = callApi(METHOD_RUNPATROL, params);
 
         return response;
     }

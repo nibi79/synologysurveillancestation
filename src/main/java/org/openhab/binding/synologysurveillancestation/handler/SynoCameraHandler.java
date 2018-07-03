@@ -63,7 +63,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     private final Logger logger = LoggerFactory.getLogger(SynoCameraHandler.class);
     private String cameraId = "";
-    private boolean isPtz = false;
+    private boolean ptz = false;
     private final Map<String, SynoApiThread<SynoCameraHandler>> threads = new HashMap<>();
     private @Nullable SynoWebApiHandler apiHandler;
 
@@ -73,7 +73,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * Camera handler main constructor
      *
      * @param thing Thing to handle
-     * @param isPtz PTZ support?
+     * @param ptz   PTZ support?
      */
     public SynoCameraHandler(Thing thing, SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
 
@@ -173,9 +173,9 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
                     CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
                     Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
-                    isPtz = properties.getOrDefault(SynoApiResponse.PROP_PTZ, "false").equals("true");
+                    ptz = properties.getOrDefault(SynoApiResponse.PROP_PTZ, "false").equals("true");
 
-                    if (!isPtz) {
+                    if (!ptz) {
                         ThingBuilder thingBuilder = editThing();
                         thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_ZOOM));
                         thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_MOVE));
@@ -362,4 +362,14 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), options);
 
     }
+
+    /**
+     * Returns true if this camera supports PTZ
+     *
+     * @return true/false
+     */
+    public boolean isPtz() {
+        return ptz;
+    }
+
 }

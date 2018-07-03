@@ -33,9 +33,12 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
 
     @Override
     public boolean isNeeded() {
-        return (getSynoHandler().isLinked(CHANNEL_ENABLE) || getSynoHandler().isLinked(CHANNEL_RECORD)
-                || getSynoHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)
-                || getSynoHandler().isLinked(CHANNEL_MOVEPRESET) || getSynoHandler().isLinked(CHANNEL_RUNPATROL));
+        boolean ret = getSynoHandler().isLinked(CHANNEL_ENABLE) || getSynoHandler().isLinked(CHANNEL_RECORD)
+                || getSynoHandler().isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC);
+        if (getSynoHandler().isPtz()) {
+            ret = ret || getSynoHandler().isLinked(CHANNEL_MOVEPRESET) || getSynoHandler().isLinked(CHANNEL_RUNPATROL);
+        }
+        return ret;
     }
 
     @Override
@@ -57,12 +60,13 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
             cameraHandler.updateState(channel.getUID(), new StringType(path));
         }
 
-        if (cameraHandler.isLinked(CHANNEL_MOVEPRESET)) {
-            cameraHandler.updatePresets();
-        }
-
-        if (cameraHandler.isLinked(CHANNEL_RUNPATROL)) {
-            cameraHandler.updatePatrols();
+        if (cameraHandler.isPtz()) {
+            if (cameraHandler.isLinked(CHANNEL_MOVEPRESET)) {
+                cameraHandler.updatePresets();
+            }
+            if (cameraHandler.isLinked(CHANNEL_RUNPATROL)) {
+                cameraHandler.updatePatrols();
+            }
         }
 
         if (cameraHandler.isLinked(CHANNEL_ENABLE) || cameraHandler.isLinked(CHANNEL_RECORD)) {

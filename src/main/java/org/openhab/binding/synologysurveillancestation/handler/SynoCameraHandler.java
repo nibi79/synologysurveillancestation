@@ -37,6 +37,7 @@ import org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDy
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadCamera;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadEvent;
+import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadLiveUri;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadSnapshot;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
@@ -93,6 +94,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         threads.put(SynoApiThread.THREAD_SNAPSHOT, new SynoApiThreadSnapshot(this, refreshRateSnapshot));
         threads.put(SynoApiThread.THREAD_EVENT, new SynoApiThreadEvent(this, refreshRateEvents));
         threads.put(SynoApiThread.THREAD_CAMERA, new SynoApiThreadCamera(this, refreshRateEvents));
+        threads.put(SynoApiThread.THREAD_LIVEURI, new SynoApiThreadLiveUri(this, refreshRateEvents));
     }
 
     @Override
@@ -243,6 +245,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         threads.get(SynoApiThread.THREAD_SNAPSHOT).setRefreshRate(refreshRateSnapshot);
         threads.get(SynoApiThread.THREAD_EVENT).setRefreshRate(refreshRateEvents);
         threads.get(SynoApiThread.THREAD_CAMERA).setRefreshRate(refreshRateEvents);
+        threads.get(SynoApiThread.THREAD_LIVEURI).setRefreshRate(refreshRateEvents);
     }
 
     @Override

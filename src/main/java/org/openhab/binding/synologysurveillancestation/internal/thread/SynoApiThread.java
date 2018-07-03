@@ -41,6 +41,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
     public static final String THREAD_EVENT = "Event";
     public static final String THREAD_CAMERA = "Camera";
     public static final String THREAD_HOMEMODE = "HomeMode";
+    public static final String THREAD_LIVEURI = "LiveUri";
 
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;

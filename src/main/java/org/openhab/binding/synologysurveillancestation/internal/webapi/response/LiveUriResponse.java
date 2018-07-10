@@ -52,7 +52,7 @@ public class LiveUriResponse extends SimpleResponse {
         for (JsonElement jUri : getUris()) {
             if (jUri.isJsonObject()) {
                 JsonObject uri = jUri.getAsJsonObject();
-                return uri.get("mjpegHttpPath").getAsString().replace("\"", "");
+                return uri.get("mjpegHttpPath").getAsString();
             }
         }
         return "";

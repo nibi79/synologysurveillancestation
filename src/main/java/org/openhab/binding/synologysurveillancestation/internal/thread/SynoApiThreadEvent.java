@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.thread;
 
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
+
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,11 +37,15 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     public SynoApiThreadEvent(SynoCameraHandler handler, int refreshRate) {
         super(SynoApiThread.THREAD_EVENT, handler, refreshRate);
         lastEventTime = ZonedDateTime.now().minusSeconds(refreshRate * 2).toEpochSecond();
+        events.put(CHANNEL_EVENT_MOTION, new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
+        events.put(CHANNEL_EVENT_ALARM, new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
+        events.put(CHANNEL_EVENT_MANUAL, new SynoEvent(SynoEvent.EVENT_REASON_MANUAL));
     }
 
     @Override
     public boolean isNeeded() {
-        return (!events.isEmpty());
+        return (getSynoHandler().isLinked(CHANNEL_EVENT_MOTION) || getSynoHandler().isLinked(CHANNEL_EVENT_ALARM)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL));
     }
 
     @Override
@@ -52,25 +58,27 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
                 lastEventTime, events);
         if (response.isSuccess()) {
             for (String eventType : events.keySet()) {
-                SynoEvent event = events.get(eventType);
-                Channel channel = cameraHandler.getThing().getChannel(eventType);
-                if (response.hasEvent(event.getReason())) {
-                    SynoEvent responseEvent = response.getEvent(event.getReason());
-                    if (responseEvent.getEventId() != event.getEventId()) {
-                        event.setEventId(responseEvent.getEventId());
-                        event.setEventCompleted(responseEvent.isEventCompleted());
-                        cameraHandler.updateState(channel.getUID(), OnOffType.ON);
-                        if (responseEvent.isEventCompleted()) {
+                if (getSynoHandler().isLinked(eventType)) {
+                    SynoEvent event = events.get(eventType);
+                    Channel channel = cameraHandler.getThing().getChannel(eventType);
+                    if (response.hasEvent(event.getReason())) {
+                        SynoEvent responseEvent = response.getEvent(event.getReason());
+                        if (responseEvent.getEventId() != event.getEventId()) {
+                            event.setEventId(responseEvent.getEventId());
+                            event.setEventCompleted(responseEvent.isEventCompleted());
+                            cameraHandler.updateState(channel.getUID(), OnOffType.ON);
+                            if (responseEvent.isEventCompleted()) {
+                                cameraHandler.updateState(channel.getUID(), OnOffType.OFF);
+                            }
+                        } else if (responseEvent.getEventId() == event.getEventId() && responseEvent.isEventCompleted()
+                                && !event.isEventCompleted()) {
+                            event.setEventCompleted(true);
                             cameraHandler.updateState(channel.getUID(), OnOffType.OFF);
                         }
-                    } else if (responseEvent.getEventId() == event.getEventId() && responseEvent.isEventCompleted()
-                            && !event.isEventCompleted()) {
+                    } else {
                         event.setEventCompleted(true);
                         cameraHandler.updateState(channel.getUID(), OnOffType.OFF);
                     }
-                } else {
-                    event.setEventCompleted(true);
-                    cameraHandler.updateState(channel.getUID(), OnOffType.OFF);
                 }
             }
 

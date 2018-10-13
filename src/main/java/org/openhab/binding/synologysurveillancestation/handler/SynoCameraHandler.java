@@ -39,7 +39,6 @@ import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiTh
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadEvent;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadLiveUri;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadSnapshot;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
@@ -250,28 +249,11 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void channelLinked(ChannelUID channelUID) {
-        String id = channelUID.getId();
-        switch (id) {
-            case CHANNEL_EVENT_MOTION:
-                ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().put(id,
-                        new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
-                break;
-            case CHANNEL_EVENT_ALARM:
-                ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().put(id,
-                        new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
-                break;
-            case CHANNEL_EVENT_MANUAL:
-                ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().put(id,
-                        new SynoEvent(SynoEvent.EVENT_REASON_MANUAL));
-                break;
-        }
         handleCommand(channelUID, RefreshType.REFRESH);
     }
 
     @Override
     public void channelUnlinked(ChannelUID channelUID) {
-        String id = channelUID.getId();
-        ((SynoApiThreadEvent) threads.get(SynoApiThread.THREAD_EVENT)).getEvents().remove(id);
     }
 
     @Override

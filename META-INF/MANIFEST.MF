@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SynologySurveillanceStation Binding
 Bundle-SymbolicName: org.openhab.binding.synologysurveillancestation;singleton:=true
 Bundle-Vendor: openHAB
-Bundle-Version: 2.3.0.a30
+Bundle-Version: 2.4.0.a30
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Import-Package: 

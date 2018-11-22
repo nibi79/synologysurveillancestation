@@ -196,15 +196,27 @@ public class SynoWebApiHandler implements SynoWebApi {
     }
 
     /**
-     * Check if request was succesull. If not WebApiException with API errocode is thrown.
+     * Check if request was successful. If not WebApiException with API errorcode is thrown.
      *
      * @param response
      * @return
      * @throws WebApiException
      */
     private SimpleResponse handleSimpleResponse(SimpleResponse response) throws WebApiException {
+        return handleSimpleResponse(response, false);
+    }
 
-        if (response.isSuccess()) {
+    /**
+     * Check if request was successful. If not WebApiException with API errorcode is thrown. Can be overridden with allowError
+     *
+     * @param response
+     * @param allowError allow errors to be passed through
+     * @return
+     * @throws WebApiException
+     */
+    private SimpleResponse handleSimpleResponse(SimpleResponse response, boolean allowError) throws WebApiException {
+
+        if (response.isSuccess() || allowError) {
 
             return response;
 
@@ -482,7 +494,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         SimpleResponse response = apiPTZ.listPresets(cameraId);
 
-        return handleSimpleResponse(response);
+        return handleSimpleResponse(response, true); // allow errors
     }
 
     /*
@@ -509,7 +521,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
         SimpleResponse response = apiPTZ.listPatrol(cameraId);
 
-        return handleSimpleResponse(response);
+        return handleSimpleResponse(response, true); // allow errors
     }
 
     /*

@@ -311,14 +311,16 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
         SimpleResponse listPresetResponse = apiHandler.listPresets(cameraId);
 
-        JsonArray presets = listPresetResponse.getData().getAsJsonArray("presets");
-
+        JsonObject data = listPresetResponse.getData();
         List<StateOption> options = new ArrayList<>();
-        for (JsonElement preset : presets) {
-            JsonObject op = preset.getAsJsonObject();
-            options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
-        }
+        if (data != null) {
+            JsonArray presets = data.getAsJsonArray("presets");
+            for (JsonElement preset : presets) {
+                JsonObject op = preset.getAsJsonObject();
+                options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+            }
 
+        }
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), options);
 
     }
@@ -333,14 +335,17 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
         SimpleResponse listPatrolResponse = apiHandler.listPatrol(cameraId);
 
-        JsonArray patrols = listPatrolResponse.getData().getAsJsonArray("patrols");
-
+        JsonObject data = listPatrolResponse.getData();
         List<StateOption> options = new ArrayList<>();
-        for (JsonElement patrol : patrols) {
-            JsonObject op = patrol.getAsJsonObject();
-            options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
-        }
+        if (data != null) {
+            JsonArray patrols = data.getAsJsonArray("patrols");
 
+            for (JsonElement patrol : patrols) {
+                JsonObject op = patrol.getAsJsonObject();
+                options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+            }
+
+        }
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), options);
 
     }

@@ -92,7 +92,11 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
             ScheduledExecutorService scheduler = synoHandler.getScheduler();
 
             if (scheduler != null) {
-                future = scheduler.scheduleAtFixedRate(runnable, 0, refreshRate, TimeUnit.SECONDS);
+                if (this.name == THREAD_SNAPSHOT) {
+                    future = scheduler.scheduleAtFixedRate(runnable, 0, refreshRate, TimeUnit.SECONDS);
+                } else {
+                    future = scheduler.scheduleWithFixedDelay(runnable, 0, refreshRate, TimeUnit.SECONDS);
+                }
             }
         }
     }

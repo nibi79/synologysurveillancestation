@@ -107,3 +107,23 @@ Switch item=Surveillance_Moving mappings=[UP="UP", DOWN="DOWN", LEFT="LEFT", RIG
 Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
 Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 ```
+
+## Transformation 
+
+Existing URIs can also be transformed using JS transformation to build similar URIs. Please refer to Synology Surveillance Station API documentation for more details. Example: an SID-based stream URI (over http).
+
+### .items file ###
+
+```
+String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="liveuri.js"]}
+```
+
+### transform/liveuri.js ###
+
+```
+(function(i) {
+    return i.replace("entry.cgi", "SurveillanceStation/videoStreaming.cgi").replace(".Camera", ".VideoStream").replace("version=8", "version=1").replace("GetSnapshot", "Stream&format=mjpeg")
+})(input)
+```
+
+Please note, **Javascript Transformation** add-on has to be installed for the transformation to work properly. 

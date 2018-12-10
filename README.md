@@ -11,6 +11,12 @@ This binding is currently under heavy development. Your help and testing would b
 For an installation the latest release should be copied into the /addons folder of your openHAB installation.
 For an upgrade the existing file should be overwritten. On major or structural changes existing things might have to be deleted and recreated, existing channels might be kept. For further information please read release notes of a corresponding release.
 
+**Note:** On some clean openHAB installations this binding may not work after installation, log shows an exception *Could not resolve module*. In this case please install the missing module from Karaf:
+```
+feature:install esh-io-transport-upnp
+```
+or just install the HUE binding (or any other binding with upnp discovery).
+
 ## Supported Things
 
 Currently following Things are supported:

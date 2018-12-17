@@ -68,32 +68,6 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
         this.config = config;
         this.sessionId = sessionId;
 
-        /*
-         * SslContextFactory sslContextFactory = new SslContextFactory();
-         * httpClient = new HttpClient(sslContextFactory);
-         * httpClient.setConnectTimeout(SynoApi.CONNECTION_TIMEOUT);
-         * try {
-         * httpClient.start();
-         * } catch (Exception e) {
-         * logger.debug("Error starting HTTP client");
-         * }
-         */
-
-    }
-
-    /**
-     * Closes the http client
-     */
-    @Override
-    public boolean disconnect() {
-        try {
-            httpClient.stop();
-            httpClient.destroy();
-            return true;
-        } catch (Exception e) {
-            logger.debug("Error shutting down HTTP client");
-            return false;
-        }
     }
 
     /*

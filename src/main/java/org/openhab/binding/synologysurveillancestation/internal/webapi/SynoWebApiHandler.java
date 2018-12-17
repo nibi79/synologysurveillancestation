@@ -98,26 +98,6 @@ public class SynoWebApiHandler implements SynoWebApi {
     }
 
     /**
-     * Disconnects http clients
-     *
-     */
-    @Override
-    public boolean disconnect() throws WebApiException {
-
-        apiInfo.disconnect();
-        apiCamera.disconnect();
-        apiEvent.disconnect();
-        apiExternalRecording.disconnect();
-        apiPTZ.disconnect();
-        apiHomeMode.disconnect();
-        apiLiveUri.disconnect();
-
-        apiAuth.disconnect();
-
-        return true;
-    }
-
-    /**
      * Execute the given method for the passed camera.
      *
      * @param cameraId

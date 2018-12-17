@@ -56,5 +56,4 @@ public interface SynoApi {
 
     public SynoApiConfig getApiConfig();
 
-    public boolean disconnect();
 }

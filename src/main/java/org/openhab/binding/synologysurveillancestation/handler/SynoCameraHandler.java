@@ -315,11 +315,12 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         List<StateOption> options = new ArrayList<>();
         if (data != null) {
             JsonArray presets = data.getAsJsonArray("presets");
-            for (JsonElement preset : presets) {
-                JsonObject op = preset.getAsJsonObject();
-                options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+            if (presets != null) {
+                for (JsonElement preset : presets) {
+                    JsonObject op = preset.getAsJsonObject();
+                    options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                }
             }
-
         }
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), options);
 
@@ -339,12 +340,12 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         List<StateOption> options = new ArrayList<>();
         if (data != null) {
             JsonArray patrols = data.getAsJsonArray("patrols");
-
-            for (JsonElement patrol : patrols) {
-                JsonObject op = patrol.getAsJsonObject();
-                options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+            if (patrols != null) {
+                for (JsonElement patrol : patrols) {
+                    JsonObject op = patrol.getAsJsonObject();
+                    options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                }
             }
-
         }
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), options);
 

@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
@@ -37,9 +38,9 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
     /**
      * @param config
      */
-    public SynoApiAuth(SynoConfig config) {
+    public SynoApiAuth(SynoConfig config, HttpClient httpClient) {
 
-        super(apiConfig, config, null);
+        super(apiConfig, config, null, httpClient);
     }
 
     /**

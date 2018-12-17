@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
@@ -33,8 +34,8 @@ public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
     /**
      * @param config
      */
-    public SynoApiInfo(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiInfo(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(apiConfig, config, sessionID, httpClient);
     }
 
     /**

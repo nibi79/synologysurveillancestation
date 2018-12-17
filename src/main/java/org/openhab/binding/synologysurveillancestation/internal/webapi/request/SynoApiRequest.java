@@ -24,7 +24,6 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.util.URIUtil;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
@@ -57,25 +56,28 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @param sessionId
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId) {
+    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId, HttpClient httpClient) {
 
         super();
 
         this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0]);
 
+        this.httpClient = httpClient;
         this.apiConfig = apiConfig;
         this.config = config;
         this.sessionId = sessionId;
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
-        httpClient = new HttpClient(sslContextFactory);
-        httpClient.setConnectTimeout(SynoApi.CONNECTION_TIMEOUT);
-        try {
-            httpClient.start();
-        } catch (Exception e) {
-            logger.debug("Error starting HTTP client");
-        }
+        /*
+         * SslContextFactory sslContextFactory = new SslContextFactory();
+         * httpClient = new HttpClient(sslContextFactory);
+         * httpClient.setConnectTimeout(SynoApi.CONNECTION_TIMEOUT);
+         * try {
+         * httpClient.start();
+         * } catch (Exception e) {
+         * logger.debug("Error starting HTTP client");
+         * }
+         */
 
     }
 

@@ -17,6 +17,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -45,6 +46,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private @Nullable CameraDiscoveryService discoveryService;
     private @Nullable SynoWebApiHandler apiHandler = null;
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
+    private HttpClient httpClient;
 
     /**
      * Defines a runnable for a discovery
@@ -58,8 +60,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         }
     };
 
-    public SynoBridgeHandler(Bridge bridge) {
+    public SynoBridgeHandler(Bridge bridge, HttpClient httpClient) {
         super(bridge);
+        this.httpClient = httpClient;
         int refreshRateEvents = 3;
         try {
             refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
@@ -105,7 +108,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
             SynoConfig config = getConfigAs(SynoConfig.class);
             apiHandler = new SynoWebApiHandler(config);
-            apiHandler.connect();
+            apiHandler.connect(httpClient);
 
             // InfoResponse infoResponse = apiHandler.getInfo();
             // getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,

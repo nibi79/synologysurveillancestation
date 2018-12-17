@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.LiveUriResponse;
@@ -34,8 +35,8 @@ public class SynoApiLiveUri extends SynoApiRequest<LiveUriResponse> {
     /**
      * @param config
      */
-    public SynoApiLiveUri(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiLiveUri(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(apiConfig, config, sessionID, httpClient);
     }
 
     /**

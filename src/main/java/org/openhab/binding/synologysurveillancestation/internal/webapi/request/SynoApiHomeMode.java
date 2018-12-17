@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
@@ -31,8 +32,8 @@ public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
     /**
      * @param config
      */
-    public SynoApiHomeMode(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiHomeMode(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(apiConfig, config, sessionID, httpClient);
     }
 
     /**

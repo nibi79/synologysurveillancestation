@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
@@ -32,7 +33,7 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public boolean connect() throws WebApiException;
+    public boolean connect(HttpClient httpClient) throws WebApiException;
 
     /**
      * Disconnect from Surveillance Station Web API

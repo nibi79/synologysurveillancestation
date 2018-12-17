@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
@@ -79,19 +80,19 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#connect()
      */
     @Override
-    public boolean connect() throws WebApiException {
+    public boolean connect(HttpClient httpClient) throws WebApiException {
 
-        apiAuth = new SynoApiAuth(config);
+        apiAuth = new SynoApiAuth(config, httpClient);
         boolean connected = createSession();
 
         // initialize APIs
-        apiInfo = new SynoApiInfo(config, sessionID);
-        apiCamera = new SynoApiCamera(config, sessionID);
-        apiEvent = new SynoApiEvent(config, sessionID);
-        apiExternalRecording = new SynoApiExternalRecording(config, sessionID);
-        apiPTZ = new SynoApiPTZ(config, sessionID);
-        apiHomeMode = new SynoApiHomeMode(config, sessionID);
-        apiLiveUri = new SynoApiLiveUri(config, sessionID);
+        apiInfo = new SynoApiInfo(config, sessionID, httpClient);
+        apiCamera = new SynoApiCamera(config, sessionID, httpClient);
+        apiEvent = new SynoApiEvent(config, sessionID, httpClient);
+        apiExternalRecording = new SynoApiExternalRecording(config, sessionID, httpClient);
+        apiPTZ = new SynoApiPTZ(config, sessionID, httpClient);
+        apiHomeMode = new SynoApiHomeMode(config, sessionID, httpClient);
+        apiLiveUri = new SynoApiLiveUri(config, sessionID, httpClient);
 
         return connected;
     }

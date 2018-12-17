@@ -53,7 +53,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     @Reference
     protected void setHttpClientFactory(HttpClientFactory httpClientFactory) {
-<>        this.httpClient = httpClientFactory.getCommonHttpClient();
+        this.httpClient = httpClientFactory.getCommonHttpClient();
     }
 
     protected void unsetHttpClientFactory(HttpClientFactory httpClientFactory) {
@@ -80,7 +80,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
-            SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing);
+            SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);
             CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
             this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(

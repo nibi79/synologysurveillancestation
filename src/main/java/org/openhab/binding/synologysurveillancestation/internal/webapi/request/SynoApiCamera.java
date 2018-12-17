@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
@@ -66,8 +67,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     /**
      * @param config
      */
-    public SynoApiCamera(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiCamera(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(apiConfig, config, sessionID, httpClient);
     }
 
     /**

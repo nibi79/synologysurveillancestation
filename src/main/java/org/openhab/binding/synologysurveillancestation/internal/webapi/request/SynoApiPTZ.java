@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
@@ -48,8 +49,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
     /**
      * @param config
      */
-    public SynoApiPTZ(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiPTZ(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(apiConfig, config, sessionID, httpClient);
     }
 
     /**
@@ -212,10 +213,10 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         // API Parameters
         params.put("cameraId", cameraId);
         params.put("presetId", presetId);
-//        params.put("position", ???);
-//        params.put("speed", ???);
-//        params.put("type", ???);
-//        params.put("isPatrol", ???);
+        // params.put("position", ???);
+        // params.put("speed", ???);
+        // params.put("type", ???);
+        // params.put("isPatrol", ???);
 
         SimpleResponse response = callApi(METHOD_GOPRESET, params);
 

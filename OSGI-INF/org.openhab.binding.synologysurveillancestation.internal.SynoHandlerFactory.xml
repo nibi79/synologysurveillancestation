@@ -4,5 +4,6 @@
       <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
    </service>
    <reference bind="setDynamicStateDescriptionProvider" interface="org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider" name="DynamicStateDescriptionProvider" unbind="unsetDynamicStateDescriptionProvider"/>
+   <reference bind="setHttpClientFactory" interface="org.eclipse.smarthome.io.net.http.HttpClientFactory" name="HttpClientFactory" unbind="unsetHttpClientFactory"/>
    <implementation class="org.openhab.binding.synologysurveillancestation.internal.SynoHandlerFactory"/>
 </scr:component>

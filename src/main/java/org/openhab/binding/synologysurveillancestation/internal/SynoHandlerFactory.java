@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -23,6 +24,7 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
+import org.eclipse.smarthome.io.net.http.HttpClientFactory;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
@@ -45,8 +47,18 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+    private HttpClient httpClient;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
+
+    @Reference
+    protected void setHttpClientFactory(HttpClientFactory httpClientFactory) {
+<>        this.httpClient = httpClientFactory.getCommonHttpClient();
+    }
+
+    protected void unsetHttpClientFactory(HttpClientFactory httpClientFactory) {
+        this.httpClient = null;
+    }
 
     @Override
     protected void activate(ComponentContext componentContext) {

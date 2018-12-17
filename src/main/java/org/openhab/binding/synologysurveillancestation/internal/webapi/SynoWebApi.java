@@ -35,6 +35,15 @@ public interface SynoWebApi {
     public boolean connect() throws WebApiException;
 
     /**
+     * Disconnect from Surveillance Station Web API
+     *
+     * @return
+     * @throws WebApiException
+     */
+
+    public boolean disconnect() throws WebApiException;
+
+    /**
      *
      * @return
      * @throws WebApiException

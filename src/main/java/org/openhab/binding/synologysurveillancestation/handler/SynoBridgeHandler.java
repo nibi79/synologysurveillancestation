@@ -141,6 +141,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
             thread.stop();
         }
         try {
+            apiHandler.disconnect();
             apiHandler.logout();
         } catch (Exception ex) {
         }

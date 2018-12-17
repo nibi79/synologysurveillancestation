@@ -79,6 +79,21 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
     }
 
+    /**
+     * Closes the http client
+     */
+    @Override
+    public boolean disconnect() {
+        try {
+            httpClient.stop();
+            httpClient.destroy();
+            return true;
+        } catch (Exception e) {
+            logger.debug("Error shutting down HTTP client");
+            return false;
+        }
+    }
+
     /*
      * (non-Javadoc)
      *

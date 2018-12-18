@@ -28,7 +28,8 @@ import org.osgi.service.component.annotations.Deactivate;
  * Dynamic channel state description provider.
  * Overrides the state description for the controls, which receive its configuration in the runtime.
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @NonNullByDefault
 @Component(service = { DynamicStateDescriptionProvider.class,
@@ -47,9 +48,6 @@ public class SynoDynamicStateDescriptionProvider implements DynamicStateDescript
         List<StateOption> options = channelOptionsMap.get(channel.getUID());
 
         if (original != null) {
-
-            options = options == null ? original.getOptions() : options;
-
             return new StateDescription(original.getMinimum(), original.getMaximum(), original.getStep(),
                     original.getPattern(), original.isReadOnly(), options);
         }

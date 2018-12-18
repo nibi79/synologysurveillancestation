@@ -13,7 +13,8 @@ import java.util.stream.Stream;
 /**
  * The {@link ErrorCode} is an interface for error codes
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public interface ErrorCode {
 
@@ -36,9 +37,6 @@ public interface ErrorCode {
      * @return
      */
     static <E extends Enum<E> & ErrorCode> E lookup(Class<E> e, int code) {
-
-        // TODO orElse null?
         return Stream.of(e.getEnumConstants()).filter(x -> x.getCode() == code).findAny().orElse(null);
-
     }
 }

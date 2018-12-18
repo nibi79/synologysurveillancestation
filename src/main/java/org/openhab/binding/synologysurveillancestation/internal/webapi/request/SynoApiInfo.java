@@ -22,20 +22,20 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * Method:
  * - GetInfo
  *
- * @author Nils
- *
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
 
     // API Configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Info";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_05, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_05, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
     public SynoApiInfo(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(apiConfig, config, sessionID, httpClient);
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**

@@ -37,7 +37,8 @@ import org.slf4j.LoggerFactory;
 /**
  * The {@link SynoBridgeHandler} is a Bridge handler for the Synology Surveillance Station
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @NonNullByDefault
 public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler {
@@ -110,10 +111,10 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
             apiHandler = new SynoWebApiHandler(config);
             apiHandler.connect(httpClient);
 
+            // if needed add other infos
             // InfoResponse infoResponse = apiHandler.getInfo();
             // getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,
             // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
-            // TODO if needed add other infos
 
             for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
                 thread.start();

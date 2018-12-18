@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 /**
  * {@link HomeModeResponse} provides response for Home Mode
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class HomeModeResponse extends SimpleResponse {

@@ -24,19 +24,18 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * This API provides a set of methods to acquire camera live feed URIs
  *
  *
- * @author Pavion
- *
+ * @author Pavion - Initial contribution
  */
 public class SynoApiLiveUri extends SynoApiRequest<LiveUriResponse> {
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_09, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_09, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
     public SynoApiLiveUri(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(apiConfig, config, sessionID, httpClient);
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**

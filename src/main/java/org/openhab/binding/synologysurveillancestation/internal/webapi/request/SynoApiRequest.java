@@ -33,9 +33,10 @@ import org.slf4j.LoggerFactory;
 /**
  * API request
  *
- * @author Nils
- *
  * @param <T>
+ *
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoApi {
     private final Logger logger = LoggerFactory.getLogger(SynoApiRequest.class);
@@ -57,7 +58,6 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId, HttpClient httpClient) {
-
         super();
 
         this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
@@ -141,9 +141,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws URISyntaxException
      */
     protected Request getWebApiUrl(String method, Map<String, String> params) throws WebApiException {
-
         try {
-
             URI uri = getWebApiUrlBuilder();
 
             Request request = httpClient.newRequest(uri);
@@ -182,14 +180,11 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws IOException
      */
     protected synchronized T callWebApi(Request request) throws WebApiException {
-
         try {
-
             // System.err.println(request.getURI());
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {
-
                 byte[] rawResponse = response.getContent();
                 String encoding = response.getEncoding().replaceAll("\"", "").trim();
                 String result = new String(rawResponse, encoding);

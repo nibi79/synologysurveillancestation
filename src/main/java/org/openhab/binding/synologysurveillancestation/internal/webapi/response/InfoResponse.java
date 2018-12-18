@@ -13,7 +13,8 @@ import com.google.gson.JsonElement;
 /**
  * {@link InfoResponse} provides information about current camera setup
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class InfoResponse extends SimpleResponse {
 

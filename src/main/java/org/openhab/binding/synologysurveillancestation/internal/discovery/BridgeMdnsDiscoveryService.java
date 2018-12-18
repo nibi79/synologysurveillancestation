@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The {@link BridgeMdnsDiscoveryService} is a class for discovering the DiskStation via mDNS service
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @Component(service = MDNSDiscoveryParticipant.class, immediate = false)
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
@@ -50,7 +50,6 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
         if (uid != null) {
             if (service.getHostAddresses() != null && service.getHostAddresses().length > 0
                     && !service.getHostAddresses()[0].isEmpty()) {
-
                 String name = service.getName();
                 String ip = service.getHostAddresses()[0];
                 String model = service.getPropertyString("model");
@@ -81,7 +80,6 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
             if (vendor.startsWith("Synology")) {
                 return new ThingUID(SynoBindingConstants.THING_TYPE_STATION, serial.toLowerCase());
             }
-
         }
         return null;
     }

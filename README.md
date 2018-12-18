@@ -12,9 +12,11 @@ For an installation the latest release should be copied into the /addons folder 
 For an upgrade the existing file should be overwritten. On major or structural changes existing things might have to be deleted and recreated, existing channels might be kept. For further information please read release notes of a corresponding release.
 
 **Note:** On some clean openHAB installations this binding may not work after installation, log shows an exception *Could not resolve module*. In this case please install the missing module from Karaf:
+
 ```
 feature:install esh-io-transport-upnp
 ```
+
 or just install the HUE binding (or any other binding with upnp discovery).
 
 ## Supported Things
@@ -71,11 +73,13 @@ Currently following **Channels** are supported on the **Camera**:
 
 ### .things file ###
 
+
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
 Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, snapshot-stream-id=1 ]
 }
 ```
+
 Here the **CameraID** is a numeric ID of your surveillance camera in Surveillance Station (e.g. 1) and snapshot stream ID is the ID of the preferred stream in Surveillance Station (e.g. 1 for 'Stream 1')
 
 ### .items file ###
@@ -102,6 +106,7 @@ String Surveillance_Moving "Camera moving" {channel="synologysurveillancestation
 String Surveillance_Presets "Camera moving to preset" {channel="synologysurveillancestation:camera:diskstation:1:ptz#movepreset"}
 String Surveillance_Patrols "Camera run patrol" {channel="synologysurveillancestation:camera:diskstation:1:ptz#runpatrol"}
 ```
+
 Here `:1` is yet again the numeric ID of your surveillance camera from a previous step.
 
 ### .sitemap ###
@@ -133,3 +138,4 @@ String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologys
 ```
 
 Please note, **Javascript Transformation** add-on has to be installed for the transformation to work properly. 
+

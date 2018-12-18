@@ -15,7 +15,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebAp
 /**
  * The {@link SynoHandler} is a generic handler
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public interface SynoHandler {
 

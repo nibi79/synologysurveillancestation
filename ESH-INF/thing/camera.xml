@@ -11,92 +11,92 @@
 		<description>Synology Surveillance Station Camera</description>
 		<category>Camera</category>
 
-        <channel-groups>
-            <channel-group id="common" typeId="common" />
-            <channel-group id="ptz" typeId="ptz" />
-            <channel-group id="event" typeId="event">
-                <label>Camera events</label>
-                <description>Events of your camera</description>
-            </channel-group>
-        </channel-groups>
+		<channel-groups>
+			<channel-group id="common" typeId="common" />
+			<channel-group id="ptz" typeId="ptz" />
+			<channel-group id="event" typeId="event">
+				<label>Camera events</label>
+				<description>Events of your camera</description>
+			</channel-group>
+		</channel-groups>
 
-        <config-description>
-            <parameter name="refresh-rate-snapshot" unit="s" type="integer">
-                <label>Snapshot refresh rate:</label>
-                <description>Refresh rate for camera snapshot in seconds (0 to disable)</description>
-                <default>10</default>
-                <required>true</required>
-            </parameter>
-            <parameter name="refresh-rate-events" unit="s" type="integer">
-                <label>Event refresh rate:</label>
-                <description>Refresh rate for events in seconds (0 to disable)</description>
-                <default>3</default>
-                <required>true</required>
-            </parameter>
-            <parameter name="snapshot-stream-id" type="integer">
-                <label>Snapshot stream ID:</label>
-                <description>Snapshot video stream ID according to Surveillance Station configuration (default: 1 for 'Stream 1')</description>
-                <default>1</default>
-                <required>true</required>
-            </parameter>
-        </config-description>
+		<config-description>
+			<parameter name="refresh-rate-snapshot" unit="s" type="integer">
+				<label>Snapshot refresh rate:</label>
+				<description>Refresh rate for camera snapshot in seconds (0 to disable)</description>
+				<default>10</default>
+				<required>true</required>
+			</parameter>
+			<parameter name="refresh-rate-events" unit="s" type="integer">
+				<label>Event refresh rate:</label>
+				<description>Refresh rate for events in seconds (0 to disable)</description>
+				<default>3</default>
+				<required>true</required>
+			</parameter>
+			<parameter name="snapshot-stream-id" type="integer">
+				<label>Snapshot stream ID:</label>
+				<description>Snapshot video stream ID according to Surveillance Station configuration (default: 1 for 'Stream 1')</description>
+				<default>1</default>
+				<required>true</required>
+			</parameter>
+		</config-description>
 	</thing-type>
 
-    <channel-group-type id="common">
-        <label>Common channels</label>
-        <description>Common channels of your camera</description>
-        <channels>
-            <channel id="snapshot" typeId="snapshot-channel" />
-            <channel id="record" typeId="recording-channel" />
-            <channel id="enable" typeId="enable-channel" />
-            <channel id="snapshot-uri-dynamic" typeId="uri-channel">
-                <label>Dynamic snapshot URI</label>
-                <description>Dynamic URL of the current snapshot (events refresh rate)</description>
-            </channel>
-            <channel id="snapshot-uri-static" typeId="uri-channel">
-                <label>Static snapshot URI</label>
-                <description>Static URL of the current snapshot</description>
-            </channel>
-            <channel id="live-uri-rtsp" typeId="uri-channel">
-                <label>Live feed URI (rtsp)</label>
-                <description>Live feed URI (rtsp)</description>
-            </channel>
-            <channel id="live-uri-mjpeg-http" typeId="uri-channel">
-                <label>Live feed URI (mjpeg over http)</label>
-                <description>Live feed URI (mjpeg over http)</description>
-            </channel>
-        </channels>
-    </channel-group-type>
+	<channel-group-type id="common">
+		<label>Common channels</label>
+		<description>Common channels of your camera</description>
+		<channels>
+			<channel id="snapshot" typeId="snapshot-channel" />
+			<channel id="record" typeId="recording-channel" />
+			<channel id="enable" typeId="enable-channel" />
+			<channel id="snapshot-uri-dynamic" typeId="uri-channel">
+				<label>Dynamic snapshot URI</label>
+				<description>Dynamic URL of the current snapshot (events refresh rate)</description>
+			</channel>
+			<channel id="snapshot-uri-static" typeId="uri-channel">
+				<label>Static snapshot URI</label>
+				<description>Static URL of the current snapshot</description>
+			</channel>
+			<channel id="live-uri-rtsp" typeId="uri-channel">
+				<label>Live feed URI (rtsp)</label>
+				<description>Live feed URI (rtsp)</description>
+			</channel>
+			<channel id="live-uri-mjpeg-http" typeId="uri-channel">
+				<label>Live feed URI (mjpeg over http)</label>
+				<description>Live feed URI (mjpeg over http)</description>
+			</channel>
+		</channels>
+	</channel-group-type>
 
-    <channel-group-type id="ptz">
-        <label>PTZ channels</label>
-        <description>Pan/Tilt/Zoom channels of your camera</description>
-        <channels>
-            <channel id="zoom" typeId="zoom-channel" />
-            <channel id="move" typeId="move-channel" />
-            <channel id="movepreset" typeId="movepreset-channel" />
-            <channel id="runpatrol" typeId="runpatrol-channel" />
-        </channels>
-    </channel-group-type>
+	<channel-group-type id="ptz">
+		<label>PTZ channels</label>
+		<description>Pan/Tilt/Zoom channels of your camera</description>
+		<channels>
+			<channel id="zoom" typeId="zoom-channel" />
+			<channel id="move" typeId="move-channel" />
+			<channel id="movepreset" typeId="movepreset-channel" />
+			<channel id="runpatrol" typeId="runpatrol-channel" />
+		</channels>
+	</channel-group-type>
 
-    <channel-group-type id="event">
-        <label>Event</label>
-        <description>Event of your camera</description>
-        <channels>
-            <channel id="motion" typeId="event-channel" >
-                <label>Motion event</label>
-                <description>Last motion event</description>
-            </channel>
-            <channel id="alarm" typeId="event-advanced-channel" >
-                <label>Alarm event</label>
-                <description>Last alarm event</description>
-            </channel>
-            <channel id="manual" typeId="event-advanced-channel" >
-                <label>Manual event</label>
-                <description>Last manual event</description>
-            </channel>
-        </channels>
-    </channel-group-type>
+	<channel-group-type id="event">
+		<label>Event</label>
+		<description>Event of your camera</description>
+		<channels>
+			<channel id="motion" typeId="event-channel" >
+				<label>Motion event</label>
+				<description>Last motion event</description>
+			</channel>
+			<channel id="alarm" typeId="event-advanced-channel" >
+				<label>Alarm event</label>
+				<description>Last alarm event</description>
+			</channel>
+			<channel id="manual" typeId="event-advanced-channel" >
+				<label>Manual event</label>
+				<description>Last manual event</description>
+			</channel>
+		</channels>
+	</channel-group-type>
 
 	<channel-type id="snapshot-channel">
 		<item-type>Image</item-type>
@@ -113,12 +113,12 @@
 		<label>Camera recording</label>
 		<description>Start manual recording</description>
 	</channel-type>
-    <channel-type id="uri-channel" advanced="true">
-        <item-type>String</item-type>
-        <label>URI</label>
-        <description>Current snapshot/live URI of your camera</description>
-        <state readOnly="true"></state>
-    </channel-type>
+	<channel-type id="uri-channel" advanced="true">
+		<item-type>String</item-type>
+		<label>URI</label>
+		<description>Current snapshot/live URI of your camera</description>
+		<state readOnly="true"></state>
+	</channel-type>
 	<channel-type id="zoom-channel">
 		<item-type>String</item-type>
 		<label>Zoom</label>
@@ -145,34 +145,34 @@
 		</state>
 	</channel-type>
 
-    <channel-type id="movepreset-channel">
-        <item-type>String</item-type>
-        <label>Move to preset</label>
-        <description>Move the camera lens to a pre-defined preset position.</description>
-        <state pattern="%s">
-            <options>
-                <option value="HOME">home</option>
-            </options>
-        </state>
-    </channel-type>
+	<channel-type id="movepreset-channel">
+		<item-type>String</item-type>
+		<label>Move to preset</label>
+		<description>Move the camera lens to a pre-defined preset position.</description>
+		<state pattern="%s">
+			<options>
+				<option value="HOME">home</option>
+			</options>
+		</state>
+	</channel-type>
 
-    <channel-type id="runpatrol-channel">
-        <item-type>String</item-type>
-        <label>Run patrol</label>
-        <description>Force the camera to execute the specific patrol.</description>
-    </channel-type>
+	<channel-type id="runpatrol-channel">
+		<item-type>String</item-type>
+		<label>Run patrol</label>
+		<description>Force the camera to execute the specific patrol.</description>
+	</channel-type>
 
-    <channel-type id="event-channel">
-        <item-type>Switch</item-type>
-        <label>Event detected</label>
-        <description>Event was detected</description>
-        <state readOnly="true"></state>
-    </channel-type>
-    <channel-type id="event-advanced-channel" advanced="true">
-        <item-type>Switch</item-type>
-        <label>Event detected</label>
-        <description>Event was detected</description>
-        <state readOnly="true"></state>
-    </channel-type>
+	<channel-type id="event-channel">
+		<item-type>Switch</item-type>
+		<label>Event detected</label>
+		<description>Event was detected</description>
+		<state readOnly="true"></state>
+	</channel-type>
+	<channel-type id="event-advanced-channel" advanced="true">
+		<item-type>Switch</item-type>
+		<label>Event detected</label>
+		<description>Event was detected</description>
+		<state readOnly="true"></state>
+	</channel-type>
 
 </thing:thing-descriptions>

@@ -19,7 +19,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * Thread for getting Surveillance Station Home Mode state
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
@@ -36,7 +36,6 @@ public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-
         SynoBridgeHandler brdigeHandler = getSynoHandler();
         HomeModeResponse response = brdigeHandler.getSynoWebApiHandler().getHomeModeResponse();
         if (response.isSuccess()) {

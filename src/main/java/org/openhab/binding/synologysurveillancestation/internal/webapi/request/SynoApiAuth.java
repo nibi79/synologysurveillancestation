@@ -26,21 +26,21 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * - Login
  * - Logout
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  *
  */
 public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
     // API configuration
     private static final String API_NAME = "SYNO.API.Auth";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_06, API_SCRIPT_AUTH);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_06, API_SCRIPT_AUTH);
 
     /**
      * @param config
      */
     public SynoApiAuth(SynoConfig config, HttpClient httpClient) {
-
-        super(apiConfig, config, null, httpClient);
+        super(API_CONFIG, config, null, httpClient);
     }
 
     /**
@@ -51,7 +51,6 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      * @throws WebApiException
      */
     private AuthResponse call(String method) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API parameters
@@ -71,7 +70,6 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      * @throws WebApiException
      */
     public AuthResponse login() throws WebApiException {
-
         return call(METHOD_LOGIN);
     }
 
@@ -82,7 +80,6 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      * @throws WebApiException
      */
     public AuthResponse logout(String sessionID) throws WebApiException {
-
         return call(METHOD_LOGOUT);
     }
 

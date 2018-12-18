@@ -37,20 +37,20 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * - AutoPan
  * - ObjTracking
  *
- * @author Nils
- *
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
 
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.PTZ";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_03, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_03, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
     public SynoApiPTZ(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(apiConfig, config, sessionID, httpClient);
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**
@@ -62,7 +62,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     private SimpleResponse callZoom(String cameraId, String control) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API parameters
@@ -83,7 +82,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     private SimpleResponse callMove(String cameraId, String direction, int speed) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API Parameters
@@ -103,7 +101,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse zoomOut(String cameraId) throws WebApiException {
-
         return callZoom(cameraId, "out");
     }
 
@@ -115,7 +112,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse zoomIn(String cameraId) throws WebApiException {
-
         return callZoom(cameraId, "in");
     }
 
@@ -127,7 +123,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse moveUp(String cameraId) throws WebApiException {
-
         return callMove(cameraId, "up", 1);
     }
 
@@ -139,7 +134,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse moveDown(String cameraId) throws WebApiException {
-
         return callMove(cameraId, "down", 1);
     }
 
@@ -151,7 +145,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse moveLeft(String cameraId) throws WebApiException {
-
         return callMove(cameraId, "left", 1);
     }
 
@@ -163,7 +156,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse moveRight(String cameraId) throws WebApiException {
-
         return callMove(cameraId, "right", 1);
     }
 
@@ -175,7 +167,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse moveHome(String cameraId) throws WebApiException {
-
         return callMove(cameraId, "home", 1);
     }
 
@@ -187,7 +178,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse listPresets(String cameraId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API Parameters
@@ -207,7 +197,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse goPreset(String cameraId, String presetId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API Parameters
@@ -231,7 +220,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse listPatrol(String cameraId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API Parameters
@@ -251,7 +239,6 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse runPatrol(String cameraId, String patrolId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API Parameters

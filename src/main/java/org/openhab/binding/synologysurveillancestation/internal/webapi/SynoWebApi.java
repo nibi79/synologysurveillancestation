@@ -23,7 +23,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * The {@link SynoWebApi} is an interface for the Web API
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public interface SynoWebApi {
 

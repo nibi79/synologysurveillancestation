@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 /**
  * {@link SynoEvent} stores events
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoEvent {

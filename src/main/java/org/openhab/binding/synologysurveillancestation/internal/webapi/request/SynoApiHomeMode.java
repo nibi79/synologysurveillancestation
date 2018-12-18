@@ -22,18 +22,17 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  *
  * This API provides a method to acquire Surveillance Station Home Mode state
  *
- * @author Pavion
- *
+ * @author Pavion - Initial contribution
  */
 public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
     private static final String API_NAME = "SYNO.SurveillanceStation.HomeMode";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_01, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_01, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
     public SynoApiHomeMode(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(apiConfig, config, sessionID, httpClient);
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**

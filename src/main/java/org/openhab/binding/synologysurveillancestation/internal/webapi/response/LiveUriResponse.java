@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 /**
  * {@link LiveUriResponse} is a response for live URIs
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 public class LiveUriResponse extends SimpleResponse {
 

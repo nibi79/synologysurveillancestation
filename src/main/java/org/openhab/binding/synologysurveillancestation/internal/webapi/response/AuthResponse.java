@@ -13,7 +13,8 @@ import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiTh
 /**
  * {@link SynoApiThread} handles authentication response
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class AuthResponse extends SimpleResponse {
 

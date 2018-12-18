@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
  * handlers.
  *
  * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @Component(service = ThingHandlerFactory.class, configurationPid = "binding.binding.synologysurveillancestation")
 public class SynoHandlerFactory extends BaseThingHandlerFactory {

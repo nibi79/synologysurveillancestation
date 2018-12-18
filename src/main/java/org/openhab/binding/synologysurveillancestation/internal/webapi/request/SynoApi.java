@@ -11,7 +11,8 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 /**
  * The {@link SynoApi} is an interface for Synology API codes
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public interface SynoApi {
 

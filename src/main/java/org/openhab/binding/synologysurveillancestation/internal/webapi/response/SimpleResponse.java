@@ -11,7 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.response
 /**
  * {@link SimpleResponse} is a simplest implementation of an API response
  *
- * @author Nils
+ * @author Nils - Initial contribution
  */
 public class SimpleResponse extends SynoApiResponse {
 

@@ -13,7 +13,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.error.Err
 /**
  * The {@link WebApiException} is a class for handling the binding exceptions
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class WebApiException extends Exception {
 

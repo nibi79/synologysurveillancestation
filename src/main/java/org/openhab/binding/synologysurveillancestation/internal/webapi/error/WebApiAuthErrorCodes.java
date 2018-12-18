@@ -11,7 +11,8 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.error;
 /**
  * The {@link WebApiAuthErrorCodes} hosts errorCodes for SYNO.API.Auth.
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public enum WebApiAuthErrorCodes implements ErrorCode {
 
@@ -59,7 +60,6 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
 
     @Override
     public String toString() {
-
         return this.name() + " | ErrorCode: " + this.getCode() + " - " + this.getMsg();
     }
 }

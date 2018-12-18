@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The {@link SynoApiThread} is an abstract class for thread management (events, snapshot and so on)
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
@@ -88,7 +88,6 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
      */
     public void start() {
         if (refreshRate > 0) {
-
             ScheduledExecutorService scheduler = synoHandler.getScheduler();
 
             if (scheduler != null) {
@@ -110,7 +109,6 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-
             }
         }
     }

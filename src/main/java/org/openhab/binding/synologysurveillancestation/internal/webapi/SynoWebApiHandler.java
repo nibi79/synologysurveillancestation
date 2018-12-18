@@ -36,7 +36,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * The {@link SynoWebApiHandler} is a facade for Synology Surveillance Station Web API.
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class SynoWebApiHandler implements SynoWebApi {
 
@@ -81,7 +82,6 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public boolean connect(HttpClient httpClient) throws WebApiException {
-
         apiAuth = new SynoApiAuth(config, httpClient);
         boolean connected = createSession();
 
@@ -106,13 +106,9 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @throws WebApiException
      */
     public void execute(String cameraId, String method, String command) throws WebApiException {
-
         switch (method) {
-
             case CHANNEL_ENABLE:
-
                 switch (command) {
-
                     case "ON":
                         enable(cameraId);
                         break;
@@ -121,11 +117,8 @@ public class SynoWebApiHandler implements SynoWebApi {
                         break;
                 }
                 break;
-
             case CHANNEL_RECORD:
-
                 switch (command) {
-
                     case "ON":
                         startRecording(cameraId);
                         break;
@@ -133,12 +126,9 @@ public class SynoWebApiHandler implements SynoWebApi {
                         stopRecording(cameraId);
                         break;
                 }
-
                 break;
             case CHANNEL_ZOOM:
-
                 switch (command) {
-
                     case "IN":
                         zoomIn(cameraId);
                         break;
@@ -147,11 +137,8 @@ public class SynoWebApiHandler implements SynoWebApi {
                         break;
                 }
                 break;
-
             case CHANNEL_MOVE:
-
                 switch (command) {
-
                     case "UP":
                         moveUp(cameraId);
                         break;
@@ -169,7 +156,6 @@ public class SynoWebApiHandler implements SynoWebApi {
                         break;
                 }
                 break;
-
             default:
                 break;
         }
@@ -180,20 +166,14 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @throws WebApiException
      */
     private boolean createSession() throws WebApiException {
-
         AuthResponse response = login();
 
         if (response.isSuccess()) {
-
             sessionID = response.getSid();
-
             return true;
-
         } else {
-
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
-
     }
 
     /**
@@ -217,13 +197,9 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @throws WebApiException
      */
     private SimpleResponse handleSimpleResponse(SimpleResponse response, boolean allowError) throws WebApiException {
-
         if (response.isSuccess() || allowError) {
-
             return response;
-
         } else {
-
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
     }
@@ -233,7 +209,6 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @throws WebApiException
      */
     private AuthResponse login() throws WebApiException {
-
         return apiAuth.login();
     }
 
@@ -244,14 +219,11 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse logout() throws WebApiException {
-
         SimpleResponse response = apiAuth.logout(sessionID);
 
         if (response.isSuccess()) {
-
             return response;
         } else {
-
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
     }
@@ -293,16 +265,13 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public CameraResponse list() throws WebApiException {
-
         CameraResponse response = apiCamera.list();
 
         if (!response.isSuccess()) {
-
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
 
         return response;
-
     }
 
     /*
@@ -312,16 +281,13 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public CameraResponse getInfo(String cameraId) throws WebApiException {
-
         CameraResponse response = apiCamera.getInfo(cameraId);
 
         if (!response.isSuccess()) {
-
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
 
         return response;
-
     }
 
     /*
@@ -331,11 +297,9 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public InfoResponse getInfo() throws WebApiException {
-
         InfoResponse response = apiInfo.getInfo();
 
         if (!response.isSuccess()) {
-
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
 
@@ -349,9 +313,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse enable(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiCamera.enable(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -362,9 +324,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse disable(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiCamera.disable(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -375,9 +335,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse startRecording(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiExternalRecording.startRecording(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -388,9 +346,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse stopRecording(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiExternalRecording.stopRecording(cameraId);
-
         return handleSimpleResponse(response);
 
     }
@@ -402,9 +358,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse zoomIn(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.zoomIn(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -415,9 +369,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse zoomOut(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.zoomOut(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -428,9 +380,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse moveUp(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.moveUp(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -441,7 +391,6 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse moveDown(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.moveDown(cameraId);
 
         return handleSimpleResponse(response);
@@ -454,9 +403,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse moveLeft(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.moveLeft(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -467,9 +414,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse moveRight(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.moveRight(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -480,9 +425,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse moveHome(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.moveHome(cameraId);
-
         return handleSimpleResponse(response);
     }
 
@@ -493,9 +436,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse listPresets(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.listPresets(cameraId);
-
         return handleSimpleResponse(response, true); // allow errors
     }
 
@@ -507,9 +448,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse goPreset(String cameraId, String presetId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.goPreset(cameraId, presetId);
-
         return handleSimpleResponse(response);
     }
 
@@ -520,9 +459,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse listPatrol(String cameraId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.listPatrol(cameraId);
-
         return handleSimpleResponse(response, true); // allow errors
     }
 
@@ -534,9 +471,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public SimpleResponse runPatrol(String cameraId, String patrolId) throws WebApiException {
-
         SimpleResponse response = apiPTZ.runPatrol(cameraId, patrolId);
-
         return handleSimpleResponse(response);
     }
 
@@ -548,7 +483,6 @@ public class SynoWebApiHandler implements SynoWebApi {
     @Override
     public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
             throws WebApiException {
-
         EventResponse response = apiEvent.query(cameraId, lastEventTime, events);
 
         return response;
@@ -567,9 +501,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
     @Override
     public LiveUriResponse getLiveUriResponse(String cameraId) throws WebApiException {
-
         LiveUriResponse response = apiLiveUri.getLiveUriResponse(cameraId);
-
         return response;
     }
 

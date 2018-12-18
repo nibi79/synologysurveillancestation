@@ -11,7 +11,8 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 /**
  * API configuration parameters
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  *
  */
 public class SynoApiConfig {

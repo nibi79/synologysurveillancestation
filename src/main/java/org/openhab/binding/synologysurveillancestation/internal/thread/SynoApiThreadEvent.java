@@ -25,7 +25,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * Thread for getting camera events (motion, alarm)
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
@@ -50,7 +50,6 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-
         SynoCameraHandler cameraHandler = getSynoHandler();
         Thing thing = cameraHandler.getThing();
 

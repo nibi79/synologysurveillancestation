@@ -24,21 +24,20 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * Method:
  * - Record
  *
- * @author Nils
- *
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
 
     // API configuration
-    // TODO Check version 3 -< invalid parameter?
     private static final String API_NAME = "SYNO.SurveillanceStation.ExternalRecording";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_02, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_02, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
     public SynoApiExternalRecording(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(apiConfig, config, sessionID, httpClient);
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**
@@ -49,7 +48,6 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     private SimpleResponse call(String method, String cameraId, String action) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API parameters
@@ -67,7 +65,6 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse startRecording(String camerId) throws WebApiException {
-
         return call(METHOD_RECORD, camerId, "start");
     }
 
@@ -79,7 +76,6 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse stopRecording(String camerId) throws WebApiException {
-
         return call(METHOD_RECORD, camerId, "stop");
     }
 

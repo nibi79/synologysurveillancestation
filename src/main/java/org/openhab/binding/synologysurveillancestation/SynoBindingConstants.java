@@ -20,7 +20,8 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
  * The {@link SynoBindingConstants} class defines common constants, which are
  * used across the whole binding.
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @NonNullByDefault
 public class SynoBindingConstants {

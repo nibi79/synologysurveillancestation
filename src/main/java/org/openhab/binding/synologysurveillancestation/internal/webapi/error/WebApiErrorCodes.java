@@ -11,7 +11,8 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.error;
 /**
  * The {@link WebApiErrorCodes} hosts errorCodes for most APIs.
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public enum WebApiErrorCodes implements ErrorCode {
 

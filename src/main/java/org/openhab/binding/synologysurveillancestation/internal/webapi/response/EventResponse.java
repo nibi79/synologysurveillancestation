@@ -20,8 +20,8 @@ import com.google.gson.JsonObject;
 
 /**
  * {@link EventResponse} is a response with current events
- * 
- * @author Pavion
+ *
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class EventResponse extends SimpleResponse {

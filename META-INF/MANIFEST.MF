@@ -26,7 +26,7 @@ Import-Package:
  org.eclipse.smarthome.core.thing.type,
  org.eclipse.smarthome.core.types,
  org.eclipse.smarthome.io.net.http,
- org.jupnp.model.meta,
+ org.eclipse.smarthome.io.transport.mdns.discovery,
  org.openhab.binding.synologysurveillancestation,
  org.openhab.binding.synologysurveillancestation.handler,
  org.osgi.framework,

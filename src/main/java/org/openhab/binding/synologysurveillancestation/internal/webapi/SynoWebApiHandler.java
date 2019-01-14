@@ -20,6 +20,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.error.Web
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiEvent;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalRecording;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiHomeMode;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiInfo;
@@ -53,6 +54,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     private SynoApiExternalRecording apiExternalRecording = null;
     private SynoApiPTZ apiPTZ = null;
     private SynoApiLiveUri apiLiveUri = null;
+    private SynoApiExternalEvent apiExternalEvent = null;
 
     /**
      * @param config
@@ -93,6 +95,7 @@ public class SynoWebApiHandler implements SynoWebApi {
         apiPTZ = new SynoApiPTZ(config, sessionID, httpClient);
         apiHomeMode = new SynoApiHomeMode(config, sessionID, httpClient);
         apiLiveUri = new SynoApiLiveUri(config, sessionID, httpClient);
+        apiExternalEvent = new SynoApiExternalEvent(config, sessionID, httpClient);
 
         return connected;
     }
@@ -505,4 +508,8 @@ public class SynoWebApiHandler implements SynoWebApi {
         return response;
     }
 
+    @Override
+    public boolean triggerEvent(int event) throws WebApiException {
+        return apiExternalEvent.triggerEvent(event);
+    }
 }

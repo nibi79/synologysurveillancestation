@@ -52,6 +52,7 @@ public interface SynoApi {
     public static final String METHOD_LISTPATROL = "ListPatrol";
     public static final String METHOD_RUNPATROL = "RunPatrol";
     public static final String METHOD_SWITCH = "Switch";
+    public static final String METHOD_TRIGGER = "Trigger";
 
     public static final int CONNECTION_TIMEOUT = 5000;
 

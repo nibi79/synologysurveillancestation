@@ -236,4 +236,13 @@ public interface SynoWebApi {
      * Returns a response with live feed URIs
      */
     public LiveUriResponse getLiveUriResponse(String cameraId) throws WebApiException;
+
+    /**
+     * Triggers the external event 1 to 10
+     *
+     * @param event External event to be triggered (1 to 10)
+     * @return
+     * @throws WebApiException
+     */
+    public boolean triggerEvent(int event) throws WebApiException;
 }

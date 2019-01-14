@@ -75,4 +75,5 @@ public class SynoBindingConstants {
     public static final String CHANNEL_EVENT_MOTION = "event#motion";
     public static final String CHANNEL_EVENT_ALARM = "event#alarm";
     public static final String CHANNEL_EVENT_MANUAL = "event#manual";
+    public static final String CHANNEL_EVENT_TRIGGER = "event#eventtrigger";
 }

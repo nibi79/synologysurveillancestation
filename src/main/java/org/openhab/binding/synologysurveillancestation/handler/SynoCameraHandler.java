@@ -161,6 +161,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     @Override
     public void initialize() {
         if (getBridge() != null) {
+
             cameraId = getThing().getUID().getId();
 
             logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);
@@ -322,7 +323,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
                 }
             }
-
         }
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), options);
 
@@ -347,7 +347,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
                 }
             }
-
         }
         stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), options);
 

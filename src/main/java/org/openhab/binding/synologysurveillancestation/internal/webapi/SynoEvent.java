@@ -25,7 +25,7 @@ public class SynoEvent {
     public static final int EVENT_REASON_EXTERNAL = 6;
     public static final int EVENT_REASON_ANALYTICS = 7;
     public static final int EVENT_REASON_EDGE = 8;
-    public static final int EVENT_REASON_ACTION_RULE = 9;
+    public static final int EVENT_REASON_ACTIONRULE = 9;
 
     private boolean eventCompleted = true;
     private long eventId = -1;

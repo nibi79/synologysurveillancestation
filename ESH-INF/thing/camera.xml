@@ -95,6 +95,14 @@
 				<label>Manual event</label>
 				<description>Last manual event</description>
 			</channel>
+            <channel id="external" typeId="event-advanced-channel" >
+                <label>External event</label>
+                <description>Last external event</description>
+            </channel>
+            <channel id="actionrule" typeId="event-advanced-channel" >
+                <label>Action rule event</label>
+                <description>Last action rule event</description>
+            </channel>
 		</channels>
 	</channel-group-type>
 

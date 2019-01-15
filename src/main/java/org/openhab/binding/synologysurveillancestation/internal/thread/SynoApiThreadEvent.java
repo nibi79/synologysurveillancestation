@@ -40,12 +40,15 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
         events.put(CHANNEL_EVENT_MOTION, new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
         events.put(CHANNEL_EVENT_ALARM, new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
         events.put(CHANNEL_EVENT_MANUAL, new SynoEvent(SynoEvent.EVENT_REASON_MANUAL));
+        events.put(CHANNEL_EVENT_EXTERNAL, new SynoEvent(SynoEvent.EVENT_REASON_EXTERNAL));
+        events.put(CHANNEL_EVENT_ACTIONRULE, new SynoEvent(SynoEvent.EVENT_REASON_ACTIONRULE));
     }
 
     @Override
     public boolean isNeeded() {
         return (getSynoHandler().isLinked(CHANNEL_EVENT_MOTION) || getSynoHandler().isLinked(CHANNEL_EVENT_ALARM)
-                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL));
+                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL) || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
     }
 
     @Override

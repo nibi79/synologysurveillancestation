@@ -26,6 +26,7 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
+import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
@@ -92,13 +93,15 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                     }
                     break;
                 case CHANNEL_EVENT_TRIGGER:
-                    if (apiHandler != null) {
+                    if (command.toString().equals("REFRESH")) {
+                        updateState(channelUID, UnDefType.UNDEF);
+                    } else if (apiHandler != null) {
                         int event = Integer.parseInt(command.toString());
                         boolean ret = false;
                         if (event >= 1 && event <= 10) {
                             ret = apiHandler.triggerEvent(event);
                         }
-                        updateState(channelUID, ret ? new DecimalType(0) : DecimalType.ZERO);
+                        updateState(channelUID, ret ? new DecimalType(0) : UnDefType.UNDEF);
                     }
                     break;
             }

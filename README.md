@@ -51,6 +51,7 @@ Following options can be set for the **Camera**:
 Currently following **Channels** are supported on the **Bridge**:
 
 - Home mode _SWITCH_
+- External event trigger _NUMBER_ (1 to 10, write-only)
 
 Currently following **Channels** are supported on the **Camera**:
 
@@ -68,6 +69,8 @@ Currently following **Channels** are supported on the **Camera**:
 - Motion event _SWITCH_ (read-only)
 - Alarm event _SWITCH_ (read-only)
 - Manual event _SWITCH_ (read-only)
+- External event _SWITCH_ (read-only)
+- Action rule event _SWITCH_ (read-only)
 
 ## Advanced: Using file based configuration
 
@@ -86,6 +89,7 @@ Here the **CameraID** is a numeric ID of your surveillance camera in Surveillanc
 
 ```
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
+Number:Dimensionless Surveillance_Event_Trigger "External event trigger" {channel="synologysurveillancestation:station:diskstation:eventtrigger"}
 
 Image Surveillance_Snapshot "Snapshot" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot"}
 
@@ -100,6 +104,8 @@ Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestati
 Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveillancestation:camera:diskstation:1:event#motion"}
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
+Switch Surveillance_Event_External "Camera external event" {channel="synologysurveillancestation:camera:diskstation:1:event#external"}
+Switch Surveillance_Event_ActionRule "Camera action rule event" {channel="synologysurveillancestation:camera:diskstation:1:event#actionrule"}
 
 String Surveillance_Zooming "Camera zooming" {channel="synologysurveillancestation:camera:diskstation:1:ptz#zoom"}
 String Surveillance_Moving "Camera moving" {channel="synologysurveillancestation:camera:diskstation:1:ptz#move"}

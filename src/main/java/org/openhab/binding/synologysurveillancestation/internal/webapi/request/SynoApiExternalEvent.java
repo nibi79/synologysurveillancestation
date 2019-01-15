@@ -52,7 +52,6 @@ public class SynoApiExternalEvent extends SynoApiRequest<CameraResponse> {
 
         // API parameters
         params.put("eventId", String.valueOf(event));
-        params.put("privCamType", API_TRUE);
         return callApi(METHOD_TRIGGER, params).isSuccess();
     }
 

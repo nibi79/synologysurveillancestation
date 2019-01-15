@@ -20,7 +20,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
-import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -148,16 +147,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     if (apiHandler != null) {
                         String uri = apiHandler.getLiveUriResponse(cameraId).getMjpegHttp();
                         updateState(channelUID, new StringType(uri));
-                    }
-                    break;
-                case CHANNEL_EVENT_TRIGGER:
-                    if (apiHandler != null) {
-                        int event = Integer.parseInt(command.toString());
-                        boolean ret = false;
-                        if (event >= 1 && event <= 10) {
-                            ret = apiHandler.triggerEvent(event);
-                        }
-                        updateState(channelUID, ret ? new DecimalType(0) : DecimalType.ZERO);
                     }
                     break;
             }

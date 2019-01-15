@@ -95,10 +95,6 @@
 				<label>Manual event</label>
 				<description>Last manual event</description>
 			</channel>
-			<channel id="eventtrigger" typeId="eventtrigger-channel" >
-				<label>Trigger external event</label>
-				<description>Trigger external event 1 to 10</description>
-			</channel>
 		</channels>
 	</channel-group-type>
 
@@ -177,12 +173,5 @@
 		<label>Event detected</label>
 		<description>Event was detected</description>
 		<state readOnly="true"></state>
-	</channel-type>
-
-	<channel-type id="eventtrigger-channel" advanced="true">
-		<item-type>Number</item-type>
-		<label>Trigger external event</label>
-		<description>Trigger external event 1 to 10</description>
-		<state min="0" max="10" step="1"></state>
 	</channel-type>
 </thing:thing-descriptions>

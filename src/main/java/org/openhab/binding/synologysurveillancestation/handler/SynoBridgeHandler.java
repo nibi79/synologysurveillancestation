@@ -18,6 +18,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -88,6 +89,16 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                     } else if (apiHandler != null) {
                         boolean state = command.toString().equals("ON");
                         apiHandler.setHomeMode(state);
+                    }
+                    break;
+                case CHANNEL_EVENT_TRIGGER:
+                    if (apiHandler != null) {
+                        int event = Integer.parseInt(command.toString());
+                        boolean ret = false;
+                        if (event >= 1 && event <= 10) {
+                            ret = apiHandler.triggerEvent(event);
+                        }
+                        updateState(channelUID, ret ? new DecimalType(0) : DecimalType.ZERO);
                     }
                     break;
             }

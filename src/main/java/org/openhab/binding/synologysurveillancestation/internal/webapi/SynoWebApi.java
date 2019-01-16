@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
@@ -22,7 +23,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * The {@link SynoWebApi} is an interface for the Web API
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public interface SynoWebApi {
 
@@ -32,16 +34,7 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public boolean connect() throws WebApiException;
-
-    /**
-     * Disconnect from Surveillance Station Web API
-     *
-     * @return
-     * @throws WebApiException
-     */
-
-    public boolean disconnect() throws WebApiException;
+    public boolean connect(HttpClient httpClient) throws WebApiException;
 
     /**
      *
@@ -243,4 +236,13 @@ public interface SynoWebApi {
      * Returns a response with live feed URIs
      */
     public LiveUriResponse getLiveUriResponse(String cameraId) throws WebApiException;
+
+    /**
+     * Triggers the external event 1 to 10
+     *
+     * @param event External event to be triggered (1 to 10)
+     * @return
+     * @throws WebApiException
+     */
+    public boolean triggerEvent(int event) throws WebApiException;
 }

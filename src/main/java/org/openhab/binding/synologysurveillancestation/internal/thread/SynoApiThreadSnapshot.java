@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,7 @@ import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler
 /**
  * Thread for getting snapshots
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
@@ -37,7 +37,6 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-
         SynoCameraHandler cameraHandler = getSynoHandler();
 
         Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -55,7 +55,8 @@ import com.google.gson.JsonObject;
  * The {@link SynoCameraHandler} is responsible for handling commands, which are
  * sent to one of the channels of a camera Thing.
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @NonNullByDefault
 public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
@@ -75,7 +76,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @param ptz   PTZ support?
      */
     public SynoCameraHandler(Thing thing, SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
-
         super(thing);
 
         this.stateDescriptionProvider = stateDescriptionProvider;
@@ -108,6 +108,8 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 case CHANNEL_EVENT_MOTION:
                 case CHANNEL_EVENT_ALARM:
                 case CHANNEL_EVENT_MANUAL:
+                case CHANNEL_EVENT_EXTERNAL:
+                case CHANNEL_EVENT_ACTIONRULE:
                     if (command.toString().equals("REFRESH")) {
                         updateState(channelUID, OnOffType.OFF);
                     }
@@ -158,7 +160,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void initialize() {
-
         if (getBridge() != null) {
 
             cameraId = getThing().getUID().getId();
@@ -169,9 +170,12 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
                 try {
-
                     CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
                     Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
+                    if (properties == null) {
+                        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
+                        return;
+                    }
                     ptz = properties.getOrDefault(SynoApiResponse.PROP_PTZ, "false").equals("true");
 
                     if (!ptz) {
@@ -182,7 +186,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), CHANNEL_RUNPATROL));
                         updateThing(thingBuilder.build());
                     } else {
-
                         if (isLinked(CHANNEL_MOVEPRESET)) {
                             updatePresets();
                         }
@@ -308,7 +311,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @throws WebApiException
      */
     public void updatePresets() throws WebApiException {
-
         SimpleResponse listPresetResponse = apiHandler.listPresets(cameraId);
 
         JsonObject data = listPresetResponse.getData();
@@ -333,7 +335,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @throws WebApiException
      */
     public void updatePatrols() throws WebApiException {
-
         SimpleResponse listPatrolResponse = apiHandler.listPatrol(cameraId);
 
         JsonObject data = listPatrolResponse.getData();

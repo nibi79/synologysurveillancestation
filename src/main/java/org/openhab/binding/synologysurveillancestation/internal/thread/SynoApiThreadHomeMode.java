@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * Thread for getting Surveillance Station Home Mode state
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
@@ -36,7 +36,6 @@ public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-
         SynoBridgeHandler brdigeHandler = getSynoHandler();
         HomeModeResponse response = brdigeHandler.getSynoWebApiHandler().getHomeModeResponse();
         if (response.isSuccess()) {

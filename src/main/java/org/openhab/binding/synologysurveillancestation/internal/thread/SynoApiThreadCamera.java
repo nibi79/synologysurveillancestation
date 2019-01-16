@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * Thread for getting camera state (enabled, recording)
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
@@ -43,14 +43,12 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-
         boolean ret = true;
 
         SynoCameraHandler cameraHandler = getSynoHandler();
         String cameraId = cameraHandler.getCameraId();
 
         if (cameraHandler.isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)) {
-
             Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT_URI_DYNAMIC);
             Thing thing = cameraHandler.getThing();
             int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
@@ -86,7 +84,6 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
                 ret &= true;
 
             } else {
-
                 ret &= false;
             }
         }

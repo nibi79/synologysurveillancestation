@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
@@ -23,21 +24,20 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * Method:
  * - Record
  *
- * @author Nils
- *
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
 
     // API configuration
-    // TODO Check version 3 -< invalid parameter?
     private static final String API_NAME = "SYNO.SurveillanceStation.ExternalRecording";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_02, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_02, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
-    public SynoApiExternalRecording(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiExternalRecording(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**
@@ -48,7 +48,6 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     private SimpleResponse call(String method, String cameraId, String action) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API parameters
@@ -66,7 +65,6 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse startRecording(String camerId) throws WebApiException {
-
         return call(METHOD_RECORD, camerId, "start");
     }
 
@@ -78,7 +76,6 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
      * @throws WebApiException
      */
     public SimpleResponse stopRecording(String camerId) throws WebApiException {
-
         return call(METHOD_RECORD, camerId, "stop");
     }
 

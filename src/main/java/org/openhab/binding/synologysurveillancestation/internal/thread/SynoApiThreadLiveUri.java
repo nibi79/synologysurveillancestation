@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,7 +19,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
 /**
  * Thread for refreshing live URIs (RTSP or MJPEG over HTTP)
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoApiThreadLiveUri extends SynoApiThread<SynoCameraHandler> {
@@ -37,14 +37,12 @@ public class SynoApiThreadLiveUri extends SynoApiThread<SynoCameraHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-
         SynoCameraHandler cameraHandler = getSynoHandler();
         String cameraId = cameraHandler.getCameraId();
 
         LiveUriResponse response = cameraHandler.getSynoWebApiHandler().getLiveUriResponse(cameraId);
 
         if (response.isSuccess()) {
-
             if (cameraHandler.isLinked(CHANNEL_LIVE_URI_RTSP)) {
                 Channel channel = cameraHandler.getThing().getChannel(CHANNEL_LIVE_URI_RTSP);
                 String uri = response.getRtsp();

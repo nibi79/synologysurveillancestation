@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -24,7 +24,6 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.util.URIUtil;
-import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SynoApiResponse;
@@ -34,9 +33,10 @@ import org.slf4j.LoggerFactory;
 /**
  * API request
  *
- * @author Nils
- *
  * @param <T>
+ *
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoApi {
     private final Logger logger = LoggerFactory.getLogger(SynoApiRequest.class);
@@ -57,41 +57,17 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @param sessionId
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId) {
-
+    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId, HttpClient httpClient) {
         super();
 
         this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
                 .getActualTypeArguments()[0]);
 
+        this.httpClient = httpClient;
         this.apiConfig = apiConfig;
         this.config = config;
         this.sessionId = sessionId;
 
-        SslContextFactory sslContextFactory = new SslContextFactory();
-        httpClient = new HttpClient(sslContextFactory);
-        httpClient.setConnectTimeout(SynoApi.CONNECTION_TIMEOUT);
-        try {
-            httpClient.start();
-        } catch (Exception e) {
-            logger.debug("Error starting HTTP client");
-        }
-
-    }
-
-    /**
-     * Closes the http client
-     */
-    @Override
-    public boolean disconnect() {
-        try {
-            httpClient.stop();
-            httpClient.destroy();
-            return true;
-        } catch (Exception e) {
-            logger.debug("Error shutting down HTTP client");
-            return false;
-        }
     }
 
     /*
@@ -165,9 +141,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws URISyntaxException
      */
     protected Request getWebApiUrl(String method, Map<String, String> params) throws WebApiException {
-
         try {
-
             URI uri = getWebApiUrlBuilder();
 
             Request request = httpClient.newRequest(uri);
@@ -206,14 +180,11 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws IOException
      */
     protected synchronized T callWebApi(Request request) throws WebApiException {
-
         try {
-
             // System.err.println(request.getURI());
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {
-
                 byte[] rawResponse = response.getContent();
                 String encoding = response.getEncoding().replaceAll("\"", "").trim();
                 String result = new String(rawResponse, encoding);

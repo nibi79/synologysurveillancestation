@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -23,6 +24,7 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
+import org.eclipse.smarthome.io.net.http.HttpClientFactory;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
@@ -39,14 +41,25 @@ import org.slf4j.LoggerFactory;
  * handlers.
  *
  * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @Component(service = ThingHandlerFactory.class, configurationPid = "binding.binding.synologysurveillancestation")
 public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+    private HttpClient httpClient;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
+
+    @Reference
+    protected void setHttpClientFactory(HttpClientFactory httpClientFactory) {
+        this.httpClient = httpClientFactory.getCommonHttpClient();
+    }
+
+    protected void unsetHttpClientFactory(HttpClientFactory httpClientFactory) {
+        this.httpClient = null;
+    }
 
     @Override
     protected void activate(ComponentContext componentContext) {
@@ -68,7 +81,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
-            SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing);
+            SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);
             CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
             this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(

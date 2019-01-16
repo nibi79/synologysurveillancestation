@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,8 @@ import com.google.gson.JsonParser;
 /**
  * {@link SynoApiResponse} is an abstract class for an API response
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public abstract class SynoApiResponse {
 
@@ -91,7 +92,6 @@ public abstract class SynoApiResponse {
 
     @Override
     public String toString() {
-
         return jsonResponse.toString();
     }
 
@@ -101,7 +101,6 @@ public abstract class SynoApiResponse {
      * @return
      */
     protected boolean isBitSet(String hexValue, int bitNumber) {
-
         int val = Integer.valueOf(hexValue, 16);
         return (val & (1 << bitNumber)) != 0;
     }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" configuration-pid="binding.binding.synologysurveillancestation" name="org.openhab.binding.synologysurveillancestation.internal.SynoHandlerFactory">
-   <service>
-      <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
-   </service>
-   <reference bind="setDynamicStateDescriptionProvider" interface="org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider" name="DynamicStateDescriptionProvider" unbind="unsetDynamicStateDescriptionProvider"/>
-   <implementation class="org.openhab.binding.synologysurveillancestation.internal.SynoHandlerFactory"/>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.2.0" name="org.openhab.binding.synologysurveillancestation.internal.SynoHandlerFactory" configuration-pid="binding.binding.synologysurveillancestation">
+    <service servicefactory="false">
+        <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
+    </service>
+    <reference name="HttpClientFactory" interface="org.eclipse.smarthome.io.net.http.HttpClientFactory" cardinality="1..1" policy="static" bind="setHttpClientFactory" unbind="unsetHttpClientFactory"/>
+    <reference name="DynamicStateDescriptionProvider" interface="org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider" cardinality="1..1" policy="static" bind="setDynamicStateDescriptionProvider" unbind="unsetDynamicStateDescriptionProvider"/>
+    <implementation class="org.openhab.binding.synologysurveillancestation.internal.SynoHandlerFactory"/>
 </scr:component>

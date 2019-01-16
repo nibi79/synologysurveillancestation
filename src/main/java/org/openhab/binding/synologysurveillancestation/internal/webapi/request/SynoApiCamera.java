@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
@@ -53,7 +54,8 @@ import org.slf4j.LoggerFactory;
  * - Delete
  * - GetLiveViewPath
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  *
  */
 public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
@@ -61,13 +63,13 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera";
-    private static final SynoApiConfig apiConfig = new SynoApiConfig(API_NAME, API_VERSION_08, API_SCRIPT_ENTRY);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_08, API_SCRIPT_ENTRY);
 
     /**
      * @param config
      */
-    public SynoApiCamera(SynoConfig config, String sessionID) {
-        super(apiConfig, config, sessionID);
+    public SynoApiCamera(SynoConfig config, String sessionID, HttpClient httpClient) {
+        super(API_CONFIG, config, sessionID, httpClient);
     }
 
     /**
@@ -78,7 +80,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     private CameraResponse call(String method) throws WebApiException {
-
         return call(method, null);
     }
 
@@ -91,7 +92,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     private CameraResponse call(String method, String cameraId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
 
         // API parameters
@@ -106,7 +106,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         if (cameraId != null) {
             params.put("cameraIds", cameraId);
         }
-
         return callApi(method, params);
     }
 
@@ -121,11 +120,9 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public byte[] getSnapshot(String cameraId, int timeout, int streamId)
             throws IOException, URISyntaxException, WebApiException {
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-
             Map<String, String> params = new HashMap<>();
 
             // API parameters
@@ -149,7 +146,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                 | InterruptedException e) {
             throw new WebApiException(e);
         }
-
     }
 
     /**
@@ -171,7 +167,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
             Request request = getWebApiUrl(METHOD_GETSNAPSHOT, params);
             return request.getURI().toString();
-
         } catch (Exception e) {
             throw new WebApiException(e);
         }
@@ -184,7 +179,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     public CameraResponse list() throws WebApiException {
-
         return call(METHOD_LIST);
     }
 
@@ -195,7 +189,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     public CameraResponse getInfo(String cameraId) throws WebApiException {
-
         return call(METHOD_GETINFO, cameraId);
     }
 
@@ -207,7 +200,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     public CameraResponse enable(String cameraId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
         params.put("cameraIds", cameraId);
 
@@ -222,7 +214,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     public CameraResponse disable(String cameraId) throws WebApiException {
-
         Map<String, String> params = new HashMap<>();
         params.put("cameraIds", cameraId);
 

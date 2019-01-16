@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SynologySurveillanceStation Binding
 Bundle-SymbolicName: org.openhab.binding.synologysurveillancestation;singleton:=true
 Bundle-Vendor: openHAB
-Bundle-Version: 2.4.0.a32
+Bundle-Version: 2.5.0.a34
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Import-Package: 
@@ -25,7 +25,8 @@ Import-Package:
  org.eclipse.smarthome.core.thing.binding.builder,
  org.eclipse.smarthome.core.thing.type,
  org.eclipse.smarthome.core.types,
- org.jupnp.model.meta,
+ org.eclipse.smarthome.io.net.http,
+ org.eclipse.smarthome.io.transport.mdns.discovery,
  org.openhab.binding.synologysurveillancestation,
  org.openhab.binding.synologysurveillancestation.handler,
  org.osgi.framework,

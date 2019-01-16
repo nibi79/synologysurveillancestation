@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -13,7 +13,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 /**
  * {@link SynoEvent} stores events
  *
- * @author Pavion
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class SynoEvent {
@@ -25,7 +25,7 @@ public class SynoEvent {
     public static final int EVENT_REASON_EXTERNAL = 6;
     public static final int EVENT_REASON_ANALYTICS = 7;
     public static final int EVENT_REASON_EDGE = 8;
-    public static final int EVENT_REASON_ACTION_RULE = 9;
+    public static final int EVENT_REASON_ACTIONRULE = 9;
 
     private boolean eventCompleted = true;
     private long eventId = -1;

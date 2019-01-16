@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,8 @@ import org.eclipse.smarthome.config.core.Configuration;
 /**
  * The {@link SynoConfig} is class for handling the binding configuration
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class SynoConfig {
     private String protocol = null;
@@ -27,11 +28,11 @@ public class SynoConfig {
     /**
      * Creates a new {@link SynoConfig} and set the given values
      *
-     * @param protocoll Protocol of the DiskStation (http/https)
+     * @param protocoll   Protocol of the DiskStation (http/https)
      * @param hostAddress IP or host address of the DiskStation
-     * @param port Port of the DiskStation
-     * @param username User name with sufficient rights to run Surveillance Station
-     * @param password User password
+     * @param port        Port of the DiskStation
+     * @param username    User name with sufficient rights to run Surveillance Station
+     * @param password    User password
      */
     public SynoConfig(String protocoll, String hostAddress, String port, String username, String password) {
         this.protocol = protocoll;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -17,6 +17,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -24,6 +26,7 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.State;
+import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
@@ -36,7 +39,8 @@ import org.slf4j.LoggerFactory;
 /**
  * The {@link SynoBridgeHandler} is a Bridge handler for the Synology Surveillance Station
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 @NonNullByDefault
 public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler {
@@ -45,6 +49,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private @Nullable CameraDiscoveryService discoveryService;
     private @Nullable SynoWebApiHandler apiHandler = null;
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
+    private HttpClient httpClient;
 
     /**
      * Defines a runnable for a discovery
@@ -58,8 +63,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         }
     };
 
-    public SynoBridgeHandler(Bridge bridge) {
+    public SynoBridgeHandler(Bridge bridge, HttpClient httpClient) {
         super(bridge);
+        this.httpClient = httpClient;
         int refreshRateEvents = 3;
         try {
             refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
@@ -86,6 +92,18 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                         apiHandler.setHomeMode(state);
                     }
                     break;
+                case CHANNEL_EVENT_TRIGGER:
+                    if (command.toString().equals("REFRESH")) {
+                        updateState(channelUID, UnDefType.UNDEF);
+                    } else if (apiHandler != null) {
+                        int event = Integer.parseInt(command.toString());
+                        boolean ret = false;
+                        if (event >= 1 && event <= 10) {
+                            ret = apiHandler.triggerEvent(event);
+                        }
+                        updateState(channelUID, ret ? new DecimalType(0) : UnDefType.UNDEF);
+                    }
+                    break;
             }
         } catch (Exception e) {
             logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
@@ -105,12 +123,12 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
             SynoConfig config = getConfigAs(SynoConfig.class);
             apiHandler = new SynoWebApiHandler(config);
-            apiHandler.connect();
+            apiHandler.connect(httpClient);
 
+            // if needed add other infos
             // InfoResponse infoResponse = apiHandler.getInfo();
             // getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,
             // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
-            // TODO if needed add other infos
 
             for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
                 thread.start();
@@ -141,7 +159,6 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
             thread.stop();
         }
         try {
-            apiHandler.disconnect();
             apiHandler.logout();
         } catch (Exception ex) {
         }

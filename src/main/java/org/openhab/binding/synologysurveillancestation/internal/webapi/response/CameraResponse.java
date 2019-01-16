@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2019 by the respective copyright holders.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -20,7 +20,8 @@ import com.google.gson.JsonObject;
 /**
  * {@link CameraResponse} is a response for camera information
  *
- * @author Nils
+ * @author Nils - Initial contribution
+ * @author Pavion - Contribution
  */
 public class CameraResponse extends SimpleResponse {
 
@@ -98,21 +99,16 @@ public class CameraResponse extends SimpleResponse {
      * @return
      */
     public Map<String, Object> getCameraProperties(String cameraId) {
-
         if (cameraId != null) {
-
             JsonArray cameras = this.getCameras().getAsJsonArray();
 
             for (JsonElement camera : cameras) {
-
                 if (camera.isJsonObject()) {
-
                     JsonObject cam = camera.getAsJsonObject();
 
                     String id = cam.get("id").getAsString();
 
                     if (cameraId.equals(id)) {
-
                         return createProperties(cam, cameraId);
                     }
                 }
@@ -130,7 +126,6 @@ public class CameraResponse extends SimpleResponse {
      * @return
      */
     private Map<String, Object> createProperties(JsonObject cam, String cameraId) {
-
         Map<String, Object> properties = new LinkedHashMap<>();
 
         properties.put(DEVICE_ID, cameraId);
@@ -146,7 +141,6 @@ public class CameraResponse extends SimpleResponse {
         properties.put(SynoApiResponse.PROP_PTZ, (ptzCap > 0) ? "true" : "false");
 
         if (ptzCap > 0) {
-
             properties.put(SynoApiResponse.PROP_PTZ_PAN, isBitSetAsString(ptzCap, BIT_PTZ_PAN));
             properties.put(SynoApiResponse.PROP_PTZ_TILT, isBitSetAsString(ptzCap, BIT_PTZ_TILT));
             properties.put(SynoApiResponse.PROP_PTZ_ZOOM, isBitSetAsString(ptzCap, BIT_PTZ_ZOOM));

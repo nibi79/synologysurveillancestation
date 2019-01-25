@@ -2,11 +2,28 @@
 
 This binding connects openHAB with your surveillance cameras running on Synology&copy; DiskStation using Synology Surveillance Station API. This binding should work with any DiskStation capable of running Surveillance Station as well as with any supported camera.
 
-## Disclaimer ##
+# Table of contents
+
+1. [Disclaimer](https://github.com/nibi79/synologysurveillancestation/tree/master#disclaimer)
+2. [Installation and upgrade](https://github.com/nibi79/synologysurveillancestation/tree/master#installation-and-upgrade)
+3. [Supported Things](https://github.com/nibi79/synologysurveillancestation/tree/master#supported-things)
+4. [Discovery](https://github.com/nibi79/synologysurveillancestation/tree/master#discovery)
+5. [Configuration](https://github.com/nibi79/synologysurveillancestation/tree/master#configuration)
+6. [Channels](https://github.com/nibi79/synologysurveillancestation/tree/master#channels)
+7. [File based configuration](https://github.com/nibi79/synologysurveillancestation/tree/master#file-based-configuration)
+   7.1. [things](https://github.com/nibi79/synologysurveillancestation/tree/master#things)
+   7.2. [items](https://github.com/nibi79/synologysurveillancestation/tree/master#items)
+   7.3. [sitemap](https://github.com/nibi79/synologysurveillancestation/tree/master#sitemap)
+8. [Transformation](https://github.com/nibi79/synologysurveillancestation/tree/master#transformation)
+9. [Support](https://github.com/nibi79/synologysurveillancestation/tree/master#support)
+
+***
+
+## Disclaimer
 
 This binding is currently under development. Your help and testing would be greatly appreciated but there is no stability or functionality warranty.
 
-## Installation and upgrading ##
+## Installation and upgrade
 
 For an installation the [latest release](https://github.com/nibi79/synologysurveillancestation/releases) should be copied into the /addons folder of your openHAB installation.
 For an upgrade the existing file should be overwritten. On major or structural changes existing things might have to be deleted and recreated, existing channels might be kept. For further information please read release notes of a corresponding release.
@@ -67,9 +84,9 @@ Currently following **Channels** are supported on the **Camera**:
 - External event _SWITCH_ (read-only)
 - Action rule event _SWITCH_ (read-only)
 
-## Advanced: Using file based configuration
+## File based configuration
 
-### .things file ###
+### .things
 
 
 ```
@@ -80,7 +97,7 @@ Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-ra
 
 Here the **CameraID** is a numeric ID of your surveillance camera in Surveillance Station (e.g. 1) and snapshot stream ID is the ID of the preferred stream in Surveillance Station (e.g. 1 for 'Stream 1')
 
-### .items file ###
+### .items
 
 ```
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
@@ -110,7 +127,7 @@ String Surveillance_Patrols "Camera run patrol" {channel="synologysurveillancest
 
 Here `:1` is yet again the numeric ID of your surveillance camera from a previous step.
 
-### .sitemap ###
+### .sitemap
 
 ```
 Switch item=Surveillance_Zooming mappings=[IN="IN", OUT="OUT"]
@@ -124,13 +141,13 @@ Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 
 Existing URIs can also be transformed using JS transformation to build similar URIs. Please refer to Synology Surveillance Station API documentation for more details. Example: an SID-based stream URI (over http).
 
-### .items file ###
+### .items
 
 ```
 String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="liveuri.js"]}
 ```
 
-### transform/liveuri.js ###
+### transform/liveuri.js
 
 ```
 (function(i) {
@@ -140,3 +157,17 @@ String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologys
 
 Please note, **Javascript Transformation** add-on has to be installed for the transformation to work properly. 
 
+## Support
+
+If you encounter critical issues with this binding, please consider to:
+- create an [issue](https://github.com/nibi79/synologysurveillancestation/issues) on GitHub
+- search [community forum](https://community.openhab.org/t/binding-request-synology-surveillance-station/8200) for answers already given
+- or make a new post there, if nothing was found
+
+In any case please provide some information about your problem:
+- openHAB and binding version 
+- error description and steps to retrace if applicable
+- any related `[WARN]`/`[ERROR]` from openhab.log
+- whether it's the binding, bridge, camera or channel related issue
+
+For the sake of documentation please use English language. 

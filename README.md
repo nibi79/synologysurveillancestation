@@ -4,20 +4,15 @@ This binding connects openHAB with your surveillance cameras running on Synology
 
 ## Disclaimer ##
 
-This binding is currently under heavy development. Your help and testing would be greatly appreciated but there is no stability or functionality warranty.
+This binding is currently under development. Your help and testing would be greatly appreciated but there is no stability or functionality warranty.
 
 ## Installation and upgrading ##
 
-For an installation the latest release should be copied into the /addons folder of your openHAB installation.
+For an installation the [latest release](https://github.com/nibi79/synologysurveillancestation/releases) should be copied into the /addons folder of your openHAB installation.
 For an upgrade the existing file should be overwritten. On major or structural changes existing things might have to be deleted and recreated, existing channels might be kept. For further information please read release notes of a corresponding release.
 
-**Note:** On some clean openHAB installations this binding may not work after installation, log shows an exception *Could not resolve module*. In this case please install the missing module from Karaf:
-
-```
-feature:install esh-io-transport-upnp
-```
-
-or just install the HUE binding (or any other binding with upnp discovery).
+**Note:**
+[v0.32-alpha](https://github.com/nibi79/synologysurveillancestation/releases/tag/v0.32-alpha) is the last release supporting openHAB prior to 2.4.0. If you want to use newer release please consider to upgrade your openHAB.
 
 ## Supported Things
 

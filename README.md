@@ -11,9 +11,9 @@ This binding connects openHAB with your surveillance cameras running on Synology
 5. [Configuration](https://github.com/nibi79/synologysurveillancestation/tree/master#configuration)
 6. [Channels](https://github.com/nibi79/synologysurveillancestation/tree/master#channels)
 7. [File based configuration](https://github.com/nibi79/synologysurveillancestation/tree/master#file-based-configuration)
-   7.1. [things](https://github.com/nibi79/synologysurveillancestation/tree/master#things)
-   7.2. [items](https://github.com/nibi79/synologysurveillancestation/tree/master#items)
-   7.3. [sitemap](https://github.com/nibi79/synologysurveillancestation/tree/master#sitemap)
+     1. [things](https://github.com/nibi79/synologysurveillancestation/tree/master#things)
+     2. [items](https://github.com/nibi79/synologysurveillancestation/tree/master#items)
+     3. [sitemap](https://github.com/nibi79/synologysurveillancestation/tree/master#sitemap)
 8. [Transformation](https://github.com/nibi79/synologysurveillancestation/tree/master#transformation)
 9. [Support](https://github.com/nibi79/synologysurveillancestation/tree/master#support)
 

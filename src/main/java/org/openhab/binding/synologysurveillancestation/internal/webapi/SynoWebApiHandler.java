@@ -170,8 +170,9 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     private boolean createSession() throws WebApiException {
         AuthResponse response = login();
-
-        if (response.isSuccess()) {
+        if (response == null) {
+            throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
+        } else if (response.isSuccess()) {
             sessionID = response.getSid();
             return true;
         } else {

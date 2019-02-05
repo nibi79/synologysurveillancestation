@@ -55,11 +55,13 @@ public class SynoWebApiHandler implements SynoWebApi {
     private SynoApiPTZ apiPTZ = null;
     private SynoApiLiveUri apiLiveUri = null;
     private SynoApiExternalEvent apiExternalEvent = null;
+    private final HttpClient httpClient;
 
     /**
      * @param config
      */
-    public SynoWebApiHandler(SynoConfig config) {
+    public SynoWebApiHandler(SynoConfig config, HttpClient httpClient) {
+        this.httpClient = httpClient;
         this.config = config;
     }
 
@@ -83,7 +85,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#connect()
      */
     @Override
-    public boolean connect(HttpClient httpClient) throws WebApiException {
+    public synchronized boolean connect() throws WebApiException {
         apiAuth = new SynoApiAuth(config, httpClient);
         boolean connected = createSession();
 
@@ -169,6 +171,10 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @throws WebApiException
      */
     private boolean createSession() throws WebApiException {
+        if (this.sessionID != null) {
+            logout();
+        }
+
         AuthResponse response = login();
         if (response == null) {
             throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
@@ -224,6 +230,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     @Override
     public SimpleResponse logout() throws WebApiException {
         SimpleResponse response = apiAuth.logout(sessionID);
+        this.sessionID = null;
 
         if (response.isSuccess()) {
             return response;
@@ -513,4 +520,10 @@ public class SynoWebApiHandler implements SynoWebApi {
     public boolean triggerEvent(int event) throws WebApiException {
         return apiExternalEvent.triggerEvent(event);
     }
+
+    @Override
+    public boolean isConnected() {
+        return (this.sessionID != null);
+    }
+
 }

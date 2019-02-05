@@ -47,9 +47,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     private final Logger logger = LoggerFactory.getLogger(SynoBridgeHandler.class);
     private @Nullable CameraDiscoveryService discoveryService;
-    private @Nullable SynoWebApiHandler apiHandler = null;
+    private SynoWebApiHandler apiHandler;
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
-    private HttpClient httpClient;
+    private int refreshRateEvents = 3;
 
     /**
      * Defines a runnable for a discovery
@@ -65,14 +65,13 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     public SynoBridgeHandler(Bridge bridge, HttpClient httpClient) {
         super(bridge);
-        this.httpClient = httpClient;
-        int refreshRateEvents = 3;
         try {
-            refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
+            this.refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
         } catch (Exception ex) {
             logger.error("Error parsing Bridge configuration");
         }
-        threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
+        SynoConfig config = getConfigAs(SynoConfig.class);
+        apiHandler = new SynoWebApiHandler(config, httpClient);
     }
 
     @Override
@@ -121,15 +120,16 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
 
-            SynoConfig config = getConfigAs(SynoConfig.class);
-            apiHandler = new SynoWebApiHandler(config);
-            apiHandler.connect(httpClient);
+            if (!apiHandler.isConnected()) {
+                apiHandler.connect();
+            }
 
             // if needed add other infos
             // InfoResponse infoResponse = apiHandler.getInfo();
             // getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,
             // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
 
+            threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
             for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
                 thread.start();
             }
@@ -158,17 +158,14 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
             thread.stop();
         }
-        try {
-            apiHandler.logout();
-        } catch (Exception ex) {
-        }
+        threads.clear();
     }
 
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
         super.handleConfigurationUpdate(configurationParameters);
-        int refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
-        threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(refreshRateEvents);
+        this.refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
+        threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(this.refreshRateEvents);
     }
 
     @Override

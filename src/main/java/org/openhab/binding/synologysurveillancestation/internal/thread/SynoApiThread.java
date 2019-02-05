@@ -22,6 +22,7 @@ import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,6 +135,14 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                             "DeviceId: {}; {} API timeout, consider to increase refresh rate ({} s) if seen frequently",
                             deviceId, name, refreshRate);
                     success = true;
+                } else if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()
+                        || e.getErrorCode() == WebApiAuthErrorCodes.UNKNOWN_ERROR_119.getCode()) {
+                    logger.debug("DeviceId: {}; Thread: {}; SID expired, trying to reconnect", deviceId, name);
+                    try {
+                        getSynoHandler().getSynoWebApiHandler().connect();
+                    } catch (WebApiException ee) {
+                        logger.error("DeviceId: {}; Thread: {}; Attempt to reconnect failed", deviceId, name);
+                    }
                 } else {
                     logger.error("DeviceId: {}; Thread: {}; Handler gone offline", deviceId, name);
                 }

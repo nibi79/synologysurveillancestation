@@ -139,12 +139,15 @@ Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 
 ## Transformation 
 
-Existing URIs can also be transformed using JS transformation to build similar URIs. Please refer to Synology Surveillance Station API documentation for more details. Example: an SID-based stream URI (over http).
+Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentification by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details. 
+
+Example: SID only and SID-based stream URI (over http).
 
 ### .items
 
 ```
 String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="liveuri.js"]}
+String Surveillance_SID "SID" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="sid.js"]}
 ```
 
 ### transform/liveuri.js
@@ -155,7 +158,15 @@ String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologys
 })(input)
 ```
 
-Please note, **Javascript Transformation** add-on has to be installed for the transformation to work properly. 
+### transform/sid.js
+
+```
+(function(i) {
+    return return i.split('&')[3].replace("_sid=", "");
+})(input)
+```
+
+Please note, **[Javascript Transformation](https://www.openhab.org/addons/transformations/javascript/)** add-on must be installed for the transformation to work properly. 
 
 ## Support
 

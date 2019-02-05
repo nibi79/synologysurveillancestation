@@ -79,8 +79,14 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      * @return
      * @throws WebApiException
      */
-    public AuthResponse logout(String sessionID) throws WebApiException {
-        return call(METHOD_LOGOUT);
+    public AuthResponse logout(String sessionId) throws WebApiException {
+        Map<String, String> params = new HashMap<>();
+
+        // API parameters
+        params.put("session", "SurveillanceStation");
+        params.put("_sid", sessionId);
+
+        return callApi(METHOD_LOGOUT, params);
     }
 
 }

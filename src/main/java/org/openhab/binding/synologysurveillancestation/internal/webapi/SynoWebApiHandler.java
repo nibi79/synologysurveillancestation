@@ -75,6 +75,13 @@ public class SynoWebApiHandler implements SynoWebApi {
     /**
      * @return
      */
+    public void setConfig(SynoConfig config) {
+        this.config = config;
+    }
+
+    /**
+     * @return
+     */
     public String getSessionID() {
         return sessionID;
     }
@@ -85,8 +92,11 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#connect()
      */
     @Override
-    public synchronized boolean connect() throws WebApiException {
+    public synchronized boolean connect(boolean forceLogout) throws WebApiException {
         apiAuth = new SynoApiAuth(config, httpClient);
+        if (forceLogout && sessionID != null) {
+            logout();
+        }
         boolean connected = createSession();
 
         // initialize APIs
@@ -171,9 +181,6 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @throws WebApiException
      */
     private boolean createSession() throws WebApiException {
-        if (this.sessionID != null) {
-            logout();
-        }
 
         AuthResponse response = login();
         if (response == null) {

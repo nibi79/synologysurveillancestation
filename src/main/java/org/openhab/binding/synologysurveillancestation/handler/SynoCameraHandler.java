@@ -27,6 +27,7 @@ import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
+import org.eclipse.smarthome.core.thing.ThingStatusInfo;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.types.Command;
@@ -162,7 +163,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     public synchronized boolean reconnect(boolean forceLogout) throws WebApiException {
         boolean ret = ((SynoBridgeHandler) getBridge().getHandler()).reconnect(forceLogout);
         if (ret) {
-            handleCommand(new ChannelUID(thing.getUID(), CHANNEL_SNAPSHOT_URI_STATIC), RefreshType.REFRESH);
+            refreshStatic();
         }
         return ret;
     }
@@ -214,14 +215,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     thread.start();
                 }
 
-                // Workaround for text configuration, whereby items are linked even before the handler initialization
-                for (String channelID : STATIC_CHANNELS) {
-                    if (isLinked(channelID)) {
-                        ChannelUID channelUID = new ChannelUID(thing.getUID(), channelID);
-                        handleCommand(channelUID, RefreshType.REFRESH);
-                    }
-                }
-
+                refreshStatic();
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.BRIDGE_OFFLINE);
             }
@@ -233,6 +227,15 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
             logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
         }
 
+    }
+
+    public void refreshStatic() {
+        for (String channelID : STATIC_CHANNELS) {
+            if (isLinked(channelID)) {
+                ChannelUID channelUID = new ChannelUID(thing.getUID(), channelID);
+                handleCommand(channelUID, RefreshType.REFRESH);
+            }
+        }
     }
 
     @Override
@@ -257,6 +260,16 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         threads.get(SynoApiThread.THREAD_EVENT).setRefreshRate(refreshRateEvents);
         threads.get(SynoApiThread.THREAD_CAMERA).setRefreshRate(refreshRateEvents);
         threads.get(SynoApiThread.THREAD_LIVEURI).setRefreshRate(refreshRateEvents);
+    }
+
+    @Override
+    public void bridgeStatusChanged(ThingStatusInfo bridgeStatusInfo) {
+        System.err.println("CHANGED");
+        if (bridgeStatusInfo.getStatus() == ThingStatus.ONLINE) {
+            initialize();
+        } else if (bridgeStatusInfo.getStatus() == ThingStatus.OFFLINE) {
+            dispose();
+        }
     }
 
     @Override

@@ -49,7 +49,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     private final Logger logger = LoggerFactory.getLogger(SynoBridgeHandler.class);
     private @Nullable CameraDiscoveryService discoveryService;
-    private SynoWebApiHandler apiHandler;
+    private final SynoWebApiHandler apiHandler;
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
     private int refreshRateEvents = 3;
 
@@ -74,6 +74,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         }
         SynoConfig config = getConfigAs(SynoConfig.class);
         apiHandler = new SynoWebApiHandler(config, httpClient);
+        threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
     }
 
     @Override
@@ -122,7 +123,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     @Override
     public synchronized boolean reconnect(boolean forceLogout) throws WebApiException {
-        boolean ret = apiHandler.connect();
+        boolean ret = apiHandler.connect(forceLogout);
         if (ret) {
             handleCommand(new ChannelUID(thing.getUID(), CHANNEL_SID), RefreshType.REFRESH);
         }
@@ -136,16 +137,14 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
 
-            if (!apiHandler.isConnected()) {
-                apiHandler.connect();
-            }
+            apiHandler.setConfig(getConfigAs(SynoConfig.class));
+            reconnect(true);
 
             // if needed add other infos
             // InfoResponse infoResponse = apiHandler.getInfo();
             // getThing().setProperty(SynoApiResponse.PROP_CAMERANUMBER,
             // infoResponse.getData().get(SynoApiResponse.PROP_CAMERANUMBER).getAsString());
 
-            threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
             for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
                 thread.start();
             }
@@ -174,7 +173,6 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
             thread.stop();
         }
-        threads.clear();
     }
 
     @Override

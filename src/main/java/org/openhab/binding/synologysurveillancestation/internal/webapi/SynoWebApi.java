@@ -33,7 +33,7 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public boolean connect() throws WebApiException;
+    public boolean connect(boolean forceLogout) throws WebApiException;
 
     /**
      *
@@ -247,7 +247,7 @@ public interface SynoWebApi {
 
     /**
      * Returns true if connected and sid != null
-     * 
+     *
      * @return
      */
     public boolean isConnected();

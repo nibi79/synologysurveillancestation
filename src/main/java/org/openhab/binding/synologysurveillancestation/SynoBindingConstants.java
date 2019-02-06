@@ -53,6 +53,7 @@ public class SynoBindingConstants {
     // List of all Bridge Channels
     public static final String CHANNEL_HOMEMODE = "homemode";
     public static final String CHANNEL_EVENT_TRIGGER = "eventtrigger";
+    public static final String CHANNEL_SID = "sid";
 
     // List of all Channel ids
     public static final String CHANNEL_SNAPSHOT_URI_DYNAMIC = "common#snapshot-uri-dynamic";

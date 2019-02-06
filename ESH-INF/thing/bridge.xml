@@ -10,6 +10,7 @@
 		<channels>
 			<channel id="homemode" typeId="homemode-channel" />
 			<channel id="eventtrigger" typeId="eventtrigger-channel" />
+            <channel id="sid" typeId="sid-channel" />
 		</channels>
 
 		<properties>
@@ -65,5 +66,10 @@
 		<description>Trigger external event 1 to 10</description>
 		<state min="0" max="10" step="1"></state>
 	</channel-type>
+    <channel-type id="sid-channel" advanced="true">
+        <item-type>String</item-type>
+        <label>Current SID</label>
+        <description>Current session ID (SID)</description>
+    </channel-type>
 
 </thing:thing-descriptions>

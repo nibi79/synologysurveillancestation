@@ -19,8 +19,11 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
     UNKNOWN_ERROR(100, "Unknown error."),
     PARAM_NOT_SPECIFIED(101, "The account parameter is not specified."),
     API_DOES_NOT_EXIST(102, "Surveillance Station is not running."),
+    METHOD_NOT_EXIST(103, "Method does not exist"),
     API_VERSION_NOT_SUPPORTED(104, "This API version is not supported"),
     INSUFFICIENT_USER_PRIVILEGE(105, "Wrong credentials"),
+    CONNECT_TIMEOUT(106, "Connection time out"),
+    MULTIPLE_LOGIN(107, "Multiple login detected"),
     NEED_MANAGER_RIGHTS(117, "Need manager rights for operation"),
     UNKNOWN_ERROR_119(119, "Unknown API error 119"),
     INVALID_PASSWORD(400, "Invalid password."),
@@ -34,7 +37,14 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
     PASSWD_EXP_CAN_NOT_CHANGE(408, "Password Expired Can not Change."),
     PASSWD_EXPIRED(409, "Password Expired."),
     PASSWD_MUST_CHANGE(410, "Password must change (when first time use or after reset password by admin)."),
-    ACCOUNT_LOCKED(411, "Account Locked (when account max try exceed).");
+    ACCOUNT_LOCKED(411, "Account Locked (when account max try exceed)."),
+    MISSING_LICENSE(412, "Need to add license."),
+    PLATFORM_MAX_REACHED(413, "Reach the maximum of platform."),
+    EVENT_NOT_EXIST(414, "Some events not exist."),
+    MESSAGE_CONNECT_ERROR(415, "message connect failed"),
+    TEST_CONNETCION_ERROR(417, "Test Connection Error."),
+    VISUAL_NAME_REPITITION(419, "Visualstation name repetition."),
+    TOO_MANY_ITEMS(439, "Too many items selected.");
 
     private final int code;
     private final String msg;

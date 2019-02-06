@@ -139,7 +139,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                         || e.getErrorCode() == WebApiAuthErrorCodes.UNKNOWN_ERROR_119.getCode()) {
                     logger.debug("DeviceId: {}; Thread: {}; SID expired, trying to reconnect", deviceId, name);
                     try {
-                        getSynoHandler().getSynoWebApiHandler().connect();
+                        getSynoHandler().reconnect(true);
                     } catch (WebApiException ee) {
                         logger.error("DeviceId: {}; Thread: {}; Attempt to reconnect failed", deviceId, name);
                     }

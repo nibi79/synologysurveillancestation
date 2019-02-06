@@ -19,12 +19,14 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.smarthome.core.library.types.DecimalType;
+import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
@@ -103,6 +105,11 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                         updateState(channelUID, ret ? new DecimalType(0) : UnDefType.UNDEF);
                     }
                     break;
+                case CHANNEL_SID:
+                    if (command.toString().equals("REFRESH")) {
+                        updateState(channelUID, new StringType(apiHandler.getSessionID()));
+                    }
+                    break;
             }
         } catch (Exception e) {
             logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
@@ -111,6 +118,15 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     public void setDiscovery(CameraDiscoveryService discoveryService) {
         this.discoveryService = discoveryService;
+    }
+
+    @Override
+    public synchronized boolean reconnect(boolean forceLogout) throws WebApiException {
+        boolean ret = apiHandler.connect();
+        if (ret) {
+            handleCommand(new ChannelUID(thing.getUID(), CHANNEL_SID), RefreshType.REFRESH);
+        }
+        return ret;
     }
 
     @Override

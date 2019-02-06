@@ -21,7 +21,7 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
     API_DOES_NOT_EXIST(102, "Surveillance Station is not running."),
     METHOD_NOT_EXIST(103, "Method does not exist"),
     API_VERSION_NOT_SUPPORTED(104, "This API version is not supported"),
-    INSUFFICIENT_USER_PRIVILEGE(105, "Wrong credentials"),
+    INSUFFICIENT_USER_PRIVILEGE(105, "Insufficient user privilege"),
     CONNECT_TIMEOUT(106, "Connection time out"),
     MULTIPLE_LOGIN(107, "Multiple login detected"),
     NEED_MANAGER_RIGHTS(117, "Need manager rights for operation"),

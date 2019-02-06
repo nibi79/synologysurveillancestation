@@ -21,6 +21,7 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
     API_DOES_NOT_EXIST(102, "Surveillance Station is not running."),
     API_VERSION_NOT_SUPPORTED(104, "This API version is not supported"),
     INSUFFICIENT_USER_PRIVILEGE(105, "Wrong credentials"),
+    NEED_MANAGER_RIGHTS(117, "Need manager rights for operation"),
     UNKNOWN_ERROR_119(119, "Unknown API error 119"),
     INVALID_PASSWORD(400, "Invalid password."),
     DISABLED_ACCOUNT(401, "Guest or disabled account."),

@@ -15,6 +15,7 @@ import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.LiveUriResponse;
 
 /**
@@ -58,7 +59,7 @@ public class SynoApiThreadLiveUri extends SynoApiThread<SynoCameraHandler> {
 
             return true;
         } else if (response.getErrorcode() == 105) {
-            throw new WebApiException(105, "Wrong/expired credentials");
+            throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
         }
 
         return false;

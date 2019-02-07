@@ -25,6 +25,7 @@ import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,7 +141,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                 byte[] ret = response.getContent();
                 if (ret.length < 200) {
                     if (new String(ret).contains("\"success\":false")) {
-                        throw new WebApiException(105, "Wrong/expired credentials");
+                        throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
                     }
                 }
                 InputStream is = new ByteArrayInputStream(ret);

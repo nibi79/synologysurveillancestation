@@ -23,6 +23,7 @@ import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,8 +119,17 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                 }
             }
 
-        } catch (WebApiException | NullPointerException e) {
-            logger.error("Error in WebApiException", e);
+        } catch (WebApiException e) {
+            if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
+                logger.debug("Discovery Thread; Wrong/expired credentials");
+                try {
+                    bridgeHandler.reconnect(true);
+                } catch (WebApiException ee) {
+                    logger.error("Discovery Thread; Attempt to reconnect failed");
+                }
+            }
+        } catch (NullPointerException npe) {
+            logger.error("Error in WebApiException", npe);
         }
     }
 

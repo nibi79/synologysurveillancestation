@@ -160,7 +160,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     }
 
     @Override
-    public synchronized boolean reconnect(boolean forceLogout) throws WebApiException {
+    public boolean reconnect(boolean forceLogout) throws WebApiException {
         boolean ret = ((SynoBridgeHandler) getBridge().getHandler()).reconnect(forceLogout);
         if (ret) {
             refreshStatic();

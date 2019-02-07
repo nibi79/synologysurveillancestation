@@ -92,7 +92,7 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#connect()
      */
     @Override
-    public synchronized boolean connect(boolean forceLogout) throws WebApiException {
+    public boolean connect(boolean forceLogout) throws WebApiException {
         apiAuth = new SynoApiAuth(config, httpClient);
         if (forceLogout && sessionID != null) {
             logout();
@@ -108,7 +108,6 @@ public class SynoWebApiHandler implements SynoWebApi {
         apiHomeMode = new SynoApiHomeMode(config, sessionID, httpClient);
         apiLiveUri = new SynoApiLiveUri(config, sessionID, httpClient);
         apiExternalEvent = new SynoApiExternalEvent(config, sessionID, httpClient);
-
         return connected;
     }
 

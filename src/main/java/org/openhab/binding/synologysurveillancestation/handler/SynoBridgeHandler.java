@@ -13,6 +13,7 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -52,6 +53,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private final SynoWebApiHandler apiHandler;
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
     private int refreshRateEvents = 3;
+    private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
 
     /**
      * Defines a runnable for a discovery
@@ -122,12 +124,24 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     }
 
     @Override
-    public synchronized boolean reconnect(boolean forceLogout) throws WebApiException {
-        boolean ret = apiHandler.connect(forceLogout);
-        if (ret) {
-            handleCommand(new ChannelUID(thing.getUID(), CHANNEL_SID), RefreshType.REFRESH);
+    public boolean reconnect(boolean forceLogout) throws WebApiException {
+        if (refreshInProgress.compareAndSet(false, true)) {
+            boolean ret = false;
+            try {
+                ret = apiHandler.connect(forceLogout);
+                refreshInProgress.set(false);
+            } catch (WebApiException e) {
+                refreshInProgress.set(false);
+                throw e;
+            }
+            if (ret) {
+                handleCommand(new ChannelUID(thing.getUID(), CHANNEL_SID), RefreshType.REFRESH);
+            }
+            return ret;
+        } else {
+            logger.debug("Reconnect already in progress...");
+            return false;
         }
-        return ret;
     }
 
     @Override

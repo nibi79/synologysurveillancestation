@@ -137,7 +137,13 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
 
             responseTime = System.currentTimeMillis() - responseTime;
             if (response.getStatus() == 200) {
-                InputStream is = new ByteArrayInputStream(response.getContent());
+                byte[] ret = response.getContent();
+                if (ret.length < 200) {
+                    if (new String(ret).contains("\"success\":false")) {
+                        throw new WebApiException(105, "Wrong/expired credentials");
+                    }
+                }
+                InputStream is = new ByteArrayInputStream(ret);
                 IOUtils.copy(is, baos);
             }
             logger.trace("Device: {}, API response time: {} ms, stream id: {}", cameraId, responseTime, streamId);

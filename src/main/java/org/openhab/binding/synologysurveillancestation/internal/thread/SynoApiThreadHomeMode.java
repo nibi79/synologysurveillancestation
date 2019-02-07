@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
 
 /**
@@ -44,6 +45,8 @@ public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
                 getSynoHandler().updateState(channel.getUID(), response.isHomeMode() ? OnOffType.ON : OnOffType.OFF);
             }
             return true;
+        } else if (response.getErrorcode() == 119) {
+            throw new WebApiException(105, "Wrong/expired credentials");
         } else {
             return false;
         }

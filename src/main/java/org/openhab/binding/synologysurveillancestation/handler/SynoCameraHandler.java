@@ -264,7 +264,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void bridgeStatusChanged(ThingStatusInfo bridgeStatusInfo) {
-        System.err.println("CHANGED");
         if (bridgeStatusInfo.getStatus() == ThingStatus.ONLINE) {
             initialize();
         } else if (bridgeStatusInfo.getStatus() == ThingStatus.OFFLINE) {

@@ -129,6 +129,10 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
             boolean ret = false;
             try {
                 ret = apiHandler.connect(forceLogout);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
                 refreshInProgress.set(false);
             } catch (WebApiException e) {
                 refreshInProgress.set(false);

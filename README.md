@@ -64,6 +64,7 @@ Currently following **Channels** are supported on the **Bridge**:
 
 - Home mode _SWITCH_
 - External event trigger _NUMBER_ (1 to 10, write-only)
+- Current session ID (SID) _STRING_
 
 Currently following **Channels** are supported on the **Camera**:
 
@@ -139,15 +140,14 @@ Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 
 ## Transformation 
 
-Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentification by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details. 
+Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentication by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details. 
 
-Example: SID only and SID-based stream URI (over http).
+Example: SID-based stream URI (over http).
 
 ### .items
 
 ```
 String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="liveuri.js"]}
-String Surveillance_SID "SID" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="sid.js"]}
 ```
 
 ### transform/liveuri.js
@@ -155,14 +155,6 @@ String Surveillance_SID "SID" {channel="synologysurveillancestation:camera:disks
 ```
 (function(i) {
     return i.replace("entry.cgi", "SurveillanceStation/videoStreaming.cgi").replace(".Camera", ".VideoStream").replace("version=8", "version=1").replace("GetSnapshot", "Stream&format=mjpeg")
-})(input)
-```
-
-### transform/sid.js
-
-```
-(function(i) {
-    return return i.split('&')[3].replace("_sid=", "");
 })(input)
 ```
 

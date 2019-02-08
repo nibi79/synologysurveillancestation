@@ -103,6 +103,7 @@ Here the **CameraID** is a numeric ID of your surveillance camera in Surveillanc
 ```
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
 Number:Dimensionless Surveillance_Event_Trigger "External event trigger" {channel="synologysurveillancestation:station:diskstation:eventtrigger"}
+String Surveillance_SID "Current SID" {channel="synologysurveillancestation:station:diskstation:sid"}
 
 Image Surveillance_Snapshot "Snapshot" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot"}
 

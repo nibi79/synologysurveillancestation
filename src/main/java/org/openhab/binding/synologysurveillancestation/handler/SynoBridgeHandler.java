@@ -12,6 +12,7 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -19,6 +20,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -195,9 +197,23 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
-        super.handleConfigurationUpdate(configurationParameters);
-        this.refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
-        threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(this.refreshRateEvents);
+        boolean refreshOnly = true;
+        Configuration currentConfig = getConfig();
+        for (Entry<String, Object> entry : configurationParameters.entrySet()) {
+            if (!currentConfig.get(entry.getKey()).equals(entry.getValue())
+                    && !entry.getKey().equals(REFRESH_RATE_EVENTS)) {
+                refreshOnly = false;
+                break;
+            }
+        }
+        if (!refreshOnly) {
+            super.handleConfigurationUpdate(configurationParameters);
+        }
+        int newRefreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
+        if (newRefreshRateEvents != this.refreshRateEvents) {
+            this.refreshRateEvents = newRefreshRateEvents;
+            threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(this.refreshRateEvents);
+        }
     }
 
     @Override

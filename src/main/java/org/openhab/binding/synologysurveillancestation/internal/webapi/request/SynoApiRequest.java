@@ -181,7 +181,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected synchronized T callWebApi(Request request) throws WebApiException {
         try {
-            // System.err.println(request.getURI());
+            logger.trace(request.getURI().toString());
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {

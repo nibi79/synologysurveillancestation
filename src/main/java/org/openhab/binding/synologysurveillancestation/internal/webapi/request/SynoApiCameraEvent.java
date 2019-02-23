@@ -110,4 +110,15 @@ public class SynoApiCameraEvent extends SynoApiRequest<CameraEventResponse> {
         params.put("percentage", String.valueOf(val));
         return callApi(METHOD_MDPARAMSAVE, params);
     }
+
+    public SimpleResponse setShortLiveSecond(String cameraId, int val) throws WebApiException {
+        if (val < 0 || val > 10) {
+            return new SimpleResponse("{\"data\":{},\"success\":false}");
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("camId", cameraId);
+        params.put("keep", "true");
+        params.put("shortLiveSecond", String.valueOf(val));
+        return callApi(METHOD_MDPARAMSAVE, params);
+    }
 }

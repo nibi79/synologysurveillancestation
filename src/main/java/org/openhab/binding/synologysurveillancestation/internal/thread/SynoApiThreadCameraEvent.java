@@ -53,6 +53,7 @@ public class SynoApiThreadCameraEvent extends SynoApiThread<SynoCameraHandler> {
         cameraHandler.updateState(CHANNEL_MDPARAM_THRESHOLD, new DecimalType(response.getThreshold().getValue()));
         cameraHandler.updateState(CHANNEL_MDPARAM_OBJECTSIZE, new DecimalType(response.getObjectSize().getValue()));
         cameraHandler.updateState(CHANNEL_MDPARAM_PERCENTAGE, new DecimalType(response.getPercentage().getValue()));
+        cameraHandler.updateState(CHANNEL_MDPARAM_SHORTLIVE, new DecimalType(response.getShortLiveSecond().getValue()));
 
         return true;
     }

@@ -164,6 +164,10 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     case CHANNEL_MDPARAM_PERCENTAGE:
                         apiHandler.getApiCameraEvent().setPercentage(cameraId, Integer.parseInt(command.toString()));
                         break;
+                    case CHANNEL_MDPARAM_SHORTLIVE:
+                        apiHandler.getApiCameraEvent().setShortLiveSecond(cameraId,
+                                Integer.parseInt(command.toString()));
+                        break;
                 }
             }
 

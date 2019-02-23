@@ -19,9 +19,9 @@ public class CameraEventResponseObject {
 
     private boolean camCap = false;
     private boolean ssCap = false;
-    private int value;
-    private int minValue;
-    private int maxValue;
+    private int value = 0;
+    private int minValue = 0;
+    private int maxValue = 99;
 
     /**
      * Constructor
@@ -29,12 +29,14 @@ public class CameraEventResponseObject {
      * @param object
      */
     public CameraEventResponseObject(JsonObject object) {
-        if (object != null) {
-            this.camCap = object.get("camCap").getAsBoolean();
-            this.ssCap = object.get("ssCap").getAsBoolean();
-            this.value = object.get("value").getAsInt();
+        this.camCap = object.get("camCap").getAsBoolean();
+        this.ssCap = object.get("ssCap").getAsBoolean();
+        this.value = object.get("value").getAsInt();
+        try {
             this.minValue = object.get("minValue").getAsInt();
             this.maxValue = object.get("maxValue").getAsInt();
+        } catch (Exception ex) {
+            // Keep default values
         }
     }
 

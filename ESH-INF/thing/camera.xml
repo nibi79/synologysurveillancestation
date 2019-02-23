@@ -12,28 +12,49 @@
 		<category>Camera</category>
 
 		<channel-groups>
-			<channel-group id="common" typeId="common" />
-			<channel-group id="ptz" typeId="ptz" />
-			<channel-group id="event" typeId="event">
+			<channel-group id="common" typeId="common-type" />
+			<channel-group id="ptz" typeId="ptz-type" />
+			<channel-group id="event" typeId="event-type">
 				<label>Camera events</label>
 				<description>Events of your camera</description>
+			</channel-group>
+			<channel-group id="md-param" typeId="md-param-type">
+				<label>Motion detection</label>
+				<description>Motion detection parameters</description>
 			</channel-group>
 		</channel-groups>
 
 		<config-description>
-			<parameter name="refresh-rate-snapshot" unit="s" type="integer">
+			<parameter-group name="pg-common">
+				<label>Common settings</label>
+				<description>Common settings</description>
+				<advanced>false</advanced>
+			</parameter-group>
+			<parameter-group name="pg-refresh-rate">
+				<label>Refresh rate settings</label>
+				<description>Refresh rate settings</description>
+				<advanced>true</advanced>
+			</parameter-group>
+
+			<parameter name="refresh-rate-snapshot" unit="s" type="integer" groupName="pg-refresh-rate">
 				<label>Snapshot refresh rate:</label>
 				<description>Refresh rate for camera snapshot in seconds (0 to disable)</description>
 				<default>10</default>
 				<required>true</required>
 			</parameter>
-			<parameter name="refresh-rate-events" unit="s" type="integer">
+			<parameter name="refresh-rate-events" unit="s" type="integer" groupName="pg-refresh-rate">
 				<label>Event refresh rate:</label>
 				<description>Refresh rate for events in seconds (0 to disable)</description>
 				<default>3</default>
 				<required>true</required>
 			</parameter>
-			<parameter name="snapshot-stream-id" type="integer">
+			<parameter name="refresh-rate-md-param" unit="s" type="integer" groupName="pg-refresh-rate">
+				<label>MD parameter refresh rate:</label>
+				<description>Refresh rate for motion detection parameter in seconds (0 to disable)</description>
+				<default>0</default>
+				<required>true</required>
+			</parameter>
+			<parameter name="snapshot-stream-id" type="integer" groupName="pg-common">
 				<label>Snapshot stream ID:</label>
 				<description>Snapshot video stream ID according to Surveillance Station configuration (default: 1 for 'Stream 1')</description>
 				<default>1</default>
@@ -42,7 +63,7 @@
 		</config-description>
 	</thing-type>
 
-	<channel-group-type id="common">
+	<channel-group-type id="common-type">
 		<label>Common channels</label>
 		<description>Common channels of your camera</description>
 		<channels>
@@ -68,7 +89,7 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="ptz">
+	<channel-group-type id="ptz-type">
 		<label>PTZ channels</label>
 		<description>Pan/Tilt/Zoom channels of your camera</description>
 		<channels>
@@ -79,7 +100,7 @@
 		</channels>
 	</channel-group-type>
 
-	<channel-group-type id="event">
+	<channel-group-type id="event-type">
 		<label>Event</label>
 		<description>Event of your camera</description>
 		<channels>
@@ -102,6 +123,33 @@
 			<channel id="actionrule" typeId="event-advanced-channel" >
 				<label>Action rule event</label>
 				<description>Last action rule event</description>
+			</channel>
+		</channels>
+	</channel-group-type>
+
+	<channel-group-type id="md-param-type">
+		<label>Motion detection</label>
+		<description>Motion detection parameters</description>
+		<channels>
+			<channel id="md-param-source" typeId="md-onoff-channel" >
+				<label>Detection source</label>
+				<description>Motion detection source. -1:disable, 0:by camera, 1:by Surveillance Station</description>
+			</channel>
+			<channel id="md-param-sensivity" typeId="md-param-channel" >
+				<label>Detection sensivity</label>
+				<description>Motion detection sensivity (1 to 99)</description>
+			</channel>
+			<channel id="md-param-threshold" typeId="md-param-channel" >
+				<label>Detection threshold</label>
+				<description>Motion detection threshold (1 to 99)</description>
+			</channel>
+			<channel id="md-param-objectsize" typeId="md-param-channel" >
+				<label>Detection object size</label>
+				<description>Motion detection object size (1 to 99)</description>
+			</channel>
+			<channel id="md-param-percentage" typeId="md-param-channel" >
+				<label>Detection percentage</label>
+				<description>Motion detection percentage (1 to 99)</description>
 			</channel>
 		</channels>
 	</channel-group-type>
@@ -181,5 +229,23 @@
 		<label>Event detected</label>
 		<description>Event was detected</description>
 		<state readOnly="true"></state>
+	</channel-type>	
+	<channel-type id="md-onoff-channel" advanced="true">
+		<item-type>String</item-type>
+		<label>Detection source</label>
+		<description>Motion detection source. -1:disable, 0:by camera, 1:by Surveillance Station</description>
+		<state>
+			<options>
+				<option value="-1">Disabled</option>
+				<option value="0">By Camera</option>
+				<option value="1">By Station</option>
+			</options>
+		</state>
+	</channel-type>
+	<channel-type id="md-param-channel" advanced="true">
+		<item-type>Number</item-type>
+		<label>Motion detection parameter</label>
+		<description>Motion detection parameter</description>
+		<state min="0" max="100" step="1"></state>
 	</channel-type>
 </thing:thing-descriptions>

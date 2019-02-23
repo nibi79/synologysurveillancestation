@@ -19,6 +19,7 @@ import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCameraEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalRecording;
@@ -27,6 +28,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.request.S
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiLiveUri;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiPTZ;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraEventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
@@ -55,6 +57,7 @@ public class SynoWebApiHandler implements SynoWebApi {
     private SynoApiPTZ apiPTZ = null;
     private SynoApiLiveUri apiLiveUri = null;
     private SynoApiExternalEvent apiExternalEvent = null;
+    private SynoApiCameraEvent apiCameraEvent = null;
     private final HttpClient httpClient;
 
     /**
@@ -108,6 +111,7 @@ public class SynoWebApiHandler implements SynoWebApi {
         apiHomeMode = new SynoApiHomeMode(config, sessionID, httpClient);
         apiLiveUri = new SynoApiLiveUri(config, sessionID, httpClient);
         apiExternalEvent = new SynoApiExternalEvent(config, sessionID, httpClient);
+        apiCameraEvent = new SynoApiCameraEvent(config, sessionID, httpClient);
         return connected;
     }
 
@@ -532,4 +536,15 @@ public class SynoWebApiHandler implements SynoWebApi {
         return (this.sessionID != null);
     }
 
+    @Override
+    public CameraEventResponse getMDParam(String cameraId) throws WebApiException {
+        return apiCameraEvent.getMDParam(cameraId);
+    }
+
+    /**
+     * @return the apiCameraEvent
+     */
+    public SynoApiCameraEvent getApiCameraEvent() {
+        return apiCameraEvent;
+    }
 }

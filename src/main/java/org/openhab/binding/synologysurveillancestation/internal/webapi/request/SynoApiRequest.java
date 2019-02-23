@@ -181,7 +181,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected synchronized T callWebApi(Request request) throws WebApiException {
         try {
-            logger.trace(request.getURI().toString());
+            logger.info(request.getURI().toString());
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {
@@ -191,7 +191,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
                 if (result.length() > 0) {
                     if (result.contains("\"success\":true")) {
-                        logger.trace("RESPONSE: {}", result);
+                        logger.info("RESPONSE: {}", result);
                     } else {
                         logger.debug("RESPONSE: {}", result);
                     }

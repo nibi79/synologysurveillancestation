@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
+import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraEventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
@@ -251,4 +252,13 @@ public interface SynoWebApi {
      * @return
      */
     public boolean isConnected();
+
+    /**
+     * Returns camera event response for given camera ID
+     * 
+     * @param cameraId
+     * @return
+     * @throws WebApiException
+     */
+    CameraEventResponse getMDParam(String cameraId) throws WebApiException;
 }

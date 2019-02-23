@@ -93,7 +93,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 case CHANNEL_HOMEMODE:
                     if (command.toString().equals("REFRESH")) {
                         threads.get(SynoApiThread.THREAD_HOMEMODE).runOnce();
-                    } else if (apiHandler != null) {
+                    } else {
                         boolean state = command.toString().equals("ON");
                         apiHandler.setHomeMode(state);
                     }
@@ -101,7 +101,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 case CHANNEL_EVENT_TRIGGER:
                     if (command.toString().equals("REFRESH")) {
                         updateState(channelUID, UnDefType.UNDEF);
-                    } else if (apiHandler != null) {
+                    } else {
                         int event = Integer.parseInt(command.toString());
                         boolean ret = false;
                         if (event >= 1 && event <= 10) {

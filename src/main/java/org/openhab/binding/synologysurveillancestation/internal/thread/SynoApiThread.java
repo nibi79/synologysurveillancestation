@@ -43,6 +43,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
     public static final String THREAD_CAMERA = "Camera";
     public static final String THREAD_HOMEMODE = "HomeMode";
     public static final String THREAD_LIVEURI = "LiveUri";
+    public static final String THREAD_CAMERAEVENT = "CameraEvent";
 
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private @Nullable ScheduledFuture<?> future;
@@ -126,6 +127,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
         if (getSynoHandler().getSynoWebApiHandler() == null) {
             logger.error("DeviceId: {}; Thread: {}; Handler not (yet) initialized", deviceId, name);
         } else if (isNeeded()) {
+            logger.info("Thread: " + name + " tick");
             boolean success = false;
             try {
                 success = refresh();

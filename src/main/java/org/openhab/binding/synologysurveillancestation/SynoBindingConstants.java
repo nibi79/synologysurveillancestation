@@ -48,6 +48,7 @@ public class SynoBindingConstants {
     public static final String SESSION_ID = "sessionID";
     public static final String REFRESH_RATE_SNAPSHOT = "refresh-rate-snapshot";
     public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";
+    public static final String REFRESH_RATE_CAMERAEVENT = "refresh-rate-md-param";
     public static final String STREAM_ID = "snapshot-stream-id";
 
     // List of all Bridge Channels
@@ -68,10 +69,14 @@ public class SynoBindingConstants {
     public static final String CHANNEL_SNAPSHOT = "common#snapshot";
     public static final String CHANNEL_RECORD = "common#record";
     public static final String CHANNEL_ENABLE = "common#enable";
+
+    // List of all PTZ channels
     public static final String CHANNEL_ZOOM = "ptz#zoom";
     public static final String CHANNEL_MOVE = "ptz#move";
     public static final String CHANNEL_MOVEPRESET = "ptz#movepreset";
     public static final String CHANNEL_RUNPATROL = "ptz#runpatrol";
+    public static final Set<String> CHANNEL_PTZ = Collections.unmodifiableSet(
+            Stream.of(CHANNEL_ZOOM, CHANNEL_MOVE, CHANNEL_MOVEPRESET, CHANNEL_RUNPATROL).collect(Collectors.toSet()));
 
     // List of all event types (as in thing.xml)
     public static final String CHANNEL_EVENT_MOTION = "event#motion";
@@ -79,4 +84,17 @@ public class SynoBindingConstants {
     public static final String CHANNEL_EVENT_MANUAL = "event#manual";
     public static final String CHANNEL_EVENT_EXTERNAL = "event#external";
     public static final String CHANNEL_EVENT_ACTIONRULE = "event#actionrule";
+    public static final Set<String> CHANNEL_EVENT = Collections
+            .unmodifiableSet(Stream.of(CHANNEL_EVENT_MOTION, CHANNEL_EVENT_ALARM, CHANNEL_EVENT_MANUAL,
+                    CHANNEL_EVENT_EXTERNAL, CHANNEL_EVENT_ACTIONRULE).collect(Collectors.toSet()));
+
+    // List of all MD parameters
+    public static final String CHANNEL_MDPARAM_SOURCE = "md-param#md-param-source";
+    public static final String CHANNEL_MDPARAM_SENSIVITY = "md-param#md-param-sensivity";
+    public static final String CHANNEL_MDPARAM_THRESHOLD = "md-param#md-param-threshold";
+    public static final String CHANNEL_MDPARAM_OBJECTSIZE = "md-param#md-param-objectsize";
+    public static final String CHANNEL_MDPARAM_PERCENTAGE = "md-param#md-param-percentage";
+    public static final Set<String> CHANNEL_MDPARAM = Collections
+            .unmodifiableSet(Stream.of(CHANNEL_MDPARAM_SOURCE, CHANNEL_MDPARAM_SENSIVITY, CHANNEL_MDPARAM_THRESHOLD,
+                    CHANNEL_MDPARAM_OBJECTSIZE, CHANNEL_MDPARAM_PERCENTAGE).collect(Collectors.toSet()));
 }

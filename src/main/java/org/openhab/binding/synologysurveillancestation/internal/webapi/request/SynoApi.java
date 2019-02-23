@@ -54,6 +54,9 @@ public interface SynoApi {
     public static final String METHOD_SWITCH = "Switch";
     public static final String METHOD_TRIGGER = "Trigger";
 
+    public static final String METHOD_MOTIONENUM = "MotionEnum";
+    public static final String METHOD_MDPARAMSAVE = "MDParamSave";
+
     public static final int CONNECTION_TIMEOUT = 5000;
 
     public SynoApiConfig getApiConfig();

@@ -135,7 +135,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         updateState(channelUID, new StringType(mjpeg));
                         break;
                     case CHANNEL_MDPARAM_SOURCE:
-                    case CHANNEL_MDPARAM_SENSIVITY:
+                    case CHANNEL_MDPARAM_SENSITIVITY:
                     case CHANNEL_MDPARAM_THRESHOLD:
                     case CHANNEL_MDPARAM_OBJECTSIZE:
                     case CHANNEL_MDPARAM_PERCENTAGE:
@@ -162,7 +162,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     case CHANNEL_MDPARAM_SOURCE:
                         apiHandler.getApiCameraEvent().setSource(cameraId, command.toString());
                         break;
-                    case CHANNEL_MDPARAM_SENSIVITY:
+                    case CHANNEL_MDPARAM_SENSITIVITY:
                         apiHandler.getApiCameraEvent().setSensitivity(cameraId, Integer.parseInt(command.toString()));
                         break;
                     case CHANNEL_MDPARAM_THRESHOLD:

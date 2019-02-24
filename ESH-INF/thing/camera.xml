@@ -135,9 +135,9 @@
 				<label>Detection source</label>
 				<description>Motion detection source. -1:disable, 0:by camera, 1:by Surveillance Station</description>
 			</channel>
-			<channel id="md-param-sensivity" typeId="md-param-channel" >
-				<label>Detection sensivity</label>
-				<description>Motion detection sensivity (1 to 99)</description>
+			<channel id="md-param-sensitivity" typeId="md-param-channel" >
+				<label>Detection sensitivity</label>
+				<description>Motion detection sensitivity (1 to 99)</description>
 			</channel>
 			<channel id="md-param-threshold" typeId="md-param-channel" >
 				<label>Detection threshold</label>

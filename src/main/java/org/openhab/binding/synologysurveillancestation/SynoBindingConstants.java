@@ -90,13 +90,13 @@ public class SynoBindingConstants {
 
     // List of all MD parameters
     public static final String CHANNEL_MDPARAM_SOURCE = "md-param#md-param-source";
-    public static final String CHANNEL_MDPARAM_SENSIVITY = "md-param#md-param-sensivity";
+    public static final String CHANNEL_MDPARAM_SENSITIVITY = "md-param#md-param-sensitivity";
     public static final String CHANNEL_MDPARAM_THRESHOLD = "md-param#md-param-threshold";
     public static final String CHANNEL_MDPARAM_OBJECTSIZE = "md-param#md-param-objectsize";
     public static final String CHANNEL_MDPARAM_PERCENTAGE = "md-param#md-param-percentage";
     public static final String CHANNEL_MDPARAM_SHORTLIVE = "md-param#md-param-shortlive";
     public static final Set<String> CHANNEL_MDPARAM = Collections.unmodifiableSet(Stream
-            .of(CHANNEL_MDPARAM_SOURCE, CHANNEL_MDPARAM_SENSIVITY, CHANNEL_MDPARAM_THRESHOLD,
+            .of(CHANNEL_MDPARAM_SOURCE, CHANNEL_MDPARAM_SENSITIVITY, CHANNEL_MDPARAM_THRESHOLD,
                     CHANNEL_MDPARAM_OBJECTSIZE, CHANNEL_MDPARAM_PERCENTAGE, CHANNEL_MDPARAM_SHORTLIVE)
             .collect(Collectors.toSet()));
 }

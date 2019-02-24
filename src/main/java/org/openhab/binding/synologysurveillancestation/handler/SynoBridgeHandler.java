@@ -56,7 +56,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
     private int refreshRateEvents = 3;
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
-    SynoConfig config = new SynoConfig();
+    private SynoConfig config = new SynoConfig();
 
     /**
      * Defines a runnable for a discovery

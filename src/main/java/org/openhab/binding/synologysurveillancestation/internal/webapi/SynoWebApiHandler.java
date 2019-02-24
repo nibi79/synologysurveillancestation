@@ -100,13 +100,8 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public boolean connect(boolean forceLogout) throws WebApiException {
-        if (forceLogout && !sessionID.equals("")) {
-            disconnect();
-        }
         AuthResponse response = getApiAuth().login();
-        if (response == null) {
-            throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
-        } else if (response.isSuccess()) {
+        if (response.isSuccess()) {
             String sid = response.getSid();
             setSessionID(sid);
             return true;

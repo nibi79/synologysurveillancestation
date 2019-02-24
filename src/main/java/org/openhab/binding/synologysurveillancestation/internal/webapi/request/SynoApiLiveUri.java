@@ -34,8 +34,8 @@ public class SynoApiLiveUri extends SynoApiRequest<LiveUriResponse> {
     /**
      * @param config
      */
-    public SynoApiLiveUri(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiLiveUri(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

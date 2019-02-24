@@ -31,8 +31,8 @@ public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
     /**
      * @param config
      */
-    public SynoApiHomeMode(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiHomeMode(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

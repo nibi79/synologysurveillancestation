@@ -35,8 +35,8 @@ public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
     /**
      * @param config
      */
-    public SynoApiInfo(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiInfo(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

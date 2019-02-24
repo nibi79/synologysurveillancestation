@@ -38,7 +38,6 @@ public class SynoWebApiHandler implements SynoWebApi {
 
     private SynoConfig config;
     private String sessionID = "";
-    private final HttpClient httpClient;
 
     private final HashMap<Class<?>, SynoApiRequest<?>> api = new HashMap<>();
 
@@ -46,8 +45,17 @@ public class SynoWebApiHandler implements SynoWebApi {
      * @param config
      */
     public SynoWebApiHandler(SynoConfig config, HttpClient httpClient) {
-        this.httpClient = httpClient;
         this.config = config;
+        api.put(SynoApiAuth.class, new SynoApiAuth(config, httpClient));
+        api.put(SynoApiInfo.class, new SynoApiInfo(config, httpClient));
+        api.put(SynoApiCamera.class, new SynoApiCamera(config, httpClient));
+        api.put(SynoApiEvent.class, new SynoApiEvent(config, httpClient));
+        api.put(SynoApiHomeMode.class, new SynoApiHomeMode(config, httpClient));
+        api.put(SynoApiExternalRecording.class, new SynoApiExternalRecording(config, httpClient));
+        api.put(SynoApiPTZ.class, new SynoApiPTZ(config, httpClient));
+        api.put(SynoApiLiveUri.class, new SynoApiLiveUri(config, httpClient));
+        api.put(SynoApiExternalEvent.class, new SynoApiExternalEvent(config, httpClient));
+        api.put(SynoApiCameraEvent.class, new SynoApiCameraEvent(config, httpClient));
     }
 
     /**
@@ -62,6 +70,19 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     public void setConfig(SynoConfig config) {
         this.config = config;
+        for (SynoApiRequest<?> r : api.values()) {
+            r.setConfig(config);
+        }
+    }
+
+    /**
+     * @return
+     */
+    public void setSessionID(String sessionID) {
+        this.sessionID = sessionID;
+        for (SynoApiRequest<?> r : api.values()) {
+            r.setSessionId(sessionID);
+        }
     }
 
     /**
@@ -78,61 +99,30 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public boolean connect(boolean forceLogout) throws WebApiException {
-        api.put(SynoApiAuth.class, new SynoApiAuth(config, httpClient));
         if (forceLogout && !sessionID.equals("")) {
-            logout();
+            disconnect();
         }
-        boolean connected = createSession();
-
-        // initialize APIs
-
-        api.put(SynoApiInfo.class, new SynoApiInfo(config, sessionID, httpClient));
-        api.put(SynoApiCamera.class, new SynoApiCamera(config, sessionID, httpClient));
-        api.put(SynoApiEvent.class, new SynoApiEvent(config, sessionID, httpClient));
-        api.put(SynoApiHomeMode.class, new SynoApiHomeMode(config, sessionID, httpClient));
-        api.put(SynoApiExternalRecording.class, new SynoApiExternalRecording(config, sessionID, httpClient));
-        api.put(SynoApiPTZ.class, new SynoApiPTZ(config, sessionID, httpClient));
-        api.put(SynoApiLiveUri.class, new SynoApiLiveUri(config, sessionID, httpClient));
-        api.put(SynoApiExternalEvent.class, new SynoApiExternalEvent(config, sessionID, httpClient));
-        api.put(SynoApiCameraEvent.class, new SynoApiCameraEvent(config, sessionID, httpClient));
-
-        return connected;
-    }
-
-    /**
-     * @return
-     * @throws WebApiException
-     */
-    private boolean createSession() throws WebApiException {
-
-        AuthResponse response = login();
+        AuthResponse response = getApiAuth().login();
         if (response == null) {
             throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
         } else if (response.isSuccess()) {
-            sessionID = response.getSid();
+            String sid = response.getSid();
+            setSessionID(sid);
             return true;
         } else {
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
     }
 
-    /**
-     * @return
-     * @throws WebApiException
-     */
-    private AuthResponse login() throws WebApiException {
-        return getApiAuth().login();
-    }
-
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#logout()
+     * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#disconnect()
      */
     @Override
-    public SimpleResponse logout() throws WebApiException {
+    public SimpleResponse disconnect() throws WebApiException {
         SimpleResponse response = getApiAuth().logout(sessionID);
-        this.sessionID = "";
+        setSessionID("");
 
         if (response.isSuccess()) {
             return response;

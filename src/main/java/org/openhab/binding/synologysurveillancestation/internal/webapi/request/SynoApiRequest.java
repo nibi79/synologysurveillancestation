@@ -47,8 +47,8 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
     private final SynoApiConfig apiConfig;
     private final HttpClient httpClient;
-    private final SynoConfig config;
-    private final String sessionId;
+    private SynoConfig config;
+    private String sessionId = "";
 
     final Class<T> typeParameterClass;
 
@@ -58,7 +58,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @param sessionId
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId, HttpClient httpClient) {
+    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, HttpClient httpClient) {
         super();
 
         this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
@@ -67,8 +67,6 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
         this.httpClient = httpClient;
         this.apiConfig = apiConfig;
         this.config = config;
-        this.sessionId = sessionId;
-
     }
 
     /*
@@ -86,6 +84,21 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected SynoConfig getConfig() {
         return config;
+    }
+
+    /**
+     * @return
+     */
+    public void setConfig(SynoConfig config) {
+        this.config = config;
+    }
+
+    /**
+     *
+     * @param sessionId
+     */
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     /**

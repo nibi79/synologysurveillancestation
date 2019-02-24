@@ -30,7 +30,7 @@ public interface SynoWebApi {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse logout() throws WebApiException;
+    public SimpleResponse disconnect() throws WebApiException;
 
     // ----------------------------
 

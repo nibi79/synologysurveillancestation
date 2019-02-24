@@ -51,8 +51,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
     /**
      * @param config
      */
-    public SynoApiPTZ(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiPTZ(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

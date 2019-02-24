@@ -34,8 +34,8 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
     /**
      * @param config
      */
-    public SynoApiEvent(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiEvent(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

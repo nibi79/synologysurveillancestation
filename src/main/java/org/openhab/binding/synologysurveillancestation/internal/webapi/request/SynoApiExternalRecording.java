@@ -36,8 +36,8 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
     /**
      * @param config
      */
-    public SynoApiExternalRecording(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiExternalRecording(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

@@ -40,7 +40,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      * @param config
      */
     public SynoApiAuth(SynoConfig config, HttpClient httpClient) {
-        super(API_CONFIG, config, null, httpClient);
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

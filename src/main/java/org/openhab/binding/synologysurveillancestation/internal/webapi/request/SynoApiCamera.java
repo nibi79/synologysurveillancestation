@@ -69,8 +69,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     /**
      * @param config
      */
-    public SynoApiCamera(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiCamera(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

@@ -36,8 +36,8 @@ public class SynoApiExternalEvent extends SynoApiRequest<CameraResponse> {
     /**
      * @param config
      */
-    public SynoApiExternalEvent(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiExternalEvent(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

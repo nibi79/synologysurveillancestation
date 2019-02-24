@@ -30,11 +30,7 @@ public class LiveUriResponse extends SimpleResponse {
     }
 
     public JsonArray getUris() {
-        if (isSuccess()) {
-            return getData().getAsJsonArray();
-        } else {
-            return new JsonArray();
-        }
+        return getDataAsJsonArray();
     }
 
     /**

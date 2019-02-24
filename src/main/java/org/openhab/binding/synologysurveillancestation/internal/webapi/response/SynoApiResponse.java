@@ -9,8 +9,8 @@
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
@@ -65,9 +65,24 @@ public abstract class SynoApiResponse {
     /**
      * @return
      */
-    @Nullable
     public JsonObject getData() {
-        return jsonResponse.getAsJsonObject("data");
+        JsonObject ret = jsonResponse.getAsJsonObject("data");
+        if (ret == null) {
+            return new JsonObject();
+        }
+        return ret;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public JsonArray getDataAsJsonArray() {
+        JsonArray ret = jsonResponse.getAsJsonArray("data");
+        if (ret == null) {
+            return new JsonArray();
+        }
+        return ret;
     }
 
     /**

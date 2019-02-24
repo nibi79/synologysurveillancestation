@@ -58,25 +58,14 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
     }
 
     /**
-     * Start external recording of a camera.
+     * Toggle external recording of a camera.
      *
-     * @param camerId
+     * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse startRecording(String camerId) throws WebApiException {
-        return call(METHOD_RECORD, camerId, "start");
-    }
-
-    /**
-     * Stop external recording of a camera.
-     *
-     * @param camerId
-     * @return
-     * @throws WebApiException
-     */
-    public SimpleResponse stopRecording(String camerId) throws WebApiException {
-        return call(METHOD_RECORD, camerId, "stop");
+    public SimpleResponse toggleRecording(String cameraId, boolean on) throws WebApiException {
+        return call(METHOD_RECORD, cameraId, on ? "start" : "stop");
     }
 
 }

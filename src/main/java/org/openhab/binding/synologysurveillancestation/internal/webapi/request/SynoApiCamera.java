@@ -187,8 +187,14 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @return
      * @throws WebApiException
      */
-    public CameraResponse list() throws WebApiException {
-        return call(METHOD_LIST);
+    public CameraResponse listCameras() throws WebApiException {
+        CameraResponse response = call(METHOD_LIST);
+
+        if (!response.isSuccess()) {
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
+
+        return response;
     }
 
     /**
@@ -198,35 +204,26 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     public CameraResponse getInfo(String cameraId) throws WebApiException {
-        return call(METHOD_GETINFO, cameraId);
+        CameraResponse response = call(METHOD_GETINFO, cameraId);
+
+        if (!response.isSuccess()) {
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
+
+        return response;
     }
 
     /**
-     * Enable camera.
+     * Toggle camera.
      *
      * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public CameraResponse enable(String cameraId) throws WebApiException {
+    public CameraResponse toggleCamera(String cameraId, boolean on) throws WebApiException {
         Map<String, String> params = new HashMap<>();
         params.put("cameraIds", cameraId);
 
-        return callApi(METHOD_ENABLE, params);
+        return callApi(on ? METHOD_ENABLE : METHOD_DISABLE, params);
     }
-
-    /**
-     * Disable camera.
-     *
-     * @param cameraId
-     * @return
-     * @throws WebApiException
-     */
-    public CameraResponse disable(String cameraId) throws WebApiException {
-        Map<String, String> params = new HashMap<>();
-        params.put("cameraIds", cameraId);
-
-        return callApi(METHOD_DISABLE, params);
-    }
-
 }

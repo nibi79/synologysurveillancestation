@@ -44,7 +44,7 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
      * @return
      * @throws WebApiException
      */
-    public EventResponse query(String cameraId, long lastEventTime, Map<String, SynoEvent> events) {
+    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events) {
         Map<String, String> params = new HashMap<>();
 
         params.put("cameraIds", cameraId);

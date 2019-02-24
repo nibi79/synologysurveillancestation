@@ -86,7 +86,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                 return;
             }
 
-            CameraResponse response = apiHandler.list();
+            CameraResponse response = apiHandler.getApiCamera().listCameras();
 
             if (response.isSuccess()) {
                 JsonArray cameras = response.getCameras();
@@ -101,7 +101,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
                             String cameraId = cam.get("id").getAsString();
 
-                            CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
+                            CameraResponse cameraDetails = apiHandler.getApiCamera().getInfo(cameraId);
 
                             ThingUID thingUID = new ThingUID(THING_TYPE_CAMERA, bridgeUID, cameraId);
 

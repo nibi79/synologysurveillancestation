@@ -41,7 +41,7 @@ public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
      * @return
      * @throws WebApiException
      */
-    public HomeModeResponse query() {
+    public HomeModeResponse getHomeModeResponse() {
         try {
             Map<String, String> params = new HashMap<>();
             return callApi(METHOD_GETINFO, params);

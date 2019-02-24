@@ -43,7 +43,7 @@ public class SynoApiThreadCameraEvent extends SynoApiThread<SynoCameraHandler> {
         SynoCameraHandler cameraHandler = getSynoHandler();
         String cameraId = cameraHandler.getCameraId();
 
-        CameraEventResponse response = cameraHandler.getSynoWebApiHandler().getMDParam(cameraId);
+        CameraEventResponse response = cameraHandler.getSynoWebApiHandler().getApiCameraEvent().getMDParam(cameraId);
         if (!response.isSuccess()) {
             return false;
         }

@@ -16,6 +16,7 @@ import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -43,13 +44,13 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
     protected static final String API_TRUE = Boolean.TRUE.toString();
     protected static final String API_FALSE = Boolean.FALSE.toString();
-    private SynoApiConfig apiConfig = null;
-    private HttpClient httpClient;
+
+    private final SynoApiConfig apiConfig;
+    private final HttpClient httpClient;
+    private final SynoConfig config;
+    private final String sessionId;
 
     final Class<T> typeParameterClass;
-
-    private SynoConfig config = null;
-    private String sessionId = null;
 
     /**
      * @param apiConfig
@@ -115,7 +116,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws WebApiException
      */
     protected T callApi(String method) throws WebApiException {
-        return callApi(method, null);
+        return callApi(method, new HashMap<>());
     }
 
     /**
@@ -156,7 +157,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             // API session
             request.param("_sid", getSessionId());
 
-            if (params != null) {
+            if (!params.isEmpty()) {
                 for (String key : params.keySet()) {
                     request.param(key, params.get(key));
                 }

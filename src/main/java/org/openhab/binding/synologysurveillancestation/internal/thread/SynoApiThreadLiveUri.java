@@ -42,7 +42,7 @@ public class SynoApiThreadLiveUri extends SynoApiThread<SynoCameraHandler> {
         SynoCameraHandler cameraHandler = getSynoHandler();
         String cameraId = cameraHandler.getCameraId();
 
-        LiveUriResponse response = cameraHandler.getSynoWebApiHandler().getLiveUriResponse(cameraId);
+        LiveUriResponse response = cameraHandler.getSynoWebApiHandler().getApiLiveUri().getLiveUriResponse(cameraId);
 
         if (response.isSuccess()) {
             if (cameraHandler.isLinked(CHANNEL_LIVE_URI_RTSP)) {

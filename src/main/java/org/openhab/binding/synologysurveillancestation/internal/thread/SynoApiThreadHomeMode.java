@@ -38,8 +38,8 @@ public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
 
     @Override
     public boolean refresh() throws Exception {
-        SynoBridgeHandler brdigeHandler = getSynoHandler();
-        HomeModeResponse response = brdigeHandler.getSynoWebApiHandler().getHomeModeResponse();
+        SynoBridgeHandler bridgeHandler = getSynoHandler();
+        HomeModeResponse response = bridgeHandler.getSynoWebApiHandler().getApiHomeMode().getHomeModeResponse();
         if (response.isSuccess()) {
             if (getSynoHandler().isLinked(CHANNEL_HOMEMODE)) {
                 Channel channel = getSynoHandler().getThing().getChannel(CHANNEL_HOMEMODE);

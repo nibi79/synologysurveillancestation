@@ -95,7 +95,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                         threads.get(SynoApiThread.THREAD_HOMEMODE).runOnce();
                     } else {
                         boolean state = command.toString().equals("ON");
-                        apiHandler.setHomeMode(state);
+                        apiHandler.getApiHomeMode().setHomeMode(state);
                     }
                     break;
                 case CHANNEL_EVENT_TRIGGER:
@@ -105,7 +105,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                         int event = Integer.parseInt(command.toString());
                         boolean ret = false;
                         if (event >= 1 && event <= 10) {
-                            ret = apiHandler.triggerEvent(event);
+                            ret = apiHandler.getApiExternalEvent().triggerEvent(event);
                         }
                         updateState(channelUID, ret ? new DecimalType(0) : UnDefType.UNDEF);
                     }

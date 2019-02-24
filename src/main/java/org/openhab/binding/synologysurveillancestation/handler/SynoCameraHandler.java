@@ -123,31 +123,33 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         break;
                     case CHANNEL_SNAPSHOT_URI_STATIC:
                         int streamId = Integer.parseInt(this.getThing().getConfiguration().get(STREAM_ID).toString());
-                        String uri = apiHandler.getSnapshotUri(cameraId, streamId);
+                        String uri = apiHandler.getApiCamera().getSnapshotUri(cameraId, streamId);
                         updateState(channelUID, new StringType(uri));
                         break;
                     case CHANNEL_LIVE_URI_RTSP:
-                        String rtsp = apiHandler.getLiveUriResponse(cameraId).getRtsp();
+                        String rtsp = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getRtsp();
                         updateState(channelUID, new StringType(rtsp));
                         break;
                     case CHANNEL_LIVE_URI_MJPEG_HTTP:
-                        String mjpeg = apiHandler.getLiveUriResponse(cameraId).getMjpegHttp();
+                        String mjpeg = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getMjpegHttp();
                         updateState(channelUID, new StringType(mjpeg));
                         break;
                 }
             } else {
                 switch (channelUID.getId()) {
                     case CHANNEL_ENABLE:
+                        apiHandler.getApiCamera().toggleCamera(cameraId, command.toString().equals("ON"));
                     case CHANNEL_RECORD:
+                        apiHandler.getApiExternalRecording().toggleRecording(cameraId, command.toString().equals("ON"));
                     case CHANNEL_ZOOM:
                     case CHANNEL_MOVE:
-                        apiHandler.execute(cameraId, channelUID.getId(), command.toString());
+                        apiHandler.getApiPTZ().execute(cameraId, channelUID.getId(), command.toString());
                         break;
                     case CHANNEL_MOVEPRESET:
-                        apiHandler.goPreset(cameraId, command.toString());
+                        apiHandler.getApiPTZ().goPreset(cameraId, command.toString());
                         break;
                     case CHANNEL_RUNPATROL:
-                        apiHandler.runPatrol(cameraId, command.toString());
+                        apiHandler.getApiPTZ().runPatrol(cameraId, command.toString());
                         break;
                     case CHANNEL_MDPARAM_SOURCE:
                         apiHandler.getApiCameraEvent().setSource(cameraId, command.toString());
@@ -202,7 +204,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 try {
                     List<String> toExclude = new ArrayList<>();
 
-                    CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
+                    CameraResponse cameraDetails = apiHandler.getApiCamera().getInfo(cameraId);
                     Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
                     if (properties == null) {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
@@ -222,7 +224,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         }
                     }
 
-                    CameraEventResponse cameraEventResponse = apiHandler.getMDParam(cameraId);
+                    CameraEventResponse cameraEventResponse = apiHandler.getApiCameraEvent().getMDParam(cameraId);
                     if (!cameraEventResponse.isSuccess()) {
                         toExclude.addAll(CHANNEL_MDPARAM);
                     } else {
@@ -370,7 +372,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @throws WebApiException
      */
     public void updatePresets() throws WebApiException {
-        SimpleResponse listPresetResponse = apiHandler.listPresets(cameraId);
+        SimpleResponse listPresetResponse = apiHandler.getApiPTZ().listPresets(cameraId);
 
         JsonObject data = listPresetResponse.getData();
         List<StateOption> options = new ArrayList<>();
@@ -393,7 +395,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @throws WebApiException
      */
     public void updatePatrols() throws WebApiException {
-        SimpleResponse listPatrolResponse = apiHandler.listPatrol(cameraId);
+        SimpleResponse listPatrolResponse = apiHandler.getApiPTZ().listPatrol(cameraId);
 
         JsonObject data = listPatrolResponse.getData();
         List<StateOption> options = new ArrayList<>();

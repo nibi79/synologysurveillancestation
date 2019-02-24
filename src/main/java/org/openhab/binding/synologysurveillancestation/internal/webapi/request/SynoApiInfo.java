@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
 
 /**
@@ -45,6 +46,12 @@ public class SynoApiInfo extends SynoApiRequest<InfoResponse> {
      * @throws WebApiException
      */
     public InfoResponse getInfo() throws WebApiException {
-        return callApi(METHOD_GETINFO);
+        InfoResponse response = callApi(METHOD_GETINFO);
+
+        if (!response.isSuccess()) {
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
+
+        return response;
     }
 }

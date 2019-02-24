@@ -58,8 +58,8 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
         SynoCameraHandler cameraHandler = getSynoHandler();
         Thing thing = cameraHandler.getThing();
 
-        EventResponse response = cameraHandler.getSynoWebApiHandler().getEventResponse(cameraHandler.getCameraId(),
-                lastEventTime, events);
+        EventResponse response = cameraHandler.getSynoWebApiHandler().getApiEvent()
+                .getEventResponse(cameraHandler.getCameraId(), lastEventTime, events);
         if (response.isSuccess()) {
             for (String eventType : events.keySet()) {
                 if (getSynoHandler().isLinked(eventType)) {

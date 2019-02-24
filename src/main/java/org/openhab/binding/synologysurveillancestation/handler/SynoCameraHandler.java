@@ -134,6 +134,14 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         String mjpeg = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getMjpegHttp();
                         updateState(channelUID, new StringType(mjpeg));
                         break;
+                    case CHANNEL_MDPARAM_SOURCE:
+                    case CHANNEL_MDPARAM_SENSIVITY:
+                    case CHANNEL_MDPARAM_THRESHOLD:
+                    case CHANNEL_MDPARAM_OBJECTSIZE:
+                    case CHANNEL_MDPARAM_PERCENTAGE:
+                    case CHANNEL_MDPARAM_SHORTLIVE:
+                        threads.get(SynoApiThread.THREAD_CAMERAEVENT).runOnce();
+                        break;
                 }
             } else {
                 switch (channelUID.getId()) {

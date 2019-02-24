@@ -127,7 +127,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
             if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
                 logger.debug("Discovery Thread; Wrong/expired credentials");
                 try {
-                    bridgeHandler.reconnect(true);
+                    bridgeHandler.reconnect(false);
                 } catch (WebApiException ee) {
                     logger.error("Discovery Thread; Attempt to reconnect failed");
                 }

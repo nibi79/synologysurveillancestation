@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -57,6 +58,7 @@ public class CameraResponse extends SimpleResponse {
         super(jsonResponse);
     }
 
+    @Nullable
     public JsonArray getCameras() {
         return getData().getAsJsonArray("cameras");
     }

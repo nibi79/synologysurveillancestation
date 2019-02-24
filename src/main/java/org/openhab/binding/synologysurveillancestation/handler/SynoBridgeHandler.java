@@ -56,6 +56,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
     private int refreshRateEvents = 3;
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
+    SynoConfig config = new SynoConfig();
 
     /**
      * Defines a runnable for a discovery
@@ -76,14 +77,18 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         } catch (Exception ex) {
             logger.error("Error parsing Bridge configuration");
         }
-        SynoConfig config = getConfigAs(SynoConfig.class);
+        config = getConfigAs(SynoConfig.class);
 
         apiHandler = new SynoWebApiHandler(config, httpClient);
         threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
+        try {
+            reconnect(false);
+        } catch (WebApiException e) {
+        }
     }
 
     @Override
-    public @Nullable SynoWebApiHandler getSynoWebApiHandler() {
+    public SynoWebApiHandler getSynoWebApiHandler() {
         return apiHandler;
     }
 
@@ -153,13 +158,17 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     @Override
     public void initialize() {
+
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
 
-            apiHandler.setConfig(getConfigAs(SynoConfig.class));
-            reconnect(true);
+            if (!getConfigAs(SynoConfig.class).equals(config)) {
+                config = getConfigAs(SynoConfig.class);
+                apiHandler.setConfig(config);
+                reconnect(false);
+            }
 
             // if needed add other infos
             // InfoResponse infoResponse = apiHandler.getInfo();

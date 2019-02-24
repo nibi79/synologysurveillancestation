@@ -62,7 +62,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
         params.put("session", "SurveillanceStation");
         params.put("format", "sid");
 
-        if (getConfig().getUsername() == null) {
+        if (getConfig().getUsername().equals("")) {
             throw new WebApiException(100, "Empty credentials");
         }
         return callApi(method, params);

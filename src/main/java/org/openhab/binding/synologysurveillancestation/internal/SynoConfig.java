@@ -9,6 +9,7 @@
 package org.openhab.binding.synologysurveillancestation.internal;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * The {@link SynoConfig} is class for handling the binding configuration
@@ -81,5 +82,19 @@ public class SynoConfig {
     public String toString() {
         return "Config [protocol=" + protocol + ", host=" + host + ", port=" + port + ", username=" + username
                 + ", password=" + "********, refreshRateEvents=" + String.valueOf(refreshRateEvents) + "]";
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SynoConfig)) {
+            return false;
+        }
+        SynoConfig cfg = (SynoConfig) obj;
+        return cfg.getHost().equals(getHost()) && cfg.getPassword().equals(getPassword())
+                && cfg.getProtocol().equals(getProtocol()) && cfg.getPort().equals(getPort())
+                && cfg.getUsername().equals(getUsername()) && cfg.getRefreshRateEvents() == refreshRateEvents;
     }
 }

@@ -193,7 +193,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     @Override
     public void initialize() {
         if (getBridge() != null) {
-
             cameraId = getThing().getUID().getId();
 
             logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);

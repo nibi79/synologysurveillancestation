@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 /**
  * {@link CameraEventResponse} is a response for camera information
  *
- * @author Pavion - Implementation
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class CameraEventResponse extends SimpleResponse {

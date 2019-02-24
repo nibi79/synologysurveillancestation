@@ -158,7 +158,6 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     @Override
     public void initialize() {
-
         try {
             if (logger.isDebugEnabled()) {
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());

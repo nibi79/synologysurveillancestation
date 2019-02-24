@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 /**
  * {@link CameraEventResponseObject} is a JSON extension for response numeric type
  *
- * @author Pavion - Implementation
+ * @author Pavion - Initial contribution
  */
 @NonNullByDefault
 public class CameraEventResponseObject {

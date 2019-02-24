@@ -132,7 +132,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                     logger.error("Discovery Thread; Attempt to reconnect failed");
                 }
             }
-        } catch (NullPointerException npe) {
+        } catch (Exception npe) {
             logger.error("Error in WebApiException", npe);
         }
     }

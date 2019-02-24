@@ -209,7 +209,10 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         boolean refreshOnly = true;
         Configuration currentConfig = getConfig();
         for (Entry<String, Object> entry : configurationParameters.entrySet()) {
-            if (!currentConfig.get(entry.getKey()).equals(entry.getValue())
+            if (!currentConfig.containsKey(entry.getKey())) {
+                refreshOnly = false;
+                break;
+            } else if (!currentConfig.get(entry.getKey()).equals(entry.getValue())
                     && !entry.getKey().equals(REFRESH_RATE_EVENTS)) {
                 refreshOnly = false;
                 break;

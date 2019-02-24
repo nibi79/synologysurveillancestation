@@ -13,6 +13,8 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,6 +25,7 @@ import com.google.gson.JsonObject;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class CameraResponse extends SimpleResponse {
 
     // bits for PTZ capability
@@ -99,23 +102,20 @@ public class CameraResponse extends SimpleResponse {
      * @return
      */
     public Map<String, Object> getCameraProperties(String cameraId) {
-        if (cameraId != null) {
-            JsonArray cameras = this.getCameras().getAsJsonArray();
+        JsonArray cameras = this.getCameras().getAsJsonArray();
 
-            for (JsonElement camera : cameras) {
-                if (camera.isJsonObject()) {
-                    JsonObject cam = camera.getAsJsonObject();
+        for (JsonElement camera : cameras) {
+            if (camera.isJsonObject()) {
+                JsonObject cam = camera.getAsJsonObject();
 
-                    String id = cam.get("id").getAsString();
+                String id = cam.get("id").getAsString();
 
-                    if (cameraId.equals(id)) {
-                        return createProperties(cam, cameraId);
-                    }
+                if (cameraId.equals(id)) {
+                    return createProperties(cam, cameraId);
                 }
             }
         }
-
-        return null;
+        return new LinkedHashMap<>();
     }
 
     /**

@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
  * @author Pavion - Initial Contribution
  *
  */
+@NonNullByDefault
 public class SynoApiExternalEvent extends SynoApiRequest<CameraResponse> {
     private final Logger logger = LoggerFactory.getLogger(SynoApiExternalEvent.class);
 

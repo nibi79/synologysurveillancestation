@@ -77,6 +77,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
             logger.error("Error parsing Bridge configuration");
         }
         SynoConfig config = getConfigAs(SynoConfig.class);
+
         apiHandler = new SynoWebApiHandler(config, httpClient);
         threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
     }

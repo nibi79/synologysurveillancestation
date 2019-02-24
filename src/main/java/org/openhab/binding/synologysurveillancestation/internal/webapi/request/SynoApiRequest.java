@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
@@ -39,6 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoApi {
     private final Logger logger = LoggerFactory.getLogger(SynoApiRequest.class);
 

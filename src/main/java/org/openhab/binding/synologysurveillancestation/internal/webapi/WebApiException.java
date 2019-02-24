@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.ErrorCode;
 
 /**
@@ -16,6 +17,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.error.Err
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class WebApiException extends Exception {
 
     private static final long serialVersionUID = 1L;

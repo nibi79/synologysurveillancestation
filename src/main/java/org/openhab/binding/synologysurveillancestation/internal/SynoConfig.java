@@ -8,9 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal;
 
-import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
-
-import org.eclipse.smarthome.config.core.Configuration;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 
 /**
  * The {@link SynoConfig} is class for handling the binding configuration
@@ -18,49 +16,14 @@ import org.eclipse.smarthome.config.core.Configuration;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class SynoConfig {
-    private String protocol = null;
-    private String host = null;
-    private String port = null;
-    private String username = null;
-    private String password = null;
-
-    /**
-     * Creates a new {@link SynoConfig} and set the given values
-     *
-     * @param protocoll   Protocol of the DiskStation (http/https)
-     * @param hostAddress IP or host address of the DiskStation
-     * @param port        Port of the DiskStation
-     * @param username    User name with sufficient rights to run Surveillance Station
-     * @param password    User password
-     */
-    public SynoConfig(String protocoll, String hostAddress, String port, String username, String password) {
-        this.protocol = protocoll;
-        this.host = hostAddress;
-        this.port = port;
-        this.username = username;
-        this.password = password;
-    }
-
-    /**
-     * Creates a new {@link SynoConfig} from a configuration object
-     *
-     * @param configuration
-     */
-    public SynoConfig(Configuration configuration) {
-        this.protocol = configuration.get(PROTOCOL).toString();
-        this.host = configuration.get(HOST).toString();
-        this.port = configuration.get(PORT).toString();
-        this.username = configuration.get(USER_NAME).toString();
-        this.password = configuration.get(PASSWORD).toString();
-    }
-
-    /**
-     * Creates a {@link SynoConfig} with default values.
-     */
-    public SynoConfig() {
-        // config with default values
-    }
+    private String protocol = "http";
+    private String host = "";
+    private String port = "5000";
+    private String username = "";
+    private String password = "";
+    private int refreshRateEvents = 5;
 
     /**
      * Returns the protocol.
@@ -69,15 +32,6 @@ public class SynoConfig {
      */
     public String getProtocol() {
         return protocol;
-    }
-
-    /**
-     * Sets the protocol for Surveillance Station.
-     *
-     * @param the protocol
-     */
-    public void setProtocoll(String protocol) {
-        this.protocol = protocol;
     }
 
     /**
@@ -90,30 +44,12 @@ public class SynoConfig {
     }
 
     /**
-     * Sets the host name of the Surveillance Station.
-     *
-     * @param the hostAddress
-     */
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    /**
      * Returns the port.
      *
      * @return the port
      */
     public String getPort() {
         return port;
-    }
-
-    /**
-     * Sets the port for Surveillance Station.
-     *
-     * @param the port
-     */
-    public void setPort(String port) {
-        this.port = port;
     }
 
     /**
@@ -126,15 +62,6 @@ public class SynoConfig {
     }
 
     /**
-     * Sets the username.
-     *
-     * @param username
-     */
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    /**
      * Returns the password.
      *
      * @return the password
@@ -144,18 +71,15 @@ public class SynoConfig {
     }
 
     /**
-     * Sets the password.
-     *
-     * @param password
+     * @return the refreshRateEvents
      */
-    public void setPassword(String password) {
-        this.password = password;
+    public int getRefreshRateEvents() {
+        return refreshRateEvents;
     }
 
     @Override
     public String toString() {
-        return "Config [protocoll=" + protocol + ", host=" + host + ", port=" + port + ", username=" + username
-                + ", password=" + "********]";
+        return "Config [protocol=" + protocol + ", host=" + host + ", port=" + port + ", username=" + username
+                + ", password=" + "********, refreshRateEvents=" + String.valueOf(refreshRateEvents) + "]";
     }
-
 }

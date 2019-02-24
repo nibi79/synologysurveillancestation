@@ -206,7 +206,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
                     CameraResponse cameraDetails = apiHandler.getApiCamera().getInfo(cameraId);
                     Map<String, Object> properties = cameraDetails.getCameraProperties(cameraId);
-                    if (properties == null) {
+                    if (properties.isEmpty()) {
                         updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.GONE);
                         return;
                     }

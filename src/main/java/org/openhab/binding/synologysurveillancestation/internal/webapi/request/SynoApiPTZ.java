@@ -13,6 +13,7 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -42,6 +43,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
 
     // API configuration

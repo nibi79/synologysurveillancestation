@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
@@ -59,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * @author Pavion - Contribution
  *
  */
+@NonNullByDefault
 public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     private final Logger logger = LoggerFactory.getLogger(SynoApiCamera.class);
 
@@ -81,7 +83,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     private CameraResponse call(String method) throws WebApiException {
-        return call(method, null);
+        return call(method, "");
     }
 
     /**
@@ -102,11 +104,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         params.put("basic", API_TRUE);
         params.put("streamInfo", API_TRUE);
         params.put("blPrivilege", API_FALSE);
-        // params.put("camStm", "1");
+        params.put("cameraIds", cameraId);
 
-        if (cameraId != null) {
-            params.put("cameraIds", cameraId);
-        }
         return callApi(method, params);
     }
 

@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import com.google.gson.JsonObject;
 
 /**
@@ -15,6 +17,7 @@ import com.google.gson.JsonObject;
  *
  * @author Pavion - Implementation
  */
+@NonNullByDefault
 public class CameraEventResponseObject {
 
     private boolean camCap = false;

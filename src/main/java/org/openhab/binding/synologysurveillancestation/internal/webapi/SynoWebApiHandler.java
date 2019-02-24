@@ -10,6 +10,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
 import java.util.HashMap;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
@@ -33,7 +34,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
-// @NonNullByDefault
+@NonNullByDefault
 public class SynoWebApiHandler implements SynoWebApi {
 
     private SynoConfig config;

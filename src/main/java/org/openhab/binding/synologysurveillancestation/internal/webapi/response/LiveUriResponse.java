@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,6 +19,7 @@ import com.google.gson.JsonObject;
  *
  * @author Pavion - Initial contribution
  */
+@NonNullByDefault
 public class LiveUriResponse extends SimpleResponse {
 
     /**
@@ -28,7 +31,7 @@ public class LiveUriResponse extends SimpleResponse {
 
     public JsonArray getUris() {
         if (isSuccess()) {
-            return getDataAsArray();
+            return getData().getAsJsonArray();
         } else {
             return new JsonArray();
         }

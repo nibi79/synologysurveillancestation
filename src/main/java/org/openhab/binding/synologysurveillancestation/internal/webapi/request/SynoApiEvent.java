@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
@@ -25,6 +26,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  *
  * @author Pavion - Initial contribution
  */
+@NonNullByDefault
 public class SynoApiEvent extends SynoApiRequest<EventResponse> {
 
     // API Configuration

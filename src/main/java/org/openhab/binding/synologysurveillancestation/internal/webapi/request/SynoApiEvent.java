@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
@@ -25,6 +26,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  *
  * @author Pavion - Initial contribution
  */
+@NonNullByDefault
 public class SynoApiEvent extends SynoApiRequest<EventResponse> {
 
     // API Configuration
@@ -34,8 +36,8 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
     /**
      * @param config
      */
-    public SynoApiEvent(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiEvent(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**
@@ -44,7 +46,7 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
      * @return
      * @throws WebApiException
      */
-    public EventResponse query(String cameraId, long lastEventTime, Map<String, SynoEvent> events) {
+    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events) {
         Map<String, String> params = new HashMap<>();
 
         params.put("cameraIds", cameraId);

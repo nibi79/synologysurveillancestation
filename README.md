@@ -57,6 +57,7 @@ Following options can be set for the **Camera**:
 
 - Snapshot refresh rate
 - Refresh rate for all other **Camera** events and dynamic channels
+- Refresh rate for motion detection parameter (defaults to 0 = no autorefresh)
 
 ## Channels
 
@@ -68,31 +69,41 @@ Currently following **Channels** are supported on the **Bridge**:
 
 Currently following **Channels** are supported on the **Camera**:
 
-- Snapshot _IMAGE_
-- Snapshot static URI _STRING_
-- Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
-- Snapshot static live feed URI (rtsp) _STRING_
-- Snapshot static live feed URI (mjpeg over http) _STRING_
-- Camera recording _SWITCH_
-- Enable camera _SWITCH_
-- Zoom _IN/OUT_ (PTZ cameras only)
-- Move _UP/DOWN/LEFT/RIGHT/HOME_ (PTZ cameras only)
-- Move to preset
-- Run patrol
-- Motion event _SWITCH_ (read-only)
-- Alarm event _SWITCH_ (read-only)
-- Manual event _SWITCH_ (read-only)
-- External event _SWITCH_ (read-only)
-- Action rule event _SWITCH_ (read-only)
+- Common channels:
+     - Snapshot _IMAGE_
+     - Camera recording _SWITCH_
+     - Enable camera _SWITCH_
+- URIs:
+     - Snapshot static URI _STRING_
+     - Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
+     - Snapshot static live feed URI (rtsp) _STRING_
+     - Snapshot static live feed URI (mjpeg over http) _STRING_
+- PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
+     - Zoom _IN/OUT_ 
+     - Move _UP/DOWN/LEFT/RIGHT/HOME_
+     - Move to preset
+     - Run patrol
+- Event channels:
+     - Motion event _SWITCH_ (read-only)
+     - Alarm event _SWITCH_ (read-only)
+     - Manual event _SWITCH_ (read-only)
+     - External event _SWITCH_ (read-only)
+     - Action rule event _SWITCH_ (read-only)
+- Motion detection channels (if available):
+     - Motion detection source _STRING_ (-1:disable, 0:by camera, 1:by Surveillance Station)
+     - Motion detection sensitivity _NUMBER_ (1 to 99)
+     - Motion detection threshold _NUMBER_ (1 to 99)
+     - Motion detection object size _NUMBER_ (1 to 99)
+     - Motion detection percentage _NUMBER_ (1 to 99)
+     - Ignore short-lived motion for _NUMBER_ (0 to 10) seconds
 
 ## File based configuration
 
 ### .things
 
-
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
-Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, snapshot-stream-id=1 ]
+Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, refresh-rate-md-param=120, snapshot-stream-id=1 ]
 }
 ```
 
@@ -125,6 +136,13 @@ String Surveillance_Zooming "Camera zooming" {channel="synologysurveillancestati
 String Surveillance_Moving "Camera moving" {channel="synologysurveillancestation:camera:diskstation:1:ptz#move"}
 String Surveillance_Presets "Camera moving to preset" {channel="synologysurveillancestation:camera:diskstation:1:ptz#movepreset"}
 String Surveillance_Patrols "Camera run patrol" {channel="synologysurveillancestation:camera:diskstation:1:ptz#runpatrol"}
+
+String Surveillance_MD_Source "Motion detection source" {channel="synologysurveillancestation:camera:diskstation:1:md-param#md-param-source"}
+Number:Dimensionless Surveillance_MD_Sensitivity "Motion detection sensitivity" {channel="synologysurveillancestation:camera:diskstation:1:md-param#md-param-sensitivity"}
+Number:Dimensionless Surveillance_MD_Threshold "Motion detection threshold" {channel="synologysurveillancestation:camera:diskstation:1:md-param#md-param-threshold"}
+Number:Dimensionless Surveillance_MD_Objectsize "Motion detection objectsize" {channel="synologysurveillancestation:camera:diskstation:1:md-param#md-param-objectsize"}
+Number:Dimensionless Surveillance_MD_Percentage "Motion detection percentage" {channel="synologysurveillancestation:camera:diskstation:1:md-param#md-param-percentage"}
+Number:Dimensionless Surveillance_MD_Shortlive "Ignore short-lived motion" {channel="synologysurveillancestation:camera:diskstation:1:md-param#md-param-shortlive"}
 ```
 
 Here `:1` is yet again the numeric ID of your surveillance camera from a previous step.

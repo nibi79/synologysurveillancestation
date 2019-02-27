@@ -8,9 +8,12 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * {@link SynoApiResponse} is an abstract class for an API response
@@ -18,6 +21,7 @@ import com.google.gson.JsonParser;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public abstract class SynoApiResponse {
 
     public static final String PROP_VENDOR = "vendor";
@@ -41,53 +45,66 @@ public abstract class SynoApiResponse {
     public static final String PROP_PTZ_SPEED = "ptz_speed";
     public static final String PROP_PTZ_ZOOM_SPEED = "ptz_zoom_speed";
 
-    private JsonObject jsonResponse = null;
+    private JsonObject jsonResponse = new JsonParser().parse("{\"data\":{},\"success\":false}").getAsJsonObject();
+
+    public SynoApiResponse() {
+    }
 
     /**
      * @param jsonResponse
      */
     public SynoApiResponse(String jsonResponse) {
-        JsonObject json = new JsonParser().parse(jsonResponse).getAsJsonObject();
-        this.jsonResponse = json;
+        try {
+            JsonObject json = new JsonParser().parse(jsonResponse).getAsJsonObject();
+            this.jsonResponse = json;
+        } catch (JsonSyntaxException e) {
+            // keep default value
+        }
     }
 
     /**
      * @return
      */
     public JsonObject getData() {
-        return jsonResponse.getAsJsonObject("data");
+        JsonObject ret = jsonResponse.getAsJsonObject("data");
+        if (ret == null) {
+            return new JsonObject();
+        }
+        return ret;
     }
 
     /**
+     *
      * @return
      */
-    public JsonArray getDataAsArray() {
-        return jsonResponse.getAsJsonArray("data");
+    public JsonArray getDataAsJsonArray() {
+        JsonArray ret = jsonResponse.getAsJsonArray("data");
+        if (ret == null) {
+            return new JsonArray();
+        }
+        return ret;
     }
 
     /**
      * @return
      */
     public boolean isSuccess() {
-        return Boolean.valueOf(jsonResponse.get("success").getAsString()).booleanValue();
-    }
-
-    /**
-     * @return
-     */
-    public JsonObject getError() {
-        return jsonResponse.getAsJsonObject("error");
+        if (jsonResponse.has("success")) {
+            return jsonResponse.get("success").getAsBoolean();
+        }
+        return false;
     }
 
     /**
      * @return
      */
     public int getErrorcode() {
-        if (getError() != null) {
-            return getError().get("code").getAsInt();
-        } else {
-            return 0;
+        if (jsonResponse.has("error")) {
+            if (jsonResponse.getAsJsonObject("error").has("code")) {
+                return jsonResponse.getAsJsonObject("error").get("code").getAsInt();
+            }
         }
+        return 0;
     }
 
     @Override

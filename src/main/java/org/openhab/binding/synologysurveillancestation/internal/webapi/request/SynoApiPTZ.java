@@ -8,9 +8,12 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -40,6 +43,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
 
     // API configuration
@@ -49,8 +53,52 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
     /**
      * @param config
      */
-    public SynoApiPTZ(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiPTZ(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
+    }
+
+    /**
+     * Execute the given PTZ method for the passed camera.
+     *
+     * @param cameraId
+     * @param method
+     * @param command
+     * @throws WebApiException
+     */
+    public void execute(String cameraId, String method, String command) throws WebApiException {
+        switch (method) {
+            case CHANNEL_ZOOM:
+                switch (command) {
+                    case "IN":
+                        zoomIn(cameraId);
+                        break;
+                    case "OUT":
+                        zoomOut(cameraId);
+                        break;
+                }
+                break;
+            case CHANNEL_MOVE:
+                switch (command) {
+                    case "UP":
+                        moveUp(cameraId);
+                        break;
+                    case "DOWN":
+                        moveDown(cameraId);
+                        break;
+                    case "LEFT":
+                        moveLeft(cameraId);
+                        break;
+                    case "RIGHT":
+                        moveRight(cameraId);
+                        break;
+                    case "HOME":
+                        moveHome(cameraId);
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**

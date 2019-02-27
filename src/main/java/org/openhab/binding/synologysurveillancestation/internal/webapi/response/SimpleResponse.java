@@ -8,11 +8,14 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * {@link SimpleResponse} is a simplest implementation of an API response
  *
  * @author Nils - Initial contribution
  */
+@NonNullByDefault
 public class SimpleResponse extends SynoApiResponse {
 
     /**

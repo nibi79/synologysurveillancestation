@@ -16,10 +16,12 @@ import java.lang.reflect.ParameterizedType;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
@@ -38,18 +40,19 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoApi {
     private final Logger logger = LoggerFactory.getLogger(SynoApiRequest.class);
 
     protected static final String API_TRUE = Boolean.TRUE.toString();
     protected static final String API_FALSE = Boolean.FALSE.toString();
-    private SynoApiConfig apiConfig = null;
-    private HttpClient httpClient;
+
+    private final SynoApiConfig apiConfig;
+    private final HttpClient httpClient;
+    private SynoConfig config;
+    private String sessionId = "";
 
     final Class<T> typeParameterClass;
-
-    private SynoConfig config = null;
-    private String sessionId = null;
 
     /**
      * @param apiConfig
@@ -57,7 +60,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @param sessionId
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, String sessionId, HttpClient httpClient) {
+    public SynoApiRequest(SynoApiConfig apiConfig, SynoConfig config, HttpClient httpClient) {
         super();
 
         this.typeParameterClass = ((Class) ((ParameterizedType) getClass().getGenericSuperclass())
@@ -66,8 +69,6 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
         this.httpClient = httpClient;
         this.apiConfig = apiConfig;
         this.config = config;
-        this.sessionId = sessionId;
-
     }
 
     /*
@@ -85,6 +86,21 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected SynoConfig getConfig() {
         return config;
+    }
+
+    /**
+     * @return
+     */
+    public void setConfig(SynoConfig config) {
+        this.config = config;
+    }
+
+    /**
+     *
+     * @param sessionId
+     */
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     /**
@@ -115,7 +131,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      * @throws WebApiException
      */
     protected T callApi(String method) throws WebApiException {
-        return callApi(method, null);
+        return callApi(method, new HashMap<>());
     }
 
     /**
@@ -156,7 +172,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
             // API session
             request.param("_sid", getSessionId());
 
-            if (params != null) {
+            if (!params.isEmpty()) {
                 for (String key : params.keySet()) {
                     request.param(key, params.get(key));
                 }
@@ -181,7 +197,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected synchronized T callWebApi(Request request) throws WebApiException {
         try {
-            logger.trace(request.getURI().toString());
+            logger.debug(request.getURI().toString());
             ContentResponse response = request.send();
 
             if (response.getStatus() == 200) {
@@ -191,9 +207,9 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
 
                 if (result.length() > 0) {
                     if (result.contains("\"success\":true")) {
-                        logger.trace("RESPONSE: {}", result);
-                    } else {
                         logger.debug("RESPONSE: {}", result);
+                    } else {
+                        logger.error("RESPONSE: {}", result);
                     }
 
                 }

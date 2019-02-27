@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 import com.google.gson.JsonElement;
 
 /**
@@ -16,6 +18,7 @@ import com.google.gson.JsonElement;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class InfoResponse extends SimpleResponse {
 
     /**

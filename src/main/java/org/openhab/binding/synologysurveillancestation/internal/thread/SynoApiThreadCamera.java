@@ -55,7 +55,7 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
             Thing thing = cameraHandler.getThing();
             int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
 
-            String path = cameraHandler.getSynoWebApiHandler().getSnapshotUri(cameraId, streamId);
+            String path = cameraHandler.getSynoWebApiHandler().getApiCamera().getSnapshotUri(cameraId, streamId);
             path += "&timestamp=" + String.valueOf(System.currentTimeMillis());
             cameraHandler.updateState(channel.getUID(), new StringType(path));
         }
@@ -70,7 +70,7 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
         }
 
         if (cameraHandler.isLinked(CHANNEL_ENABLE) || cameraHandler.isLinked(CHANNEL_RECORD)) {
-            CameraResponse response = cameraHandler.getSynoWebApiHandler().getInfo(cameraId);
+            CameraResponse response = cameraHandler.getSynoWebApiHandler().getApiCamera().getInfo(cameraId);
             if (response.isSuccess()) {
                 if (cameraHandler.isLinked(CHANNEL_ENABLE)) {
                     Channel channel = cameraHandler.getThing().getChannel(CHANNEL_ENABLE);

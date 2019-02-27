@@ -8,17 +8,15 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
-import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
+import java.util.HashMap;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Map;
-
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiAuth;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCamera;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiCameraEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiExternalRecording;
@@ -26,12 +24,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.request.S
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiInfo;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiLiveUri;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiPTZ;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.request.SynoApiRequest;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.AuthResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.HomeModeResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.InfoResponse;
-import org.openhab.binding.synologysurveillancestation.internal.webapi.response.LiveUriResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
@@ -40,29 +34,29 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class SynoWebApiHandler implements SynoWebApi {
 
-    private SynoConfig config = null;
-    private String sessionID = null;
+    private SynoConfig config;
+    private String sessionID = "";
 
-    // APIs
-    private SynoApiAuth apiAuth = null;
-    private SynoApiInfo apiInfo = null;
-    private SynoApiCamera apiCamera = null;
-    private SynoApiEvent apiEvent = null;
-    private SynoApiHomeMode apiHomeMode = null;
-    private SynoApiExternalRecording apiExternalRecording = null;
-    private SynoApiPTZ apiPTZ = null;
-    private SynoApiLiveUri apiLiveUri = null;
-    private SynoApiExternalEvent apiExternalEvent = null;
-    private final HttpClient httpClient;
+    private final HashMap<Class<?>, SynoApiRequest<?>> api = new HashMap<>();
 
     /**
      * @param config
      */
     public SynoWebApiHandler(SynoConfig config, HttpClient httpClient) {
-        this.httpClient = httpClient;
         this.config = config;
+        api.put(SynoApiAuth.class, new SynoApiAuth(config, httpClient));
+        api.put(SynoApiInfo.class, new SynoApiInfo(config, httpClient));
+        api.put(SynoApiCamera.class, new SynoApiCamera(config, httpClient));
+        api.put(SynoApiEvent.class, new SynoApiEvent(config, httpClient));
+        api.put(SynoApiHomeMode.class, new SynoApiHomeMode(config, httpClient));
+        api.put(SynoApiExternalRecording.class, new SynoApiExternalRecording(config, httpClient));
+        api.put(SynoApiPTZ.class, new SynoApiPTZ(config, httpClient));
+        api.put(SynoApiLiveUri.class, new SynoApiLiveUri(config, httpClient));
+        api.put(SynoApiExternalEvent.class, new SynoApiExternalEvent(config, httpClient));
+        api.put(SynoApiCameraEvent.class, new SynoApiCameraEvent(config, httpClient));
     }
 
     /**
@@ -77,6 +71,19 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     public void setConfig(SynoConfig config) {
         this.config = config;
+        for (SynoApiRequest<?> r : api.values()) {
+            r.setConfig(config);
+        }
+    }
+
+    /**
+     * @return
+     */
+    public void setSessionID(String sessionID) {
+        this.sessionID = sessionID;
+        for (SynoApiRequest<?> r : api.values()) {
+            r.setSessionId(sessionID);
+        }
     }
 
     /**
@@ -93,150 +100,25 @@ public class SynoWebApiHandler implements SynoWebApi {
      */
     @Override
     public boolean connect(boolean forceLogout) throws WebApiException {
-        apiAuth = new SynoApiAuth(config, httpClient);
-        if (forceLogout && sessionID != null) {
-            logout();
-        }
-        boolean connected = createSession();
-
-        // initialize APIs
-        apiInfo = new SynoApiInfo(config, sessionID, httpClient);
-        apiCamera = new SynoApiCamera(config, sessionID, httpClient);
-        apiEvent = new SynoApiEvent(config, sessionID, httpClient);
-        apiExternalRecording = new SynoApiExternalRecording(config, sessionID, httpClient);
-        apiPTZ = new SynoApiPTZ(config, sessionID, httpClient);
-        apiHomeMode = new SynoApiHomeMode(config, sessionID, httpClient);
-        apiLiveUri = new SynoApiLiveUri(config, sessionID, httpClient);
-        apiExternalEvent = new SynoApiExternalEvent(config, sessionID, httpClient);
-        return connected;
-    }
-
-    /**
-     * Execute the given method for the passed camera.
-     *
-     * @param cameraId
-     * @param method
-     * @param command
-     * @throws WebApiException
-     */
-    public void execute(String cameraId, String method, String command) throws WebApiException {
-        switch (method) {
-            case CHANNEL_ENABLE:
-                switch (command) {
-                    case "ON":
-                        enable(cameraId);
-                        break;
-                    case "OFF":
-                        disable(cameraId);
-                        break;
-                }
-                break;
-            case CHANNEL_RECORD:
-                switch (command) {
-                    case "ON":
-                        startRecording(cameraId);
-                        break;
-                    case "OFF":
-                        stopRecording(cameraId);
-                        break;
-                }
-                break;
-            case CHANNEL_ZOOM:
-                switch (command) {
-                    case "IN":
-                        zoomIn(cameraId);
-                        break;
-                    case "OUT":
-                        zoomOut(cameraId);
-                        break;
-                }
-                break;
-            case CHANNEL_MOVE:
-                switch (command) {
-                    case "UP":
-                        moveUp(cameraId);
-                        break;
-                    case "DOWN":
-                        moveDown(cameraId);
-                        break;
-                    case "LEFT":
-                        moveLeft(cameraId);
-                        break;
-                    case "RIGHT":
-                        moveRight(cameraId);
-                        break;
-                    case "HOME":
-                        moveHome(cameraId);
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    /**
-     * @return
-     * @throws WebApiException
-     */
-    private boolean createSession() throws WebApiException {
-
-        AuthResponse response = login();
-        if (response == null) {
-            throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
-        } else if (response.isSuccess()) {
-            sessionID = response.getSid();
+        AuthResponse response = getApiAuth().login();
+        if (response.isSuccess()) {
+            String sid = response.getSid();
+            setSessionID(sid);
             return true;
         } else {
             throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
         }
     }
 
-    /**
-     * Check if request was successful. If not WebApiException with API errorcode is thrown.
-     *
-     * @param response
-     * @return
-     * @throws WebApiException
-     */
-    private SimpleResponse handleSimpleResponse(SimpleResponse response) throws WebApiException {
-        return handleSimpleResponse(response, false);
-    }
-
-    /**
-     * Check if request was successful. If not WebApiException with API errorcode is thrown. Can be overridden with
-     * allowError
-     *
-     * @param response
-     * @param allowError allow errors to be passed through
-     * @return
-     * @throws WebApiException
-     */
-    private SimpleResponse handleSimpleResponse(SimpleResponse response, boolean allowError) throws WebApiException {
-        if (response.isSuccess() || allowError) {
-            return response;
-        } else {
-            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
-        }
-    }
-
-    /**
-     * @return
-     * @throws WebApiException
-     */
-    private AuthResponse login() throws WebApiException {
-        return apiAuth.login();
-    }
-
     /*
      * (non-Javadoc)
      *
-     * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#logout()
+     * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#disconnect()
      */
     @Override
-    public SimpleResponse logout() throws WebApiException {
-        SimpleResponse response = apiAuth.logout(sessionID);
-        this.sessionID = null;
+    public SimpleResponse disconnect() throws WebApiException {
+        SimpleResponse response = getApiAuth().logout(sessionID);
+        setSessionID("");
 
         if (response.isSuccess()) {
             return response;
@@ -245,291 +127,89 @@ public class SynoWebApiHandler implements SynoWebApi {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getSnapshot(java.lang.
-     * String)
-     */
-    @Override
-    public byte[] getSnapshot(String cameraId, int timeout, int streamId)
-            throws IOException, URISyntaxException, WebApiException {
-        if (apiCamera == null) {
-            return new byte[0];
-        }
-        return apiCamera.getSnapshot(cameraId, timeout, streamId);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getSnapshotUri(java.lang.
-     * String, java.lang.Integer streamId)
-     */
-    @Override
-    public String getSnapshotUri(String cameraId, int streamId) throws WebApiException {
-        if (apiCamera == null) {
-            return "";
-        }
-        return apiCamera.getSnapshotUri(cameraId, streamId);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.smarthome.binding.synologysurveillancestation.internal.webapi.SynoWebApi#list()
-     */
-    @Override
-    public CameraResponse list() throws WebApiException {
-        CameraResponse response = apiCamera.list();
-
-        if (!response.isSuccess()) {
-            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
-        }
-
-        return response;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getInfo(java.lang.String)
-     */
-    @Override
-    public CameraResponse getInfo(String cameraId) throws WebApiException {
-        CameraResponse response = apiCamera.getInfo(cameraId);
-
-        if (!response.isSuccess()) {
-            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
-        }
-
-        return response;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getInfo()
-     */
-    @Override
-    public InfoResponse getInfo() throws WebApiException {
-        InfoResponse response = apiInfo.getInfo();
-
-        if (!response.isSuccess()) {
-            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
-        }
-
-        return response;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#enable(java.lang.String)
-     */
-    @Override
-    public SimpleResponse enable(String cameraId) throws WebApiException {
-        SimpleResponse response = apiCamera.enable(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#disable(java.lang.String)
-     */
-    @Override
-    public SimpleResponse disable(String cameraId) throws WebApiException {
-        SimpleResponse response = apiCamera.disable(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#startRecording(java.lang.String)
-     */
-    @Override
-    public SimpleResponse startRecording(String cameraId) throws WebApiException {
-        SimpleResponse response = apiExternalRecording.startRecording(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#stopRecording(java.lang.String)
-     */
-    @Override
-    public SimpleResponse stopRecording(String cameraId) throws WebApiException {
-        SimpleResponse response = apiExternalRecording.stopRecording(cameraId);
-        return handleSimpleResponse(response);
-
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#zoomIn(java.lang.String)
-     */
-    @Override
-    public SimpleResponse zoomIn(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.zoomIn(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#zoomOut(java.lang.String)
-     */
-    @Override
-    public SimpleResponse zoomOut(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.zoomOut(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveUp(java.lang.String)
-     */
-    @Override
-    public SimpleResponse moveUp(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.moveUp(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveDown(java.lang.String)
-     */
-    @Override
-    public SimpleResponse moveDown(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.moveDown(cameraId);
-
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveLeft(java.lang.String)
-     */
-    @Override
-    public SimpleResponse moveLeft(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.moveLeft(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveRight(java.lang.String)
-     */
-    @Override
-    public SimpleResponse moveRight(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.moveRight(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#moveHome(java.lang.String)
-     */
-    @Override
-    public SimpleResponse moveHome(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.moveHome(cameraId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#listPresets(java.lang.String)
-     */
-    @Override
-    public SimpleResponse listPresets(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.listPresets(cameraId);
-        return handleSimpleResponse(response, true); // allow errors
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#goPreset(java.lang.String,
-     * java.lang.String)
-     */
-    @Override
-    public SimpleResponse goPreset(String cameraId, String presetId) throws WebApiException {
-        SimpleResponse response = apiPTZ.goPreset(cameraId, presetId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#listPatrol(java.lang.String)
-     */
-    @Override
-    public SimpleResponse listPatrol(String cameraId) throws WebApiException {
-        SimpleResponse response = apiPTZ.listPatrol(cameraId);
-        return handleSimpleResponse(response, true); // allow errors
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#runPatrol(java.lang.String,
-     * java.lang.String)
-     */
-    @Override
-    public SimpleResponse runPatrol(String cameraId, String patrolId) throws WebApiException {
-        SimpleResponse response = apiPTZ.runPatrol(cameraId, patrolId);
-        return handleSimpleResponse(response);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApi#getEvents(java.lang.String)
-     */
-    @Override
-    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events)
-            throws WebApiException {
-        EventResponse response = apiEvent.query(cameraId, lastEventTime, events);
-
-        return response;
-    }
-
-    @Override
-    public HomeModeResponse getHomeModeResponse() throws WebApiException {
-        HomeModeResponse response = apiHomeMode.query();
-        return response;
-    }
-
-    @Override
-    public SimpleResponse setHomeMode(boolean mode) throws WebApiException {
-        return apiHomeMode.setHomeMode(mode);
-    }
-
-    @Override
-    public LiveUriResponse getLiveUriResponse(String cameraId) throws WebApiException {
-        LiveUriResponse response = apiLiveUri.getLiveUriResponse(cameraId);
-        return response;
-    }
-
-    @Override
-    public boolean triggerEvent(int event) throws WebApiException {
-        return apiExternalEvent.triggerEvent(event);
-    }
-
     @Override
     public boolean isConnected() {
-        return (this.sessionID != null);
+        return (!this.sessionID.equals(""));
     }
 
+    /**
+     * @return the apiCameraEvent
+     */
+    public SynoApiCameraEvent getApiCameraEvent() {
+        return getApi(SynoApiCameraEvent.class);
+    }
+
+    /**
+     * @return the apiPTZ
+     */
+    public SynoApiPTZ getApiPTZ() {
+        return getApi(SynoApiPTZ.class);
+    }
+
+    /**
+     * @return the apiCamera
+     */
+    public SynoApiCamera getApiCamera() {
+        return getApi(SynoApiCamera.class);
+    }
+
+    /**
+     * @return the apiExternalRecording
+     */
+    public SynoApiExternalRecording getApiExternalRecording() {
+        return getApi(SynoApiExternalRecording.class);
+    }
+
+    /**
+     * @return the apiInfo
+     */
+    public SynoApiInfo getApiInfo() {
+        return getApi(SynoApiInfo.class);
+    }
+
+    /**
+     * @return the apiEvent
+     */
+    public SynoApiEvent getApiEvent() {
+        return getApi(SynoApiEvent.class);
+    }
+
+    /**
+     * @return the apiHomeMode
+     */
+    public SynoApiHomeMode getApiHomeMode() {
+        return getApi(SynoApiHomeMode.class);
+    }
+
+    /**
+     * @return the apiLiveUri
+     */
+    public SynoApiLiveUri getApiLiveUri() {
+        return getApi(SynoApiLiveUri.class);
+    }
+
+    /**
+     * @return the apiExternalEvent
+     */
+    public SynoApiExternalEvent getApiExternalEvent() {
+        return getApi(SynoApiExternalEvent.class);
+    }
+
+    /**
+     * @return the apiLiveUri
+     */
+    public SynoApiAuth getApiAuth() {
+        return getApi(SynoApiAuth.class);
+    }
+
+    /**
+     * Generic getter
+     *
+     * @param cl
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private <T extends SynoApiRequest<?>> T getApi(Class<T> cl) {
+        return (T) api.get(cl);
+    }
 }

@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -26,6 +27,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  *
  * @author Pavion - Initial contribution
  */
+@NonNullByDefault
 public class SynoApiLiveUri extends SynoApiRequest<LiveUriResponse> {
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera";
@@ -34,8 +36,8 @@ public class SynoApiLiveUri extends SynoApiRequest<LiveUriResponse> {
     /**
      * @param config
      */
-    public SynoApiLiveUri(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiLiveUri(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**

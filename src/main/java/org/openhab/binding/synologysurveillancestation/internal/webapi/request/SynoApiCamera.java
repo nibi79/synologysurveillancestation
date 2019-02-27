@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
@@ -59,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * @author Pavion - Contribution
  *
  */
+@NonNullByDefault
 public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     private final Logger logger = LoggerFactory.getLogger(SynoApiCamera.class);
 
@@ -69,8 +71,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
     /**
      * @param config
      */
-    public SynoApiCamera(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiCamera(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**
@@ -81,7 +83,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     private CameraResponse call(String method) throws WebApiException {
-        return call(method, null);
+        return call(method, "");
     }
 
     /**
@@ -102,11 +104,8 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
         params.put("basic", API_TRUE);
         params.put("streamInfo", API_TRUE);
         params.put("blPrivilege", API_FALSE);
-        // params.put("camStm", "1");
+        params.put("cameraIds", cameraId);
 
-        if (cameraId != null) {
-            params.put("cameraIds", cameraId);
-        }
         return callApi(method, params);
     }
 
@@ -187,8 +186,14 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @return
      * @throws WebApiException
      */
-    public CameraResponse list() throws WebApiException {
-        return call(METHOD_LIST);
+    public CameraResponse listCameras() throws WebApiException {
+        CameraResponse response = call(METHOD_LIST);
+
+        if (!response.isSuccess()) {
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
+
+        return response;
     }
 
     /**
@@ -198,35 +203,26 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      * @throws WebApiException
      */
     public CameraResponse getInfo(String cameraId) throws WebApiException {
-        return call(METHOD_GETINFO, cameraId);
+        CameraResponse response = call(METHOD_GETINFO, cameraId);
+
+        if (!response.isSuccess()) {
+            throw new WebApiException(WebApiAuthErrorCodes.getByCode(response.getErrorcode()));
+        }
+
+        return response;
     }
 
     /**
-     * Enable camera.
+     * Toggle camera.
      *
      * @param cameraId
      * @return
      * @throws WebApiException
      */
-    public CameraResponse enable(String cameraId) throws WebApiException {
+    public CameraResponse toggleCamera(String cameraId, boolean on) throws WebApiException {
         Map<String, String> params = new HashMap<>();
         params.put("cameraIds", cameraId);
 
-        return callApi(METHOD_ENABLE, params);
+        return callApi(on ? METHOD_ENABLE : METHOD_DISABLE, params);
     }
-
-    /**
-     * Disable camera.
-     *
-     * @param cameraId
-     * @return
-     * @throws WebApiException
-     */
-    public CameraResponse disable(String cameraId) throws WebApiException {
-        Map<String, String> params = new HashMap<>();
-        params.put("cameraIds", cameraId);
-
-        return callApi(METHOD_DISABLE, params);
-    }
-
 }

@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * API configuration parameters
  *
@@ -15,11 +17,12 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
  * @author Pavion - Contribution
  *
  */
+@NonNullByDefault
 public class SynoApiConfig {
 
-    private String name = null;
-    private String version = null;
-    private String scriptpath = null;
+    private final String name;
+    private final String version;
+    private final String scriptpath;
 
     /**
      * @param name
@@ -27,7 +30,6 @@ public class SynoApiConfig {
      * @param scriptpath
      */
     public SynoApiConfig(String name, String version, String scriptpath) {
-        super();
         this.name = name;
         this.version = version;
         this.scriptpath = scriptpath;
@@ -37,43 +39,21 @@ public class SynoApiConfig {
      *
      * @return
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
     /**
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
      * @return
      */
-    public String getVersion() {
+    public final String getVersion() {
         return version;
     }
 
     /**
-     * @param version
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
      * @return
      */
-    public String getScriptpath() {
+    public final String getScriptpath() {
         return scriptpath;
     }
-
-    /**
-     * @param scriptpath
-     */
-    public void setScriptpath(String scriptpath) {
-        this.scriptpath = scriptpath;
-    }
-
 }

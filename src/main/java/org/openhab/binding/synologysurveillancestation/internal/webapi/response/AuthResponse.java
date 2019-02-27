@@ -8,6 +8,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.response;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
 
 /**
@@ -16,6 +17,7 @@ import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiTh
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class AuthResponse extends SimpleResponse {
 
     /**

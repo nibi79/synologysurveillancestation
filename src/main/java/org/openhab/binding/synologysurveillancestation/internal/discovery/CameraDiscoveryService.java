@@ -13,6 +13,8 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
 import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
@@ -38,10 +40,12 @@ import com.google.gson.JsonObject;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public class CameraDiscoveryService extends AbstractDiscoveryService {
 
     private final Logger logger = LoggerFactory.getLogger(CameraDiscoveryService.class);
 
+    @Nullable
     private SynoBridgeHandler bridgeHandler = null;
 
     /**
@@ -86,7 +90,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                 return;
             }
 
-            CameraResponse response = apiHandler.list();
+            CameraResponse response = apiHandler.getApiCamera().listCameras();
 
             if (response.isSuccess()) {
                 JsonArray cameras = response.getCameras();
@@ -101,7 +105,7 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
                             String cameraId = cam.get("id").getAsString();
 
-                            CameraResponse cameraDetails = apiHandler.getInfo(cameraId);
+                            CameraResponse cameraDetails = apiHandler.getApiCamera().getInfo(cameraId);
 
                             ThingUID thingUID = new ThingUID(THING_TYPE_CAMERA, bridgeUID, cameraId);
 
@@ -123,12 +127,12 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
             if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
                 logger.debug("Discovery Thread; Wrong/expired credentials");
                 try {
-                    bridgeHandler.reconnect(true);
+                    bridgeHandler.reconnect(false);
                 } catch (WebApiException ee) {
                     logger.error("Discovery Thread; Attempt to reconnect failed");
                 }
             }
-        } catch (NullPointerException npe) {
+        } catch (Exception npe) {
             logger.error("Error in WebApiException", npe);
         }
     }

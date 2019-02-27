@@ -43,8 +43,8 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
         Thing thing = cameraHandler.getThing();
 
         int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
-        byte[] snapshot = cameraHandler.getSynoWebApiHandler().getSnapshot(getSynoHandler().getCameraId(),
-                getRefreshRate(), streamId);
+        byte[] snapshot = cameraHandler.getSynoWebApiHandler().getApiCamera()
+                .getSnapshot(getSynoHandler().getCameraId(), getRefreshRate(), streamId);
         if (snapshot.length < 1000) {
             getSynoHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             return false;

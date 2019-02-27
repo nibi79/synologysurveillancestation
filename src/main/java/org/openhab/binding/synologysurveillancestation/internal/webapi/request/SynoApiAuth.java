@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -30,6 +31,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Pavion - Contribution
  *
  */
+@NonNullByDefault
 public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
     // API configuration
@@ -40,7 +42,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
      * @param config
      */
     public SynoApiAuth(SynoConfig config, HttpClient httpClient) {
-        super(API_CONFIG, config, null, httpClient);
+        super(API_CONFIG, config, httpClient);
     }
 
     /**
@@ -60,7 +62,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
         params.put("session", "SurveillanceStation");
         params.put("format", "sid");
 
-        if (getConfig().getUsername() == null) {
+        if (getConfig().getUsername().equals("")) {
             throw new WebApiException(100, "Empty credentials");
         }
         return callApi(method, params);

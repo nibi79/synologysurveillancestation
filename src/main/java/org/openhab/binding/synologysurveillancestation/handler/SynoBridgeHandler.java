@@ -56,6 +56,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
     private int refreshRateEvents = 3;
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
+    private SynoConfig config = new SynoConfig();
 
     /**
      * Defines a runnable for a discovery
@@ -76,13 +77,18 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         } catch (Exception ex) {
             logger.error("Error parsing Bridge configuration");
         }
-        SynoConfig config = getConfigAs(SynoConfig.class);
+        config = getConfigAs(SynoConfig.class);
+
         apiHandler = new SynoWebApiHandler(config, httpClient);
         threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
+        try {
+            reconnect(false);
+        } catch (WebApiException e) {
+        }
     }
 
     @Override
-    public @Nullable SynoWebApiHandler getSynoWebApiHandler() {
+    public SynoWebApiHandler getSynoWebApiHandler() {
         return apiHandler;
     }
 
@@ -93,19 +99,19 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 case CHANNEL_HOMEMODE:
                     if (command.toString().equals("REFRESH")) {
                         threads.get(SynoApiThread.THREAD_HOMEMODE).runOnce();
-                    } else if (apiHandler != null) {
+                    } else {
                         boolean state = command.toString().equals("ON");
-                        apiHandler.setHomeMode(state);
+                        apiHandler.getApiHomeMode().setHomeMode(state);
                     }
                     break;
                 case CHANNEL_EVENT_TRIGGER:
                     if (command.toString().equals("REFRESH")) {
                         updateState(channelUID, UnDefType.UNDEF);
-                    } else if (apiHandler != null) {
+                    } else {
                         int event = Integer.parseInt(command.toString());
                         boolean ret = false;
                         if (event >= 1 && event <= 10) {
-                            ret = apiHandler.triggerEvent(event);
+                            ret = apiHandler.getApiExternalEvent().triggerEvent(event);
                         }
                         updateState(channelUID, ret ? new DecimalType(0) : UnDefType.UNDEF);
                     }
@@ -157,8 +163,11 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
             }
 
-            apiHandler.setConfig(getConfigAs(SynoConfig.class));
-            reconnect(true);
+            if (!getConfigAs(SynoConfig.class).equals(config)) {
+                config = getConfigAs(SynoConfig.class);
+                apiHandler.setConfig(config);
+                reconnect(false);
+            }
 
             // if needed add other infos
             // InfoResponse infoResponse = apiHandler.getInfo();
@@ -200,7 +209,10 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         boolean refreshOnly = true;
         Configuration currentConfig = getConfig();
         for (Entry<String, Object> entry : configurationParameters.entrySet()) {
-            if (!currentConfig.get(entry.getKey()).equals(entry.getValue())
+            if (!currentConfig.containsKey(entry.getKey())) {
+                refreshOnly = false;
+                break;
+            } else if (!currentConfig.get(entry.getKey()).equals(entry.getValue())
                     && !entry.getKey().equals(REFRESH_RATE_EVENTS)) {
                 refreshOnly = false;
                 break;

@@ -11,6 +11,7 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
@@ -24,6 +25,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  *
  * @author Pavion - Initial contribution
  */
+@NonNullByDefault
 public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
     private static final String API_NAME = "SYNO.SurveillanceStation.HomeMode";
     private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_01, API_SCRIPT_ENTRY);
@@ -31,8 +33,8 @@ public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
     /**
      * @param config
      */
-    public SynoApiHomeMode(SynoConfig config, String sessionID, HttpClient httpClient) {
-        super(API_CONFIG, config, sessionID, httpClient);
+    public SynoApiHomeMode(SynoConfig config, HttpClient httpClient) {
+        super(API_CONFIG, config, httpClient);
     }
 
     /**
@@ -41,7 +43,7 @@ public class SynoApiHomeMode extends SynoApiRequest<HomeModeResponse> {
      * @return
      * @throws WebApiException
      */
-    public HomeModeResponse query() {
+    public HomeModeResponse getHomeModeResponse() {
         try {
             Map<String, String> params = new HashMap<>();
             return callApi(METHOD_GETINFO, params);

@@ -182,11 +182,13 @@ Please note, **[Javascript Transformation](https://www.openhab.org/addons/transf
 ## Support
 
 If you encounter critical issues with this binding, please consider to:
+
 - create an [issue](https://github.com/nibi79/synologysurveillancestation/issues) on GitHub
 - search [community forum](https://community.openhab.org/t/binding-request-synology-surveillance-station/8200) for answers already given
 - or make a new post there, if nothing was found
 
 In any case please provide some information about your problem:
+
 - openHAB and binding version 
 - error description and steps to retrace if applicable
 - any related `[WARN]`/`[ERROR]` from openhab.log

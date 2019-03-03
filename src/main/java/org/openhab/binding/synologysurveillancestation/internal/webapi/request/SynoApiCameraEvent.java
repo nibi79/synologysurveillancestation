@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * Event Detection related WebAPI. e.g. Enumerate detection parameters or long polling for alarm status or save
  * detection parameters.
  *
- * @author Pavion - Contribution
+ * @author Pavion - Initial contribution
  *
  */
 @NonNullByDefault

@@ -81,6 +81,7 @@ Currently following **Channels** are supported on the **Camera**:
 - PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
      - Zoom _IN/OUT_ 
      - Move _UP/DOWN/LEFT/RIGHT/HOME_
+     - Continuous Move/Zoom with _START_\<COMMAND\>_ and _STOP_\<COMMAND\>_
      - Move to preset
      - Run patrol
 - Event channels:
@@ -151,6 +152,11 @@ Here `:1` is yet again the numeric ID of your surveillance camera from a previou
 
 ```
 Switch item=Surveillance_Zooming mappings=[IN="IN", OUT="OUT"]
+
+// Some cameras like Reolink do not support simple stepping
+Switch item=Surveillance_ContinuousZoomingIn mappings=[START_IN="Start ZoomIn", STOP_IN="Stop ZoomIn"]
+Switch item=Surveillance_ContinuousZoomingOut mappings=[START_OUT="Start ZoomOut", STOP_OUT="Stop ZoomOut"]
+
 Switch item=Surveillance_Moving mappings=[UP="UP", DOWN="DOWN", LEFT="LEFT", RIGHT="RIGHT"]
 
 Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000

@@ -75,10 +75,10 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
             case CHANNEL_ZOOM:
                 switch (command) {
                     case "IN":
-                        zoomIn(cameraId, null);
+                        zoomIn(cameraId, "");
                         break;
                     case "OUT":
-                        zoomOut(cameraId, null);
+                        zoomOut(cameraId, "");
                         break;
                     // START
                     case "START_IN":
@@ -99,19 +99,19 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
             case CHANNEL_MOVE:
                 switch (command) {
                     case "UP":
-                        moveUp(cameraId, null);
+                        moveUp(cameraId, "");
                         break;
                     case "DOWN":
-                        moveDown(cameraId, null);
+                        moveDown(cameraId, "");
                         break;
                     case "LEFT":
-                        moveLeft(cameraId, null);
+                        moveLeft(cameraId, "");
                         break;
                     case "RIGHT":
-                        moveRight(cameraId, null);
+                        moveRight(cameraId, "");
                         break;
                     case "HOME":
-                        moveHome(cameraId, null);
+                        moveHome(cameraId, "");
                         break;
                     // START
                     case "START_UP":

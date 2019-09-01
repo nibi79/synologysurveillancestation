@@ -97,7 +97,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     }
 
     @Override
-    public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
+    public void handleCommand(ChannelUID channelUID, Command command) {
         try {
             switch (channelUID.getId()) {
                 case CHANNEL_HOMEMODE:

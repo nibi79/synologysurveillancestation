@@ -21,6 +21,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
@@ -74,30 +75,74 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
             case CHANNEL_ZOOM:
                 switch (command) {
                     case "IN":
-                        zoomIn(cameraId);
+                        zoomIn(cameraId, null);
                         break;
                     case "OUT":
-                        zoomOut(cameraId);
+                        zoomOut(cameraId, null);
+                        break;
+                    // START
+                    case "START_IN":
+                        zoomIn(cameraId, "Start");
+                        break;
+                    case "START_OUT":
+                        zoomIn(cameraId, "Start");
+                        break;
+                    // STOP
+                    case "STOP_IN":
+                        zoomOut(cameraId, "Stop");
+                        break;
+                    case "STOP_OUT":
+                        zoomOut(cameraId, "Stop");
                         break;
                 }
                 break;
             case CHANNEL_MOVE:
                 switch (command) {
                     case "UP":
-                        moveUp(cameraId);
+                        moveUp(cameraId, null);
                         break;
                     case "DOWN":
-                        moveDown(cameraId);
+                        moveDown(cameraId, null);
                         break;
                     case "LEFT":
-                        moveLeft(cameraId);
+                        moveLeft(cameraId, null);
                         break;
                     case "RIGHT":
-                        moveRight(cameraId);
+                        moveRight(cameraId, null);
                         break;
                     case "HOME":
-                        moveHome(cameraId);
+                        moveHome(cameraId, null);
                         break;
+                    // START
+                    case "START_UP":
+                        moveUp(cameraId, "Start");
+                        break;
+                    case "START_DOWN":
+                        moveDown(cameraId, "Start");
+                        break;
+                    case "START_LEFT":
+                        moveLeft(cameraId, "Start");
+                        break;
+                    case "START_RIGHT":
+                        moveRight(cameraId, "Start");
+                        break;
+                    case "START_HOME":
+                        moveHome(cameraId, "Start");
+                    // STOP
+                    case "STOP_UP":
+                        moveUp(cameraId, "Stop");
+                        break;
+                    case "STOP_DOWN":
+                        moveDown(cameraId, "Stop");
+                        break;
+                    case "STOP_LEFT":
+                        moveLeft(cameraId, "Stop");
+                        break;
+                    case "STOP_RIGHT":
+                        moveRight(cameraId, "Stop");
+                        break;
+                    case "STOP_HOME":
+                        moveHome(cameraId, "Stop");
                 }
                 break;
             default:
@@ -110,16 +155,23 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      *
      * @param cameraId
      * @param control
+     * @param moveType
      * @return
      * @throws WebApiException
      */
-    private SimpleResponse callZoom(String cameraId, String control) throws WebApiException {
+    private SimpleResponse callZoom(String cameraId, String control, String moveType) throws WebApiException {
         Map<String, String> params = new HashMap<>();
 
         // API parameters
         params.put("cameraId", cameraId);
         params.put("control", control);
-        // params.put("moveType", "Start");
+        if(moveType != null && !moveType.isEmpty()){
+            Integer version = Integer.parseInt(API_CONFIG.getVersion());
+            if (version < 3) {
+                throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
+            }
+            params.put("moveType", moveType);
+        }
 
         return callApi(METHOD_ZOOM, params);
     }
@@ -130,17 +182,24 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @param cameraId
      * @param direction
      * @param speed
+     * @param moveType
      * @return
      * @throws WebApiException
      */
-    private SimpleResponse callMove(String cameraId, String direction, int speed) throws WebApiException {
+    private SimpleResponse callMove(String cameraId, String direction, int speed, String moveType) throws WebApiException {
         Map<String, String> params = new HashMap<>();
 
         // API Parameters
         params.put("cameraId", cameraId);
         params.put("direction", direction);
         params.put("speed", String.valueOf(speed));
-        // params.put("moveType", "Start");
+        if(moveType != null && !moveType.isEmpty()){
+            Integer version = Integer.parseInt(API_CONFIG.getVersion());
+            if (version < 3) {
+                throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
+            }
+            params.put("moveType", moveType);
+        }
 
         return callApi(METHOD_MOVE, params);
     }
@@ -152,8 +211,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse zoomOut(String cameraId) throws WebApiException {
-        return callZoom(cameraId, "out");
+    public SimpleResponse zoomOut(String cameraId, String moveType) throws WebApiException {
+        return callZoom(cameraId, "out", moveType);
     }
 
     /**
@@ -163,8 +222,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse zoomIn(String cameraId) throws WebApiException {
-        return callZoom(cameraId, "in");
+    public SimpleResponse zoomIn(String cameraId, String moveType) throws WebApiException {
+        return callZoom(cameraId, "in", moveType);
     }
 
     /**
@@ -174,8 +233,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveUp(String cameraId) throws WebApiException {
-        return callMove(cameraId, "up", 1);
+    public SimpleResponse moveUp(String cameraId, String moveType) throws WebApiException {
+        return callMove(cameraId, "up", 1, moveType);
     }
 
     /**
@@ -185,8 +244,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveDown(String cameraId) throws WebApiException {
-        return callMove(cameraId, "down", 1);
+    public SimpleResponse moveDown(String cameraId, String moveType) throws WebApiException {
+        return callMove(cameraId, "down", 1, moveType);
     }
 
     /**
@@ -196,8 +255,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveLeft(String cameraId) throws WebApiException {
-        return callMove(cameraId, "left", 1);
+    public SimpleResponse moveLeft(String cameraId, String moveType) throws WebApiException {
+        return callMove(cameraId, "left", 1, moveType);
     }
 
     /**
@@ -207,8 +266,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveRight(String cameraId) throws WebApiException {
-        return callMove(cameraId, "right", 1);
+    public SimpleResponse moveRight(String cameraId, String moveType) throws WebApiException {
+        return callMove(cameraId, "right", 1, moveType);
     }
 
     /**
@@ -218,8 +277,8 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    public SimpleResponse moveHome(String cameraId) throws WebApiException {
-        return callMove(cameraId, "home", 1);
+    public SimpleResponse moveHome(String cameraId, String moveType) throws WebApiException {
+        return callMove(cameraId, "home", 1, moveType);
     }
 
     /**

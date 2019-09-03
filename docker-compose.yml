@@ -1,0 +1,13 @@
+version: "2.2"
+
+services:
+  build-plugin:
+    image: plugin-sdk
+    build:
+      dockerfile: Dockerfile
+      context: .
+    volumes:
+      - .:${PWD}
+      - ${M2_HOME:-~/.m2}:/root/.m2
+    working_dir: ${PWD}
+    command: mvn clean install

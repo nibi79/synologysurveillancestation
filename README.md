@@ -73,6 +73,16 @@ The steps to setup the plugin in your IDE are the following
 
 4. Only import your binding in eclipse by going to `File -> Import... -> Existing Project into Worspace` and select the root folder of this project
 5. Add the dependency of your binding to the demo pom.xml (The dependency is what you would have put in the bom/openhab-addons/pom.xml
+
+```xml
+<dependency>
+    <groupId>org.openhab.addons.bundles</groupId>
+    <artifactId>org.openhab.binding.synologysurveillancestation</artifactId>
+    <version>${project.version}</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
 6. Open the bnd.runapp. In browse repos you should be able to search your binding.
 7. Drag your binding from the browse repos to the Run requirements.
 8. Click resolve button (below Run requirements)

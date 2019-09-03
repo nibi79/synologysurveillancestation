@@ -60,15 +60,25 @@ The steps to setup the plugin in your IDE are the following
 1. In the eclipse installer only select `openHAB Development` (And make sure to run JAVA 8) The rest will be taken care of by maven dependencies and you don't need those other projects to develop your binding.
    1. If you have Eclipse already installed got to `File -> Import... -> Oomph -> GitHub Projects -> openHAB`
 2. Wait till Eclipse finishes startup. No need to do any of: Clean, Build, perform ModelGen launch.
-3. In the `pom.xml` of the demo app. (Next to bnd.runapp) remove the dependency `org.openhab.addons.bom.openhab-addons` And only that dependency.
+3. In the `pom.xml` of the demo app. (Next to bnd.runapp) remove the dependency `org.openhab.addons.bom.openhab-addons` and add following dependency
+
+```xml
+<dependency>
+    <groupId>org.openhab.addons.bundles</groupId>
+    <artifactId>org.openhab.transform.map</artifactId>
+    <version>${project.version}</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
 4. Only import your binding in eclipse by going to `File -> Import... -> Existing Project into Worspace` and select the root folder of this project
 5. Add the dependency of your binding to the demo pom.xml (The dependency is what you would have put in the bom/openhab-addons/pom.xml
 6. Open the bnd.runapp. In browse repos you should be able to search your binding.
 7. Drag your binding from the browse repos to the Run requirements.
 8. Click resolve button (below Run requirements)
-9. Start the bnd.runapp via buttons above Run requirements.
+9.  Start the bnd.runapp via buttons above Run requirements.
 10. This should show logging in console in eclipse.
-11. You should be able to browse to http://localhost:8080/paperui/index.html
+11. You should be able to browse to http://localhost:8080/paperui/index.html (can take some time)
 
 ## Supported Things
 

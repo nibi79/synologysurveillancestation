@@ -8,8 +8,6 @@ This binding connects openHAB with your surveillance cameras running on Synology
 - [Table of contents](#table-of-contents)
   - [Disclaimer](#disclaimer)
   - [Installation and upgrade](#installation-and-upgrade)
-  - [Building the plugin](#building-the-plugin)
-    - [Using docker](#using-docker)
   - [Supported Things](#supported-things)
   - [Discovery](#discovery)
   - [Configuration](#configuration)
@@ -21,6 +19,8 @@ This binding connects openHAB with your surveillance cameras running on Synology
   - [Transformation](#transformation)
     - [.items](#items-1)
     - [transform/liveuri.js](#transformliveurijs)
+  - [Building the plugin](#building-the-plugin)
+    - [Using docker](#using-docker)
   - [Developing the plugin](#developing-the-plugin)
   - [Support](#support)
 ***
@@ -36,25 +36,6 @@ For an upgrade the existing file should be overwritten. On major or structural c
 
 **Note:**
 [v0.32-alpha](https://github.com/nibi79/synologysurveillancestation/releases/tag/v0.32-alpha) is the last release supporting openHAB prior to 2.4.0. If you want to use newer release please consider to upgrade your openHAB.
-
-## Building the plugin
-
-If you have Java 8 installed simply use the following command to build the plugin
-
-```bash
-mvn clean install
-```
-
-This will create a `target` folder that contains the plugin `jar` file that can be used in your OH2 setup.
-
-### Using docker
-
-The easiest way to build the plugin without setting up your system with all necessary java components is to use the provided `docker` environment.
-In order to build the plugin simply run the following commands. You will find the `jar` files within the same directories as if you would have build the plugin locally.
-
-```bash
-docker-compose run build-plugin
-```
 
 ## Supported Things
 
@@ -104,7 +85,7 @@ Currently following **Channels** are supported on the **Camera**:
      - Snapshot static live feed URI (rtsp) _STRING_
      - Snapshot static live feed URI (mjpeg over http) _STRING_
 - PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
-     - Zoom _IN/OUT_ 
+     - Zoom _IN/OUT_
      - Move _UP/DOWN/LEFT/RIGHT/HOME_
      - Continuous Move/Zoom with _START_\<COMMAND\>_ and _STOP_\<COMMAND\>_
      - Move to preset
@@ -188,9 +169,9 @@ Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
 Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 ```
 
-## Transformation 
+## Transformation
 
-Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentication by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details. 
+Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentication by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details.
 
 Example: SID-based stream URI (over http).
 
@@ -208,11 +189,30 @@ String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologys
 })(input)
 ```
 
-Please note, **[Javascript Transformation](https://www.openhab.org/addons/transformations/javascript/)** add-on must be installed for the transformation to work properly. 
+Please note, **[Javascript Transformation](https://www.openhab.org/addons/transformations/javascript/)** add-on must be installed for the transformation to work properly.
+
+## Building the plugin
+
+If you have Java 8 installed simply use the following command to build the plugin
+
+```bash
+mvn clean install
+```
+
+This will create a `target` folder that contains the plugin `jar` file that can be used in your OH2 setup.
+
+### Using docker
+
+The easiest way to build the plugin without setting up your system with all necessary java components is to use the provided `docker` environment.
+In order to build the plugin simply run the following commands. You will find the `jar` files within the same directories as if you would have build the plugin locally.
+
+```bash
+docker-compose run build-plugin
+```
 
 ## Developing the plugin
 
-The simplest way to engage in extending the plugin is to use `Eclipse` by following the OH2 developers guide. A good explanation can be found here 
+The simplest way to engage in extending the plugin is to use `Eclipse` by following the OH2 developers guide. A good explanation can be found here
 https://github.com/openhab/openhab2-addons
 
 The steps to setup the plugin in your IDE are the following
@@ -261,9 +261,9 @@ If you encounter critical issues with this binding, please consider to:
 
 In any case please provide some information about your problem:
 
-- openHAB and binding version 
+- openHAB and binding version
 - error description and steps to retrace if applicable
 - any related `[WARN]`/`[ERROR]` from openhab.log
 - whether it's the binding, bridge, camera or channel related issue
 
-For the sake of documentation please use English language. 
+For the sake of documentation please use English language.

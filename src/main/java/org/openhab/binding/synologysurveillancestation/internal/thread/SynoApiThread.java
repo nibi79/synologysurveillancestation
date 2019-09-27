@@ -78,9 +78,9 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
     /**
      * Main constructor
      *
-     * @param threadId    ID of this thread for logging purposes
+     * @param threadId ID of this thread for logging purposes
      * @param refreshRate Refresh rate of this thread in seconds
-     * @param handler     Camera or bridge handler
+     * @param handler Camera or bridge handler
      */
     public SynoApiThread(String name, T synoHandler, int refreshRate) {
         this.name = name;
@@ -131,7 +131,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
         if (getSynoHandler().getSynoWebApiHandler() == null) {
             logger.error("DeviceId: {}; Thread: {}; Handler not (yet) initialized", deviceId, name);
         } else if (isNeeded()) {
-            logger.debug("Thread: " + name + " tick");
+            logger.debug("Thread {} tick", name);
             boolean success = false;
             try {
                 success = refresh();

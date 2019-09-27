@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0" immediate="false" name="org.openhab.binding.synologysurveillancestation.internal.discovery.BridgeMdnsDiscoveryService">
-	<service servicefactory="false">
-		<provide interface="org.eclipse.smarthome.config.discovery.mdns.MDNSDiscoveryParticipant"/>
-	</service>
-	<implementation class="org.openhab.binding.synologysurveillancestation.internal.discovery.BridgeMdnsDiscoveryService"/>
+    <service servicefactory="false">
+        <provide interface="org.eclipse.smarthome.config.discovery.mdns.MDNSDiscoveryParticipant"/>
+    </service>
+    <implementation class="org.openhab.binding.synologysurveillancestation.internal.discovery.BridgeMdnsDiscoveryService"/>
 </scr:component>

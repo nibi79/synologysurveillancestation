@@ -1,187 +1,63 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.openhab.addons</groupId>
-    <artifactId>org.openhab.addons.reactor</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.openhab.binding</groupId>
+        <artifactId>pom</artifactId>
+        <version>2.5.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>org.openhab.binding.synologysurveillancestation</artifactId>
     <version>2.5.0-SNAPSHOT</version>
-    <relativePath></relativePath>
-  </parent>
 
-  <groupId>org.openhab.addons.bundles</groupId>
-  <artifactId>org.openhab.binding.synologysurveillancestation</artifactId>
-  <version>2.5.0-SNAPSHOT</version>
-  <!-- do not delete the version here as it is required by the release process -->
+    <name>SynologySurveillanceStation Binding</name>
+    <packaging>eclipse-plugin</packaging>
 
-  <name>openHAB Add-ons :: Bundles :: Synology Surveillance Station Binding</name>
-
-  <properties>
-    <report.fail.on.error>false</report.fail.on.error>
-  </properties>
-
-  <scm>
-    <connection>scm:git:${scm.gitBaseUrl}</connection>
-    <developerConnection>scm:git:${scm.gitBaseUrl}</developerConnection>
-    <url>https://github.com/nibi79/synologysurveillancestation.git</url>
-    <tag>HEAD</tag>
-  </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>bintray</id>
-      <url>https://api.bintray.com/maven/openhab/mvn/org.openhab.binding.synologysurveillancestation/;publish=1</url>
-    </repository>
-    <snapshotRepository>
-      <id>jfrog</id>
-      <url>https://openhab.jfrog.io/openhab/libs-snapshot-local</url>
-    </snapshotRepository>
-  </distributionManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.openhab.core.bom</groupId>
-      <artifactId>org.openhab.core.bom.compile</artifactId>
-      <type>pom</type>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openhab.core.bom</groupId>
-      <artifactId>org.openhab.core.bom.openhab-core</artifactId>
-      <type>pom</type>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.openhab.core.bom</groupId>
-      <artifactId>org.openhab.core.bom.test</artifactId>
-      <type>pom</type>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.openhab.tools.sat</groupId>
-          <artifactId>sat-plugin</artifactId>
-          <version>0.6.1</version>
-          <executions>
-            <execution>
-              <id>sat-all</id>
-              <configuration>
-                <checkstyleProperties>tools/static-code-analysis/checkstyle/ruleset.properties</checkstyleProperties>
-                <checkstyleFilter>tools/static-code-analysis/checkstyle/suppressions.xml</checkstyleFilter>
-              </configuration>
-            </execution>
-          </executions>
-          <configuration>
-            <checkstyleProperties>tools/static-code-analysis/checkstyle/ruleset.properties</checkstyleProperties>
-            <checkstyleFilter>tools/static-code-analysis/checkstyle/suppressions.xml</checkstyleFilter>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-            </archive>
-            <skipIfEmpty>true</skipIfEmpty>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.commonjava.maven.plugins</groupId>
-        <artifactId>directory-maven-plugin</artifactId>
-        <version>0.3.1</version>
-        <executions>
-          <execution>
-            <id>directories</id>
-            <phase>none</phase>
-            <goals>
-              <goal>directory-of</goal>
-            </goals>
-            <configuration>
-              <property>basedirRoot</property>
-              <project>
-                <groupId>org.openhab.addons</groupId>
-                <artifactId>org.openhab.addons.reactor</artifactId>
-              </project>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>biz.aQute.bnd</groupId>
-        <artifactId>bnd-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
-  <repositories>
-    <repository>
-      <id>jcenter</id>
-      <name>JCenter Repository</name>
-      <url>https://jcenter.bintray.com</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>openhab-artifactory-release</id>
-      <name>JFrog Artifactory Repository</name>
-      <url>https://openhab.jfrog.io/openhab/libs-release</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>openhab-snapshots-release</id>
-      <name>JFrog Artifactory Repository</name>
-      <url>https://openhab.jfrog.io/openhab/libs-snapshot-local</url>
-      <releases>
-        <enabled>false</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>openhab-artifactory-release</id>
-      <url>https://openhab.jfrog.io/openhab/libs-release</url>
-    </pluginRepository>
-  </pluginRepositories>
+    <profiles>
+      <profile>
+        <id>check</id>
+        <build>
+          <pluginManagement>
+            <plugins>
+              <plugin>
+                <groupId>org.openhab.tools.sat</groupId>
+                <artifactId>sat-plugin</artifactId>
+                <version>${sat.version}</version>
+                <executions>
+                  <execution>
+                    <phase>verify</phase>
+                    <goals>
+                      <goal>checkstyle</goal>
+                      <goal>pmd</goal>
+                      <goal>spotbugs</goal>
+                      <goal>report</goal>
+                    </goals>
+                  </execution>
+                </executions>
+              </plugin>
+            </plugins>
+          </pluginManagement>
+        </build>
+      </profile>
+      <profile>
+        <id>check-bundles</id>
+        <activation>
+          <file>
+            <exists>META-INF/MANIFEST.MF</exists>
+          </file>
+        </activation>
+        <build>
+          <plugins>
+            <plugin>
+                <groupId>org.openhab.tools.sat</groupId>
+                <artifactId>sat-plugin</artifactId>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+    </profiles>
 
 </project>

@@ -75,74 +75,74 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
             case CHANNEL_ZOOM:
                 switch (command) {
                     case "IN":
-                        zoomIn(cameraId, null);
+                        zoomIn(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     case "OUT":
-                        zoomOut(cameraId, null);
+                        zoomOut(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     // START
                     case "START_IN":
-                        zoomIn(cameraId, "Start");
+                        zoomIn(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_OUT":
-                        zoomIn(cameraId, "Start");
+                        zoomIn(cameraId, MOVE_COMMAND_START);
                         break;
                     // STOP
                     case "STOP_IN":
-                        zoomOut(cameraId, "Stop");
+                        zoomOut(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_OUT":
-                        zoomOut(cameraId, "Stop");
+                        zoomOut(cameraId, MOVE_COMMAND_STOP);
                         break;
                 }
                 break;
             case CHANNEL_MOVE:
                 switch (command) {
                     case "UP":
-                        moveUp(cameraId, null);
+                        moveUp(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     case "DOWN":
-                        moveDown(cameraId, null);
+                        moveDown(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     case "LEFT":
-                        moveLeft(cameraId, null);
+                        moveLeft(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     case "RIGHT":
-                        moveRight(cameraId, null);
+                        moveRight(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     case "HOME":
-                        moveHome(cameraId, null);
+                        moveHome(cameraId, MOVE_COMMAND_EMPTY);
                         break;
                     // START
                     case "START_UP":
-                        moveUp(cameraId, "Start");
+                        moveUp(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_DOWN":
-                        moveDown(cameraId, "Start");
+                        moveDown(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_LEFT":
-                        moveLeft(cameraId, "Start");
+                        moveLeft(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_RIGHT":
-                        moveRight(cameraId, "Start");
+                        moveRight(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_HOME":
-                        moveHome(cameraId, "Start");
-                    // STOP
+                        moveHome(cameraId, MOVE_COMMAND_START);
+                        // STOP
                     case "STOP_UP":
-                        moveUp(cameraId, "Stop");
+                        moveUp(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_DOWN":
-                        moveDown(cameraId, "Stop");
+                        moveDown(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_LEFT":
-                        moveLeft(cameraId, "Stop");
+                        moveLeft(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_RIGHT":
-                        moveRight(cameraId, "Stop");
+                        moveRight(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_HOME":
-                        moveHome(cameraId, "Stop");
+                        moveHome(cameraId, MOVE_COMMAND_STOP);
                 }
                 break;
             default:
@@ -165,7 +165,7 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
         // API parameters
         params.put("cameraId", cameraId);
         params.put("control", control);
-        if(moveType != null && !moveType.isEmpty()){
+        if (!moveType.equals(MOVE_COMMAND_EMPTY)) {
             Integer version = Integer.parseInt(API_CONFIG.getVersion());
             if (version < 3) {
                 throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);
@@ -186,14 +186,15 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
      * @return
      * @throws WebApiException
      */
-    private SimpleResponse callMove(String cameraId, String direction, int speed, String moveType) throws WebApiException {
+    private SimpleResponse callMove(String cameraId, String direction, int speed, String moveType)
+            throws WebApiException {
         Map<String, String> params = new HashMap<>();
 
         // API Parameters
         params.put("cameraId", cameraId);
         params.put("direction", direction);
         params.put("speed", String.valueOf(speed));
-        if(moveType != null && !moveType.isEmpty()){
+        if (!moveType.equals(MOVE_COMMAND_EMPTY)) {
             Integer version = Integer.parseInt(API_CONFIG.getVersion());
             if (version < 3) {
                 throw new WebApiException(WebApiAuthErrorCodes.API_VERSION_NOT_SUPPORTED);

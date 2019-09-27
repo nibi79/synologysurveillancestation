@@ -82,6 +82,11 @@ public class SynoBindingConstants {
     public static final Set<String> CHANNEL_PTZ = Collections.unmodifiableSet(
             Stream.of(CHANNEL_ZOOM, CHANNEL_MOVE, CHANNEL_MOVEPRESET, CHANNEL_RUNPATROL).collect(Collectors.toSet()));
 
+    // List of all move commands
+    public static final String MOVE_COMMAND_EMPTY = "";
+    public static final String MOVE_COMMAND_START = "Start";
+    public static final String MOVE_COMMAND_STOP = "Stop";
+
     // List of all event types (as in thing.xml)
     public static final String CHANNEL_EVENT_MOTION = "event#motion";
     public static final String CHANNEL_EVENT_ALARM = "event#alarm";

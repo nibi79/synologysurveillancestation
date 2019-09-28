@@ -92,10 +92,12 @@ public class SynoBindingConstants {
     public static final String CHANNEL_EVENT_ALARM = "event#alarm";
     public static final String CHANNEL_EVENT_MANUAL = "event#manual";
     public static final String CHANNEL_EVENT_EXTERNAL = "event#external";
+    public static final String CHANNEL_EVENT_CONTINUOUS = "event#continuous";
     public static final String CHANNEL_EVENT_ACTIONRULE = "event#actionrule";
     public static final Set<String> CHANNEL_EVENT = Collections
             .unmodifiableSet(Stream.of(CHANNEL_EVENT_MOTION, CHANNEL_EVENT_ALARM, CHANNEL_EVENT_MANUAL,
-                    CHANNEL_EVENT_EXTERNAL, CHANNEL_EVENT_ACTIONRULE).collect(Collectors.toSet()));
+                    CHANNEL_EVENT_CONTINUOUS, CHANNEL_EVENT_EXTERNAL, CHANNEL_EVENT_ACTIONRULE)
+                    .collect(Collectors.toSet()));
 
     // List of all MD parameters
     public static final String CHANNEL_MDPARAM_SOURCE = "md-param#md-param-source";

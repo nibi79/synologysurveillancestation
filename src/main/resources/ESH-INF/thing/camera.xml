@@ -120,6 +120,10 @@
 				<label>External event</label>
 				<description>Last external event</description>
 			</channel>
+			<channel id="continuous" typeId="event-advanced-channel" >
+				<label>Continuous event</label>
+				<description>Last continuous event</description>
+			</channel>
 			<channel id="actionrule" typeId="event-advanced-channel" >
 				<label>Action rule event</label>
 				<description>Last action rule event</description>

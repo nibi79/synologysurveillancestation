@@ -94,6 +94,7 @@ Currently following **Channels** are supported on the **Camera**:
      - Motion event _SWITCH_ (read-only)
      - Alarm event _SWITCH_ (read-only)
      - Manual event _SWITCH_ (read-only)
+     - Continuous recording event _SWITCH_ (read-only)
      - External event _SWITCH_ (read-only)
      - Action rule event _SWITCH_ (read-only)
 - Motion detection channels (if available):
@@ -136,6 +137,7 @@ Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestati
 Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveillancestation:camera:diskstation:1:event#motion"}
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
+Switch Surveillance_Event_Continuous "Camera continuous recording event" {channel="synologysurveillancestation:camera:diskstation:1:event#continuous"}
 Switch Surveillance_Event_External "Camera external event" {channel="synologysurveillancestation:camera:diskstation:1:event#external"}
 Switch Surveillance_Event_ActionRule "Camera action rule event" {channel="synologysurveillancestation:camera:diskstation:1:event#actionrule"}
 

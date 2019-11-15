@@ -73,6 +73,8 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     private boolean ptz = false;
     private final Map<String, SynoApiThread<SynoCameraHandler>> threads = new HashMap<>();
     private @Nullable SynoWebApiHandler apiHandler;
+    private List<StateOption> presets = new ArrayList<>();
+    private List<StateOption> patrols = new ArrayList<>();
 
     private @Nullable SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 
@@ -80,7 +82,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * Camera handler main constructor
      *
      * @param thing Thing to handle
-     * @param ptz   PTZ support?
+     * @param ptz PTZ support?
      */
     public SynoCameraHandler(Thing thing, SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
         super(thing);
@@ -159,10 +161,16 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         apiHandler.getApiPTZ().execute(cameraId, channelUID.getId(), command.toString());
                         break;
                     case CHANNEL_MOVEPRESET:
-                        apiHandler.getApiPTZ().goPreset(cameraId, command.toString());
+                        String preset = checkOption(presets, command.toString());
+                        if (preset != "") {
+                            apiHandler.getApiPTZ().goPreset(cameraId, preset);
+                        }
                         break;
                     case CHANNEL_RUNPATROL:
-                        apiHandler.getApiPTZ().runPatrol(cameraId, command.toString());
+                        String patrol = checkOption(presets, command.toString());
+                        if (patrol != "") {
+                            apiHandler.getApiPTZ().runPatrol(cameraId, patrol);
+                        }
                         break;
                     case CHANNEL_MDPARAM_SOURCE:
                         apiHandler.getApiCameraEvent().setSource(cameraId, command.toString());
@@ -387,17 +395,17 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         SimpleResponse listPresetResponse = apiHandler.getApiPTZ().listPresets(cameraId);
 
         JsonObject data = listPresetResponse.getData();
-        List<StateOption> options = new ArrayList<>();
+        presets = new ArrayList<>();
         if (data != null) {
-            JsonArray presets = data.getAsJsonArray("presets");
-            if (presets != null) {
-                for (JsonElement preset : presets) {
+            JsonArray jsondata = data.getAsJsonArray("presets");
+            if (jsondata != null) {
+                for (JsonElement preset : jsondata) {
                     JsonObject op = preset.getAsJsonObject();
-                    options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                    presets.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
                 }
             }
         }
-        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), options);
+        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), presets);
     }
 
     /**
@@ -410,17 +418,36 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         SimpleResponse listPatrolResponse = apiHandler.getApiPTZ().listPatrol(cameraId);
 
         JsonObject data = listPatrolResponse.getData();
-        List<StateOption> options = new ArrayList<>();
+        patrols = new ArrayList<>();
         if (data != null) {
-            JsonArray patrols = data.getAsJsonArray("patrols");
-            if (patrols != null) {
-                for (JsonElement patrol : patrols) {
+            JsonArray jsondata = data.getAsJsonArray("patrols");
+            if (jsondata != null) {
+                for (JsonElement patrol : jsondata) {
                     JsonObject op = patrol.getAsJsonObject();
-                    options.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                    patrols.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
                 }
             }
         }
-        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), options);
+        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), patrols);
+    }
+
+    /**
+     * Return the corresponding ID for an option (preset or patrol)
+     * 
+     * @param option List with options
+     * @param key Key to search (both value and id are possible)
+     * @return id if found or empty otherwise
+     */
+    public String checkOption(List<StateOption> option, String key) {
+        for (StateOption so : option) {
+            String label = so.getLabel();
+            if (label != null) {
+                if (label.trim().equalsIgnoreCase(key.trim()) || so.getValue().trim().equalsIgnoreCase(key.trim())) {
+                    return so.getValue();
+                }
+            }
+        }
+        return "";
     }
 
     /**

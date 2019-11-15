@@ -121,6 +121,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     case CHANNEL_EVENT_MOTION:
                     case CHANNEL_EVENT_ALARM:
                     case CHANNEL_EVENT_MANUAL:
+                    case CHANNEL_EVENT_CONTINUOUS:
                     case CHANNEL_EVENT_EXTERNAL:
                     case CHANNEL_EVENT_ACTIONRULE:
                         updateState(channelUID, OnOffType.OFF);

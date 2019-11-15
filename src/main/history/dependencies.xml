@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:features xmlns:ns2="http://karaf.apache.org/xmlns/features/v1.6.0" name="org.openhab.binding.synologysurveillancestation">
+    <ns2:feature version="0.0.0"/>
+</ns2:features>

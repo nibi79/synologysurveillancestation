@@ -5,59 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.openhab.binding</groupId>
-        <artifactId>pom</artifactId>
+        <groupId>org.openhab.addons.bundles</groupId>
+        <artifactId>org.openhab.addons.reactor.bundles</artifactId>
         <version>2.5.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.openhab.binding.synologysurveillancestation</artifactId>
-    <version>2.5.0-SNAPSHOT</version>
 
-    <name>SynologySurveillanceStation Binding</name>
-    <packaging>eclipse-plugin</packaging>
-
-    <profiles>
-      <profile>
-        <id>check</id>
-        <build>
-          <pluginManagement>
-            <plugins>
-              <plugin>
-                <groupId>org.openhab.tools.sat</groupId>
-                <artifactId>sat-plugin</artifactId>
-                <version>${sat.version}</version>
-                <executions>
-                  <execution>
-                    <phase>verify</phase>
-                    <goals>
-                      <goal>checkstyle</goal>
-                      <goal>pmd</goal>
-                      <goal>spotbugs</goal>
-                      <goal>report</goal>
-                    </goals>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </pluginManagement>
-        </build>
-      </profile>
-      <profile>
-        <id>check-bundles</id>
-        <activation>
-          <file>
-            <exists>META-INF/MANIFEST.MF</exists>
-          </file>
-        </activation>
-        <build>
-          <plugins>
-            <plugin>
-                <groupId>org.openhab.tools.sat</groupId>
-                <artifactId>sat-plugin</artifactId>
-            </plugin>
-          </plugins>
-        </build>
-      </profile>
-    </profiles>
+    <name>openHAB Add-ons :: Bundles :: Synology Surveillance Station Binding</name>
 
 </project>

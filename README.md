@@ -4,19 +4,25 @@ This binding connects openHAB with your surveillance cameras running on Synology
 
 # Table of contents
 
-1. [Disclaimer](https://github.com/nibi79/synologysurveillancestation/tree/master#disclaimer)
-2. [Installation and upgrade](https://github.com/nibi79/synologysurveillancestation/tree/master#installation-and-upgrade)
-3. [Supported Things](https://github.com/nibi79/synologysurveillancestation/tree/master#supported-things)
-4. [Discovery](https://github.com/nibi79/synologysurveillancestation/tree/master#discovery)
-5. [Configuration](https://github.com/nibi79/synologysurveillancestation/tree/master#configuration)
-6. [Channels](https://github.com/nibi79/synologysurveillancestation/tree/master#channels)
-7. [File based configuration](https://github.com/nibi79/synologysurveillancestation/tree/master#file-based-configuration)
-     1. [things](https://github.com/nibi79/synologysurveillancestation/tree/master#things)
-     2. [items](https://github.com/nibi79/synologysurveillancestation/tree/master#items)
-     3. [sitemap](https://github.com/nibi79/synologysurveillancestation/tree/master#sitemap)
-8. [Transformation](https://github.com/nibi79/synologysurveillancestation/tree/master#transformation)
-9. [Support](https://github.com/nibi79/synologysurveillancestation/tree/master#support)
-
+- [Synology Surveillance Station Binding](#synology-surveillance-station-binding)
+- [Table of contents](#table-of-contents)
+  - [Disclaimer](#disclaimer)
+  - [Installation and upgrade](#installation-and-upgrade)
+  - [Supported Things](#supported-things)
+  - [Discovery](#discovery)
+  - [Configuration](#configuration)
+  - [Channels](#channels)
+  - [File based configuration](#file-based-configuration)
+    - [.things](#things)
+    - [.items](#items)
+    - [.sitemap](#sitemap)
+  - [Transformation](#transformation)
+    - [.items](#items-1)
+    - [transform/liveuri.js](#transformliveurijs)
+  - [Building the plugin](#building-the-plugin)
+    - [Using docker](#using-docker)
+  - [Developing the plugin](#developing-the-plugin)
+  - [Support](#support)
 ***
 
 ## Disclaimer
@@ -79,14 +85,16 @@ Currently following **Channels** are supported on the **Camera**:
      - Snapshot static live feed URI (rtsp) _STRING_
      - Snapshot static live feed URI (mjpeg over http) _STRING_
 - PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
-     - Zoom _IN/OUT_ 
+     - Zoom _IN/OUT_
      - Move _UP/DOWN/LEFT/RIGHT/HOME_
+     - Continuous Move/Zoom with _START_\<COMMAND\>_ and _STOP_\<COMMAND\>_
      - Move to preset
      - Run patrol
 - Event channels:
      - Motion event _SWITCH_ (read-only)
      - Alarm event _SWITCH_ (read-only)
      - Manual event _SWITCH_ (read-only)
+     - Continuous recording event _SWITCH_ (read-only)
      - External event _SWITCH_ (read-only)
      - Action rule event _SWITCH_ (read-only)
 - Motion detection channels (if available):
@@ -129,6 +137,7 @@ Switch Surveillance_Enabled "Camera enabled" {channel="synologysurveillancestati
 Switch Surveillance_Event_Motion "Camera motion event" {channel="synologysurveillancestation:camera:diskstation:1:event#motion"}
 Switch Surveillance_Event_Alarm "Camera alarm event" {channel="synologysurveillancestation:camera:diskstation:1:event#alarm"}
 Switch Surveillance_Event_Manual "Camera manual event" {channel="synologysurveillancestation:camera:diskstation:1:event#manual"}
+Switch Surveillance_Event_Continuous "Camera continuous recording event" {channel="synologysurveillancestation:camera:diskstation:1:event#continuous"}
 Switch Surveillance_Event_External "Camera external event" {channel="synologysurveillancestation:camera:diskstation:1:event#external"}
 Switch Surveillance_Event_ActionRule "Camera action rule event" {channel="synologysurveillancestation:camera:diskstation:1:event#actionrule"}
 
@@ -151,15 +160,20 @@ Here `:1` is yet again the numeric ID of your surveillance camera from a previou
 
 ```
 Switch item=Surveillance_Zooming mappings=[IN="IN", OUT="OUT"]
+
+// Some cameras like Reolink do not support simple stepping
+Switch item=Surveillance_ContinuousZoomingIn mappings=[START_IN="Start ZoomIn", STOP_IN="Stop ZoomIn"]
+Switch item=Surveillance_ContinuousZoomingOut mappings=[START_OUT="Start ZoomOut", STOP_OUT="Stop ZoomOut"]
+
 Switch item=Surveillance_Moving mappings=[UP="UP", DOWN="DOWN", LEFT="LEFT", RIGHT="RIGHT"]
 
 Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
 Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"
 ```
 
-## Transformation 
+## Transformation
 
-Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentication by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details. 
+Existing URIs can also be transformed using JS transformation to build similar URIs. Most requests can be extended or constructed manually using SID (session ID) for authentication by adding `&_sid=your-current-SID` to the query string. Please refer to [Synology Surveillance Station API documentation](https://global.download.synology.com/download/Document/DeveloperGuide/Surveillance_Station_Web_API_v2.8.pdf) for more details.
 
 Example: SID-based stream URI (over http).
 
@@ -177,7 +191,67 @@ String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologys
 })(input)
 ```
 
-Please note, **[Javascript Transformation](https://www.openhab.org/addons/transformations/javascript/)** add-on must be installed for the transformation to work properly. 
+Please note, **[Javascript Transformation](https://www.openhab.org/addons/transformations/javascript/)** add-on must be installed for the transformation to work properly.
+
+## Building the plugin
+
+If you have Java 8 installed simply use the following command to build the plugin
+
+```bash
+mvn clean install
+```
+
+This will create a `target` folder that contains the plugin `jar` file that can be used in your OH2 setup.
+
+### Using docker
+
+The easiest way to build the plugin without setting up your system with all necessary java components is to use the provided `docker` environment.
+In order to build the plugin simply run the following commands. You will find the `jar` files within the same directories as if you would have build the plugin locally.
+
+```bash
+docker-compose run build-plugin
+```
+
+## Developing the plugin
+
+The simplest way to engage in extending the plugin is to use `Eclipse` by following the OH2 developers guide. A good explanation can be found here
+https://github.com/openhab/openhab2-addons
+
+The steps to setup the plugin in your IDE are the following
+
+1. In the eclipse installer only select `openHAB Development` (And make sure to run JAVA 8) The rest will be taken care of by maven dependencies and you don't need those other projects to develop your binding.
+   1. If you have Eclipse already installed got to `File -> Import... -> Oomph -> GitHub Projects -> openHAB`
+2. Wait till Eclipse finishes startup. No need to do any of: Clean, Build, perform ModelGen launch.
+3. In the `pom.xml` of the demo app. (Next to bnd.runapp) remove the dependency `org.openhab.addons.bom.openhab-addons` and add following dependency
+
+```xml
+<dependency>
+    <groupId>org.openhab.addons.bundles</groupId>
+    <artifactId>org.openhab.transform.map</artifactId>
+    <version>${project.version}</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
+4. Only import your binding in eclipse by going to `File -> Import... -> Existing Project into Worspace` and select the root folder of this project
+5. Add the dependency of your binding to the demo pom.xml (The dependency is what you would have put in the bom/openhab-addons/pom.xml
+
+```xml
+<dependency>
+    <groupId>org.openhab.addons.bundles</groupId>
+    <artifactId>org.openhab.binding.synologysurveillancestation</artifactId>
+    <version>${project.version}</version>
+    <scope>runtime</scope>
+</dependency>
+```
+
+6. Open the bnd.runapp. In browse repos you should be able to search your binding.
+7. Drag your binding from the browse repos to the Run requirements.
+8. Click resolve button (below Run requirements)
+9.  Start the bnd.runapp via buttons above Run requirements.
+10. This should show logging in console in eclipse.
+11. You should be able to browse to http://localhost:8080/paperui/index.html (can take some time)
+
 
 ## Support
 
@@ -189,9 +263,9 @@ If you encounter critical issues with this binding, please consider to:
 
 In any case please provide some information about your problem:
 
-- openHAB and binding version 
+- openHAB and binding version
 - error description and steps to retrace if applicable
 - any related `[WARN]`/`[ERROR]` from openhab.log
 - whether it's the binding, bridge, camera or channel related issue
 
-For the sake of documentation please use English language. 
+For the sake of documentation please use English language.

@@ -46,6 +46,7 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
         events.put(CHANNEL_EVENT_MOTION, new SynoEvent(SynoEvent.EVENT_REASON_MOTION));
         events.put(CHANNEL_EVENT_ALARM, new SynoEvent(SynoEvent.EVENT_REASON_ALARM));
         events.put(CHANNEL_EVENT_MANUAL, new SynoEvent(SynoEvent.EVENT_REASON_MANUAL));
+        events.put(CHANNEL_EVENT_CONTINUOUS, new SynoEvent(SynoEvent.EVENT_REASON_CONTINUOUS));
         events.put(CHANNEL_EVENT_EXTERNAL, new SynoEvent(SynoEvent.EVENT_REASON_EXTERNAL));
         events.put(CHANNEL_EVENT_ACTIONRULE, new SynoEvent(SynoEvent.EVENT_REASON_ACTIONRULE));
     }
@@ -53,8 +54,8 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     @Override
     public boolean isNeeded() {
         return (getSynoHandler().isLinked(CHANNEL_EVENT_MOTION) || getSynoHandler().isLinked(CHANNEL_EVENT_ALARM)
-                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL) || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL)
-                || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
+                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL) || getSynoHandler().isLinked(CHANNEL_EVENT_CONTINUOUS) 
+                || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL) || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
     }
 
     @Override

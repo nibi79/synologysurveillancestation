@@ -167,7 +167,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         }
                         break;
                     case CHANNEL_RUNPATROL:
-                        String patrol = checkOption(presets, command.toString());
+                        String patrol = checkOption(patrols, command.toString());
                         if (patrol != "") {
                             apiHandler.getApiPTZ().runPatrol(cameraId, patrol);
                         }
@@ -433,7 +433,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     /**
      * Return the corresponding ID for an option (preset or patrol)
-     * 
+     *
      * @param option List with options
      * @param key Key to search (both value and id are possible)
      * @return id if found or empty otherwise

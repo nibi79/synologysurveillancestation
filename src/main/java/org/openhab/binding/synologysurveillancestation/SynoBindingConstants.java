@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.openhab.core.thing.ThingTypeUID;
 
 /**
  * The {@link SynoBindingConstants} class defines common constants, which are
@@ -94,10 +94,9 @@ public class SynoBindingConstants {
     public static final String CHANNEL_EVENT_EXTERNAL = "event#external";
     public static final String CHANNEL_EVENT_CONTINUOUS = "event#continuous";
     public static final String CHANNEL_EVENT_ACTIONRULE = "event#actionrule";
-    public static final Set<String> CHANNEL_EVENT = Collections
-            .unmodifiableSet(Stream.of(CHANNEL_EVENT_MOTION, CHANNEL_EVENT_ALARM, CHANNEL_EVENT_MANUAL,
-                    CHANNEL_EVENT_CONTINUOUS, CHANNEL_EVENT_EXTERNAL, CHANNEL_EVENT_ACTIONRULE)
-                    .collect(Collectors.toSet()));
+    public static final Set<String> CHANNEL_EVENT = Collections.unmodifiableSet(
+            Stream.of(CHANNEL_EVENT_MOTION, CHANNEL_EVENT_ALARM, CHANNEL_EVENT_MANUAL, CHANNEL_EVENT_CONTINUOUS,
+                    CHANNEL_EVENT_EXTERNAL, CHANNEL_EVENT_ACTIONRULE).collect(Collectors.toSet()));
 
     // List of all MD parameters
     public static final String CHANNEL_MDPARAM_SOURCE = "md-param#md-param-source";

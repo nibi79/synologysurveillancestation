@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Pavion - Initial contribution
  */
-@Component(service = MDNSDiscoveryParticipant.class, immediate = false)
+@Component(service = MDNSDiscoveryParticipant.class, immediate = false, configurationPid = "binding.synologysurveillancestation")
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
 
     private final Logger logger = LoggerFactory.getLogger(BridgeMdnsDiscoveryService.class);

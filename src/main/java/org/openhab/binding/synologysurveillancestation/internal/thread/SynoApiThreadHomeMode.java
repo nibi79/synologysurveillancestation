@@ -46,7 +46,7 @@ public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
         HomeModeResponse response = bridgeHandler.getSynoWebApiHandler().getApiHomeMode().getHomeModeResponse();
         if (response.isSuccess()) {
             if (getSynoHandler().isLinked(CHANNEL_HOMEMODE)) {
-                Channel channel = getSynoHandler().getThing().getChannel(CHANNEL_HOMEMODE);
+                Channel channel = bridgeHandler.getThing().getChannel(CHANNEL_HOMEMODE);
                 getSynoHandler().updateState(channel.getUID(), response.isHomeMode() ? OnOffType.ON : OnOffType.OFF);
             }
             return true;

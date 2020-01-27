@@ -36,8 +36,7 @@ import org.osgi.service.component.annotations.Deactivate;
  * @author Pavion - Contribution
  */
 @NonNullByDefault
-@Component(service = { DynamicStateDescriptionProvider.class,
-        SynoDynamicStateDescriptionProvider.class }, immediate = true)
+@Component(service = { DynamicStateDescriptionProvider.class, SynoDynamicStateDescriptionProvider.class })
 public class SynoDynamicStateDescriptionProvider implements DynamicStateDescriptionProvider {
 
     private final Map<ChannelUID, List<StateOption>> channelOptionsMap = new ConcurrentHashMap<>();

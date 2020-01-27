@@ -94,10 +94,10 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         int refreshRateCameraEvent = 0;
 
         try {
-            refreshRateSnapshot = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
-            refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
+            refreshRateSnapshot = Integer.parseInt(getThing().getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
+            refreshRateEvents = Integer.parseInt(getThing().getConfiguration().get(REFRESH_RATE_EVENTS).toString());
             refreshRateCameraEvent = Integer
-                    .parseInt(thing.getConfiguration().get(REFRESH_RATE_CAMERAEVENT).toString());
+                    .parseInt(getThing().getConfiguration().get(REFRESH_RATE_CAMERAEVENT).toString());
         } catch (Exception ex) {
             logger.error("Error parsing camera Thing configuration");
         }
@@ -254,7 +254,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                     if (toExclude.size() > 0) {
                         ThingBuilder thingBuilder = editThing();
                         for (String channel : toExclude) {
-                            thingBuilder.withoutChannel(new ChannelUID(thing.getUID(), channel));
+                            thingBuilder.withoutChannel(new ChannelUID(getThing().getUID(), channel));
                         }
                         updateThing(thingBuilder.build());
                     }
@@ -285,7 +285,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     public void refreshStatic() {
         for (String channelID : STATIC_CHANNELS) {
             if (isLinked(channelID)) {
-                ChannelUID channelUID = new ChannelUID(thing.getUID(), channelID);
+                ChannelUID channelUID = new ChannelUID(getThing().getUID(), channelID);
                 handleCommand(channelUID, RefreshType.REFRESH);
             }
         }
@@ -309,7 +309,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         int refreshRateSnapshot = Integer.parseInt(configurationParameters.get(REFRESH_RATE_SNAPSHOT).toString());
         int refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
         int refreshRateCameraEvent = Integer
-                .parseInt(thing.getConfiguration().get(REFRESH_RATE_CAMERAEVENT).toString());
+                .parseInt(getThing().getConfiguration().get(REFRESH_RATE_CAMERAEVENT).toString());
         threads.get(SynoApiThread.THREAD_SNAPSHOT).setRefreshRate(refreshRateSnapshot);
         threads.get(SynoApiThread.THREAD_EVENT).setRefreshRate(refreshRateEvents);
         threads.get(SynoApiThread.THREAD_CAMERA).setRefreshRate(refreshRateEvents);

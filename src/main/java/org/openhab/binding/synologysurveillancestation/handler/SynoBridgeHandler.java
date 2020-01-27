@@ -77,7 +77,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     public SynoBridgeHandler(Bridge bridge, HttpClient httpClient) {
         super(bridge);
         try {
-            this.refreshRateEvents = Integer.parseInt(thing.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
+            this.refreshRateEvents = Integer.parseInt(bridge.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
         } catch (Exception ex) {
             logger.error("Error parsing Bridge configuration");
         }
@@ -151,7 +151,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 throw e;
             }
             if (ret) {
-                handleCommand(new ChannelUID(thing.getUID(), CHANNEL_SID), RefreshType.REFRESH);
+                handleCommand(new ChannelUID(getThing().getUID(), CHANNEL_SID), RefreshType.REFRESH);
             }
             return ret;
         } else {

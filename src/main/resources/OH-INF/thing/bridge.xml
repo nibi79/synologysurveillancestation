@@ -16,6 +16,8 @@
 		<properties>
 			<property name="vendor">Synology</property>
 		</properties>
+		
+		<representation-property>serial</representation-property>
 
 		<config-description>
 			<parameter name="protocol" type="text">

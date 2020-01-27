@@ -24,6 +24,7 @@ import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.CameraDiscoveryService;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider;
+import org.openhab.core.config.core.Configuration;
 import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.io.net.http.HttpClientFactory;
 import org.openhab.core.thing.Bridge;
@@ -35,7 +36,9 @@ import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.ThingHandlerFactory;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
-@Component(service = ThingHandlerFactory.class, configurationPid = "binding.binding.synologysurveillancestation")
+@Component(service = ThingHandlerFactory.class, configurationPid = "binding.synologysurveillancestation")
 public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
@@ -66,11 +69,13 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     }
 
     @Override
+    @Activate
     protected void activate(ComponentContext componentContext) {
         super.activate(componentContext);
     }
 
     @Override
+    @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         super.deactivate(componentContext);
     }
@@ -78,6 +83,21 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
         return SUPPORTED_THING_TYPES.contains(thingTypeUID);
+    }
+
+    @Override
+    public @Nullable Thing createThing(ThingTypeUID thingTypeUID, Configuration configuration,
+            @Nullable ThingUID thingUID, @Nullable ThingUID bridgeUID) {
+        if (SUPPORTED_BRIDGE_TYPES.contains(thingTypeUID)) {
+            return super.createThing(thingTypeUID, configuration, thingUID, null);
+        } else if (SUPPORTED_THING_TYPES.contains(thingTypeUID)) {
+            ThingUID myUID = thingUID;
+            if (myUID == null) {
+                myUID = new ThingUID(thingTypeUID, "camera");
+            }
+            return super.createThing(thingTypeUID, configuration, myUID, bridgeUID);
+        }
+        throw new IllegalArgumentException("The thing type " + thingTypeUID + " is not supported by this binding.");
     }
 
     @Override

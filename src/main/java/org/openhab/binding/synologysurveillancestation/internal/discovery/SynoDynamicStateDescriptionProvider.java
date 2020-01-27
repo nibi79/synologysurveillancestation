@@ -24,6 +24,7 @@ import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.type.DynamicStateDescriptionProvider;
 import org.openhab.core.types.StateDescription;
+import org.openhab.core.types.StateDescriptionFragmentBuilder;
 import org.openhab.core.types.StateOption;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -50,12 +51,9 @@ public class SynoDynamicStateDescriptionProvider implements DynamicStateDescript
             @Nullable Locale locale) {
         List<StateOption> options = channelOptionsMap.get(channel.getUID());
 
-        if (original != null) {
-            return new StateDescription(original.getMinimum(), original.getMaximum(), original.getStep(),
-                    original.getPattern(), original.isReadOnly(), options);
-        }
-
-        return new StateDescription(null, null, null, null, false, options);
+        StateDescriptionFragmentBuilder builder = (original == null) ? StateDescriptionFragmentBuilder.create()
+                : StateDescriptionFragmentBuilder.create(original);
+        return builder.withOptions(options).build().toStateDescription();
     }
 
     @Deactivate

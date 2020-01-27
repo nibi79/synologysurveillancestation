@@ -28,6 +28,7 @@
 			</parameter>
 			<parameter name="host" type="text">
 				<label>IP-Address:</label>
+				<context>network-address</context>
 				<description>IP of Surveillance Station</description>
 				<required>true</required>
 			</parameter>

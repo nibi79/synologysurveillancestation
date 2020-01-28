@@ -166,6 +166,9 @@ Switch item=Surveillance_ContinuousZoomingIn mappings=[START_IN="Start ZoomIn", 
 Switch item=Surveillance_ContinuousZoomingOut mappings=[START_OUT="Start ZoomOut", STOP_OUT="Stop ZoomOut"]
 
 Switch item=Surveillance_Moving mappings=[UP="UP", DOWN="DOWN", LEFT="LEFT", RIGHT="RIGHT"]
+ 
+Selection item=Surveillance_Presets label="Surveillance_Presets Selection" 
+Switch item=Surveillance_Presets label="Surveillance_Presets Mapping" mappings=[preset1="Preset 1",preset2="Preset 2"]
 
 Image item=Surveillance_Snapshot_Uri_Static url="[%s]" refresh=5000
 Video item=Surveillance_Snapshot_Live_Uri_Mjpeg_Http url="[%s]" encoding="mjpeg"

@@ -37,5 +37,4 @@ public class AuthResponse extends SimpleResponse {
     public String getSid() {
         return getData().get("sid").getAsString();
     }
-
 }

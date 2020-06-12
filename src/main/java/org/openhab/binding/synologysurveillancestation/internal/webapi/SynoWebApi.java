@@ -44,5 +44,4 @@ public interface SynoWebApi {
      * @return
      */
     public boolean isConnected();
-
 }

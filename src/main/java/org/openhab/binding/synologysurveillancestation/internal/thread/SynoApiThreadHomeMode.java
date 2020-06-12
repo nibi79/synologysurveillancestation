@@ -56,5 +56,4 @@ public class SynoApiThreadHomeMode extends SynoApiThread<SynoBridgeHandler> {
             return false;
         }
     }
-
 }

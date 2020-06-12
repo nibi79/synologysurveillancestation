@@ -97,7 +97,5 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
         }
 
         return ret;
-
     }
-
 }

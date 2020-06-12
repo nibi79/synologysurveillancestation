@@ -108,5 +108,4 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     public Map<String, SynoEvent> getEvents() {
         return events;
     }
-
 }

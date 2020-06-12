@@ -2,7 +2,8 @@
 <additionalHeaders>
 	<xml-header-style>
 		<firstLine><![CDATA[<!--EOL]]></firstLine>
-		<beforeEachLine>&#x9;</beforeEachLine>
+		<beforeEachLine>&#x9;
+		</beforeEachLine>
 		<endLine><![CDATA[EOL-->]]></endLine>
 		<skipLine><![CDATA[^<\?xml.*>$]]></skipLine>
 		<firstLineDetectionPattern><![CDATA[(\s|\t)*<!--.*$]]></firstLineDetectionPattern>

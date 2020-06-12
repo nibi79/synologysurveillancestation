@@ -59,5 +59,4 @@ public class SynoApiLiveUri extends SynoApiRequest<LiveUriResponse> {
 
         return callApi(METHOD_LIVEVIEWPATH, params);
     }
-
 }

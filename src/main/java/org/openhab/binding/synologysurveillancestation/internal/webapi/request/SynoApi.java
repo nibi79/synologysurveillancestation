@@ -64,5 +64,4 @@ public interface SynoApi {
     public static final int CONNECTION_TIMEOUT = 5000;
 
     public SynoApiConfig getApiConfig();
-
 }

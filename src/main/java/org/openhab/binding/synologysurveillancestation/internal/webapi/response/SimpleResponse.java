@@ -28,5 +28,4 @@ public class SimpleResponse extends SynoApiResponse {
     public SimpleResponse(String jsonResponse) {
         super(jsonResponse);
     }
-
 }

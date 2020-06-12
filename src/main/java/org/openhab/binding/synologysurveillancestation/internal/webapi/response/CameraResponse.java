@@ -170,5 +170,4 @@ public class CameraResponse extends SimpleResponse {
     private String isBitSetAsString(int hexValue, int bit) {
         return Boolean.toString(isBitSet(String.valueOf(hexValue), bit));
     }
-
 }

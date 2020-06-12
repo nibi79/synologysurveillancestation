@@ -60,5 +60,4 @@ public class SynoApiExternalEvent extends SynoApiRequest<CameraResponse> {
         params.put("eventId", String.valueOf(event));
         return callApi(METHOD_TRIGGER, params).isSuccess();
     }
-
 }

@@ -97,5 +97,4 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
         return callApi(METHOD_LOGOUT, params);
     }
-
 }

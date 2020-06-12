@@ -57,5 +57,4 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
             return true;
         }
     }
-
 }

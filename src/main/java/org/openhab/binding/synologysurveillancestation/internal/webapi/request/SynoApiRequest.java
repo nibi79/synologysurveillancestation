@@ -237,7 +237,5 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
         } catch (UnsupportedEncodingException ee) {
             throw new WebApiException(ee);
         }
-
     }
-
 }

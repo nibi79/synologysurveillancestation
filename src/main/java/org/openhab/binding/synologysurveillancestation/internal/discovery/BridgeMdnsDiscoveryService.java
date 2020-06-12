@@ -89,5 +89,4 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
         }
         return null;
     }
-
 }

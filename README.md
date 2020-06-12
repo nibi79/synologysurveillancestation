@@ -110,7 +110,7 @@ Currently following **Channels** are supported on the **Camera**:
 ### .things
 
 ```
-Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
+Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password", refresh-rate-events=3 ] {
 Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, refresh-rate-md-param=120, snapshot-stream-id=1 ]
 }
 ```

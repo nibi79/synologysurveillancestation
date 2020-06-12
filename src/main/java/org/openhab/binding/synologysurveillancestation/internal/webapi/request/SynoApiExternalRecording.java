@@ -73,5 +73,4 @@ public class SynoApiExternalRecording extends SynoApiRequest<SimpleResponse> {
     public SimpleResponse toggleRecording(String cameraId, boolean on) throws WebApiException {
         return call(METHOD_RECORD, cameraId, on ? "start" : "stop");
     }
-
 }

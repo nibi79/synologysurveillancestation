@@ -181,7 +181,6 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                         ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
             }
         }
-
     }
 
     /**
@@ -213,5 +212,4 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
      * @return if thread has to be run
      */
     public abstract boolean isNeeded();
-
 }

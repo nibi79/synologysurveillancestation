@@ -145,5 +145,4 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
     protected void startBackgroundDiscovery() {
         startScan();
     }
-
 }

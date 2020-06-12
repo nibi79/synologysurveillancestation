@@ -361,5 +361,4 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
 
         return response;
     }
-
 }

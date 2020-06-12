@@ -67,7 +67,5 @@ public class SynoApiThreadLiveUri extends SynoApiThread<SynoCameraHandler> {
         }
 
         return false;
-
     }
-
 }

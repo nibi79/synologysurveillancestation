@@ -82,5 +82,4 @@ public class EventResponse extends SimpleResponse {
     public long getTimestamp() {
         return timestamp;
     }
-
 }

@@ -35,5 +35,4 @@ public class InfoResponse extends SimpleResponse {
     public JsonElement getCameras() {
         return getData().get("cameras");
     }
-
 }

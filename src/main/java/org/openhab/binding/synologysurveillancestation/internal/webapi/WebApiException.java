@@ -74,5 +74,4 @@ public class WebApiException extends Exception {
     public String getErrorMsg() {
         return errorMsg;
     }
-
 }

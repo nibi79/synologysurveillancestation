@@ -198,7 +198,6 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                         "Errorcode: " + e.getErrorCode());
             }
         }
-
     }
 
     @Override

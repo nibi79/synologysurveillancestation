@@ -91,5 +91,4 @@ public class SynoEvent {
     public int getReason() {
         return reason;
     }
-
 }

@@ -38,5 +38,4 @@ public class HomeModeResponse extends SimpleResponse {
     public int getReason() {
         return getData().get("reason").getAsInt();
     }
-
 }

@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
@@ -97,7 +96,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     }
 
     @Override
-    public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
+    public void handleCommand(ChannelUID channelUID, Command command) {
         try {
             switch (channelUID.getId()) {
                 case CHANNEL_HOMEMODE:

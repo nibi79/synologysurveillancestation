@@ -90,9 +90,6 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
         try {
             SynoWebApiHandler apiHandler = bridgeHandler.getSynoWebApiHandler();
-            if (apiHandler == null) {
-                return;
-            }
 
             CameraResponse response = apiHandler.getApiCamera().listCameras();
 

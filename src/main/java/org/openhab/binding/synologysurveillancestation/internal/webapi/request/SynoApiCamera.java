@@ -143,10 +143,17 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
             if (response.getStatus() == 200) {
                 byte[] ret = response.getContent();
                 if (ret.length < 200) {
-                    if (new String(ret).contains("\"success\":false")) {
-                        logger.trace("Device: {}, API response time: {} ms, unexpected response: {}", cameraId,
-                                responseTime, new String(ret));
-                        throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
+                    String error = new String(ret);
+                    if (error.contains("\"success\":false")) {
+                        if (error.contains("{\"code\":402}")) {
+                            logger.trace("Device: {}, API response time: {} ms, camera disabled", cameraId,
+                                    responseTime);
+                            return new byte[0];
+                        } else {
+                            logger.trace("Device: {}, API response time: {} ms, unexpected response: {}", cameraId,
+                                    responseTime, error);
+                            throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
+                        }
                     }
                 }
                 InputStream is = new ByteArrayInputStream(ret);

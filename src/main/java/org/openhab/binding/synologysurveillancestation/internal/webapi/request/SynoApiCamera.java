@@ -145,9 +145,20 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                 if (ret.length < 200) {
                     String error = new String(ret);
                     if (error.contains("\"success\":false")) {
-                        if (error.contains("{\"code\":402}")) {
+                        if (error.contains("{\"code\":400}")) {
+                            logger.debug("Device: {}, API response time: {} ms, execution failed", cameraId,
+                                    responseTime);
+                            return new byte[0];
+                        } else if (error.contains("{\"code\":401}")) {
+                            logger.debug("Device: {}, API response time: {} ms, parameter invalid", cameraId,
+                                    responseTime);
+                            return new byte[0];
+                        } else if (error.contains("{\"code\":402}")) {
                             logger.trace("Device: {}, API response time: {} ms, camera disabled", cameraId,
                                     responseTime);
+                            return new byte[0];
+                        } else if (error.contains("{\"code\":407}")) {
+                            logger.debug("Device: {}, API response time: {} ms, CMS closed", cameraId, responseTime);
                             return new byte[0];
                         } else {
                             logger.trace("Device: {}, API response time: {} ms, unexpected response: {}", cameraId,

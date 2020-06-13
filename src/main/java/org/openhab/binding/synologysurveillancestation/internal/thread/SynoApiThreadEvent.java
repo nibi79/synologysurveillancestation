@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -54,8 +54,10 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     @Override
     public boolean isNeeded() {
         return (getSynoHandler().isLinked(CHANNEL_EVENT_MOTION) || getSynoHandler().isLinked(CHANNEL_EVENT_ALARM)
-                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL) || getSynoHandler().isLinked(CHANNEL_EVENT_CONTINUOUS) 
-                || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL) || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
+                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_CONTINUOUS)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
     }
 
     @Override
@@ -106,5 +108,4 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     public Map<String, SynoEvent> getEvents() {
         return events;
     }
-
 }

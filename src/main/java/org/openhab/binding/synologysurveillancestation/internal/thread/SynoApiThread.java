@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -181,7 +181,6 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                         ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
             }
         }
-
     }
 
     /**
@@ -213,5 +212,4 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
      * @return if thread has to be run
      */
     public abstract boolean isNeeded();
-
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -199,7 +199,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         WebApiException e) {
             logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
         }
-
     }
 
     @Override
@@ -279,7 +278,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         if (logger.isDebugEnabled()) {
             logger.debug("Initialize thing: {}::{}", getThing().getLabel(), getThing().getUID());
         }
-
     }
 
     public void refreshStatic() {
@@ -458,5 +456,4 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     public boolean isPtz() {
         return ptz;
     }
-
 }

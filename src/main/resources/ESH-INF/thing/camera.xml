@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<thing:thing-descriptions bindingId="synologysurveillancestation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
-	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+<thing:thing-descriptions bindingId="synologysurveillancestation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 
 	<thing-type id="camera">
 		<supported-bridge-type-refs>
-			<bridge-type-ref id="station" />
+			<bridge-type-ref id="station"/>
 		</supported-bridge-type-refs>
 		<label>Surveillance Station Camera</label>
 		<description>Synology Surveillance Station Camera</description>
 		<category>Camera</category>
 
 		<channel-groups>
-			<channel-group id="common" typeId="common-type" />
-			<channel-group id="ptz" typeId="ptz-type" />
+			<channel-group id="common" typeId="common-type"/>
+			<channel-group id="ptz" typeId="ptz-type"/>
 			<channel-group id="event" typeId="event-type">
 				<label>Camera events</label>
 				<description>Events of your camera</description>
@@ -67,9 +68,9 @@
 		<label>Common channels</label>
 		<description>Common channels of your camera</description>
 		<channels>
-			<channel id="snapshot" typeId="snapshot-channel" />
-			<channel id="record" typeId="recording-channel" />
-			<channel id="enable" typeId="enable-channel" />
+			<channel id="snapshot" typeId="snapshot-channel"/>
+			<channel id="record" typeId="recording-channel"/>
+			<channel id="enable" typeId="enable-channel"/>
 			<channel id="snapshot-uri-dynamic" typeId="uri-channel">
 				<label>Dynamic snapshot URI</label>
 				<description>Dynamic URL of the current snapshot (events refresh rate)</description>
@@ -93,10 +94,10 @@
 		<label>PTZ channels</label>
 		<description>Pan/Tilt/Zoom channels of your camera</description>
 		<channels>
-			<channel id="zoom" typeId="zoom-channel" />
-			<channel id="move" typeId="move-channel" />
-			<channel id="movepreset" typeId="movepreset-channel" />
-			<channel id="runpatrol" typeId="runpatrol-channel" />
+			<channel id="zoom" typeId="zoom-channel"/>
+			<channel id="move" typeId="move-channel"/>
+			<channel id="movepreset" typeId="movepreset-channel"/>
+			<channel id="runpatrol" typeId="runpatrol-channel"/>
 		</channels>
 	</channel-group-type>
 
@@ -104,27 +105,27 @@
 		<label>Event</label>
 		<description>Event of your camera</description>
 		<channels>
-			<channel id="motion" typeId="event-channel" >
+			<channel id="motion" typeId="event-channel">
 				<label>Motion event</label>
 				<description>Last motion event</description>
 			</channel>
-			<channel id="alarm" typeId="event-advanced-channel" >
+			<channel id="alarm" typeId="event-advanced-channel">
 				<label>Alarm event</label>
 				<description>Last alarm event</description>
 			</channel>
-			<channel id="manual" typeId="event-advanced-channel" >
+			<channel id="manual" typeId="event-advanced-channel">
 				<label>Manual event</label>
 				<description>Last manual event</description>
 			</channel>
-			<channel id="external" typeId="event-advanced-channel" >
+			<channel id="external" typeId="event-advanced-channel">
 				<label>External event</label>
 				<description>Last external event</description>
 			</channel>
-			<channel id="continuous" typeId="event-advanced-channel" >
+			<channel id="continuous" typeId="event-advanced-channel">
 				<label>Continuous event</label>
 				<description>Last continuous event</description>
 			</channel>
-			<channel id="actionrule" typeId="event-advanced-channel" >
+			<channel id="actionrule" typeId="event-advanced-channel">
 				<label>Action rule event</label>
 				<description>Last action rule event</description>
 			</channel>
@@ -135,27 +136,27 @@
 		<label>Motion detection</label>
 		<description>Motion detection parameters</description>
 		<channels>
-			<channel id="md-param-source" typeId="md-onoff-channel" >
+			<channel id="md-param-source" typeId="md-onoff-channel">
 				<label>Detection source</label>
 				<description>Motion detection source. -1:disable, 0:by camera, 1:by Surveillance Station</description>
 			</channel>
-			<channel id="md-param-sensitivity" typeId="md-param-channel" >
+			<channel id="md-param-sensitivity" typeId="md-param-channel">
 				<label>Detection sensitivity</label>
 				<description>Motion detection sensitivity (1 to 99)</description>
 			</channel>
-			<channel id="md-param-threshold" typeId="md-param-channel" >
+			<channel id="md-param-threshold" typeId="md-param-channel">
 				<label>Detection threshold</label>
 				<description>Motion detection threshold (1 to 99)</description>
 			</channel>
-			<channel id="md-param-objectsize" typeId="md-param-channel" >
+			<channel id="md-param-objectsize" typeId="md-param-channel">
 				<label>Detection object size</label>
 				<description>Motion detection object size (1 to 99)</description>
 			</channel>
-			<channel id="md-param-percentage" typeId="md-param-channel" >
+			<channel id="md-param-percentage" typeId="md-param-channel">
 				<label>Detection percentage</label>
 				<description>Motion detection percentage (1 to 99)</description>
 			</channel>
-			<channel id="md-param-shortlive" typeId="md-param-channel" >
+			<channel id="md-param-shortlive" typeId="md-param-channel">
 				<label>Ignore short-lived motion</label>
 				<description>Ignore short-lived motion for duration of (0 to 10) seconds</description>
 			</channel>
@@ -237,7 +238,7 @@
 		<label>Event detected</label>
 		<description>Event was detected</description>
 		<state readOnly="true"></state>
-	</channel-type>	
+	</channel-type>
 	<channel-type id="md-onoff-channel" advanced="true">
 		<item-type>String</item-type>
 		<label>Detection source</label>

@@ -154,8 +154,10 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 switch (channelUID.getId()) {
                     case CHANNEL_ENABLE:
                         apiHandler.getApiCamera().toggleCamera(cameraId, command.toString().equals("ON"));
+                        break;
                     case CHANNEL_RECORD:
                         apiHandler.getApiExternalRecording().toggleRecording(cameraId, command.toString().equals("ON"));
+                        break;
                     case CHANNEL_ZOOM:
                     case CHANNEL_MOVE:
                         apiHandler.getApiPTZ().execute(cameraId, channelUID.getId(), command.toString());

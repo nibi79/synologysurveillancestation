@@ -51,7 +51,7 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
                 .getSnapshot(getSynoHandler().getCameraId(), getRefreshRate(), streamId);
         if (snapshot.length < 1000) {
             getSynoHandler().updateState(channel.getUID(), UnDefType.UNDEF);
-            return false;
+            return (snapshot.length == 2);
         } else {
             getSynoHandler().updateState(channel.getUID(), new RawType(snapshot, "image/jpeg"));
             return true;

@@ -156,7 +156,7 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                         } else if (error.contains("{\"code\":402}")) {
                             logger.trace("Device: {}, API response time: {} ms, camera disabled", cameraId,
                                     responseTime);
-                            return new byte[0];
+                            return new byte[2];
                         } else if (error.contains("{\"code\":407}")) {
                             logger.debug("Device: {}, API response time: {} ms, CMS closed", cameraId, responseTime);
                             return new byte[0];

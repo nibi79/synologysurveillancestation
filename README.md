@@ -52,9 +52,9 @@ If your openHAB installation is in the same network as your Synology DiskStation
 
 Following options can be set for the **Bridge**:
 
-- Access protocol of the DiskStation (read only / unchangeable with automatic discovery)
-- IP of the DiskStation (read only / unchangeable with automatic discovery)
-- Port of the DiskStation (read only / unchangeable with automatic discovery)
+- Access protocol of the DiskStation
+- Host/IP of the DiskStation
+- Port of the DiskStation
 - User name for the DiskStation / Surveillance Station
 - Password for the DiskStation / Surveillance Station
 - Refresh rate for DiskStation events (Home Mode)

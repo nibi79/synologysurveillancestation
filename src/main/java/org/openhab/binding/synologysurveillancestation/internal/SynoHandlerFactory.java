@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -53,6 +54,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private HttpClient httpClient;
+    private boolean acceptSsl = false;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 
@@ -62,6 +64,13 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     }
 
     protected void unsetHttpClientFactory(HttpClientFactory httpClientFactory) {
+        if (this.acceptSsl) {
+            try {
+                this.httpClient.stop();
+            } catch (Exception e) {
+                logger.error("Couldn't stop trusting HttpServer, sorry");
+            }
+        }
         this.httpClient = null;
     }
 
@@ -85,6 +94,23 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
+            if (thing.getConfiguration().get(ACCEPT_SSL) != null) {
+                if (thing.getConfiguration().get(ACCEPT_SSL).toString().toLowerCase().equals("true")) {
+                    SslContextFactory sslContextFactory = new SslContextFactory(true);
+                    sslContextFactory.setTrustAll(true);
+                    sslContextFactory.setEndpointIdentificationAlgorithm(null);
+                    HttpClient client = new HttpClient(sslContextFactory);
+                    try {
+                        client.start();
+                        this.httpClient = client;
+                        logger.debug("Trusting HttpServer started");
+                        this.acceptSsl = true;
+                    } catch (Exception e) {
+                        logger.error("Trusting HttpServer failed");
+                        this.acceptSsl = false;
+                    }
+                }
+            }
             SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);
             CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);

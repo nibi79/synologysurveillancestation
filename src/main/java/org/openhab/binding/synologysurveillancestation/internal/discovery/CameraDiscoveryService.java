@@ -128,6 +128,15 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
             }
 
         } catch (WebApiException e) {
+
+            if (e.getCause() instanceof javax.net.ssl.SSLHandshakeException
+                    || e.getCause() instanceof java.io.EOFException
+                    || e.getCause() instanceof java.util.concurrent.ExecutionException) {
+                logger.error("Possible SSL certificate issue, please consider using http or enabling SSL bypass");
+            } else {
+                logger.error("Discovery other error: {}", e.getMessage());
+            }
+
             if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
                 logger.debug("Discovery Thread; Wrong/expired credentials");
                 try {

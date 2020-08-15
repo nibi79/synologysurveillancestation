@@ -45,6 +45,7 @@ public class SynoBindingConstants {
 
     /* List of all config properties */
     public static final String PROTOCOL = "protocol";
+    public static final String ACCEPT_SSL = "acceptSsl";
     public static final String HOST = "host";
     public static final String PORT = "port";
     public static final String USER_NAME = "username";

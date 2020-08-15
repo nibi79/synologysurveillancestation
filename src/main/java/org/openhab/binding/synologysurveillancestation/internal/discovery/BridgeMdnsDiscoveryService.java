@@ -69,6 +69,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
                 if (name != null && ip != null && model != null && serial != null && port != null) {
                     String label = String.format("%s (%s)", name, model);
                     Map<String, Object> properties = new HashMap<>();
+                    properties.put(SynoBindingConstants.ACCEPT_SSL, false);
                     properties.put(SynoBindingConstants.PROTOCOL, "http");
                     properties.put(SynoBindingConstants.PORT, port);
                     properties.put(SynoBindingConstants.HOST, ip);

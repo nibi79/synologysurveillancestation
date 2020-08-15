@@ -26,6 +26,12 @@
 				<default>http</default>
 				<required>true</required>
 			</parameter>
+			<parameter name="acceptSsl" type="boolean" >
+				<label>Accept any SSL certificate</label>
+				<description>Turn on to allow self-signed or invalid SSL certificates (restart on change required)</description>
+				<default>false</default>
+				<advanced>true</advanced>
+			</parameter>
 			<parameter name="host" type="text">
 				<label>IP-Address:</label>
 				<context>network-address</context>

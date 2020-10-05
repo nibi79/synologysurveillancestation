@@ -85,11 +85,11 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
                         zoomIn(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_OUT":
-                        zoomIn(cameraId, MOVE_COMMAND_START);
+                        zoomOut(cameraId, MOVE_COMMAND_START);
                         break;
                     // STOP
                     case "STOP_IN":
-                        zoomOut(cameraId, MOVE_COMMAND_STOP);
+                        zoomIn(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_OUT":
                         zoomOut(cameraId, MOVE_COMMAND_STOP);

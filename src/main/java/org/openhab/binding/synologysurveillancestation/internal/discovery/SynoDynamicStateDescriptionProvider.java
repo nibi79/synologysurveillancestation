@@ -26,6 +26,8 @@ import org.openhab.core.thing.type.DynamicStateDescriptionProvider;
 import org.openhab.core.types.StateDescription;
 import org.openhab.core.types.StateDescriptionFragmentBuilder;
 import org.openhab.core.types.StateOption;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
@@ -41,6 +43,10 @@ import org.osgi.service.component.annotations.Deactivate;
 public class SynoDynamicStateDescriptionProvider implements DynamicStateDescriptionProvider {
 
     private final Map<ChannelUID, List<StateOption>> channelOptionsMap = new ConcurrentHashMap<>();
+
+    @Activate
+    public void activate(ComponentContext context) {
+    }
 
     public void setStateOptions(ChannelUID channelUID, List<StateOption> options) {
         channelOptionsMap.put(channelUID, options);

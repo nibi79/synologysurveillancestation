@@ -24,6 +24,8 @@ import org.openhab.core.config.discovery.DiscoveryResultBuilder;
 import org.openhab.core.config.discovery.mdns.MDNSDiscoveryParticipant;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.ThingUID;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,10 @@ import org.slf4j.LoggerFactory;
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
 
     private final Logger logger = LoggerFactory.getLogger(BridgeMdnsDiscoveryService.class);
+
+    @Activate
+    public void activate(ComponentContext context) {
+    }
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypeUIDs() {
@@ -68,9 +74,10 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
                     properties.put(SynoBindingConstants.HOST, ip);
                     properties.put(SynoBindingConstants.USER_NAME, "");
                     properties.put(SynoBindingConstants.PASSWORD, "");
+                    properties.put(SynoBindingConstants.SERIAL, serial.toLowerCase());
 
                     DiscoveryResult result = DiscoveryResultBuilder.create(uid).withProperties(properties)
-                            .withRepresentationProperty(serial.toLowerCase()).withLabel(label).build();
+                            .withRepresentationProperty(SynoBindingConstants.SERIAL).withLabel(label).build();
                     return result;
                 }
             }

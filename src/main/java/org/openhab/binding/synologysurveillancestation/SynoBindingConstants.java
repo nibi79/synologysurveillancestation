@@ -49,6 +49,7 @@ public class SynoBindingConstants {
     public static final String PORT = "port";
     public static final String USER_NAME = "username";
     public static final String PASSWORD = "password";
+    public static final String SERIAL = "serial";
     public static final String SESSION_ID = "sessionID";
     public static final String REFRESH_RATE_SNAPSHOT = "refresh-rate-snapshot";
     public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";

@@ -12,10 +12,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -140,8 +137,9 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
             ContentResponse response = request.timeout(timeout, TimeUnit.SECONDS).send();
 
             responseTime = System.currentTimeMillis() - responseTime;
+            byte[] ret = new byte[0];
             if (response.getStatus() == 200) {
-                byte[] ret = response.getContent();
+                ret = response.getContent();
                 if (ret.length < 200) {
                     String error = new String(ret);
                     if (error.contains("\"success\":false")) {
@@ -167,11 +165,9 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
                         }
                     }
                 }
-                InputStream is = new ByteArrayInputStream(ret);
-                IOUtils.copy(is, baos);
             }
             logger.trace("Device: {}, API response time: {} ms, stream id: {}", cameraId, responseTime, streamId);
-            return baos.toByteArray();
+            return ret;
         } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {
             throw new WebApiException(e);

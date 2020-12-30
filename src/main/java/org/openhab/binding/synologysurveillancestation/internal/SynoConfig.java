@@ -162,5 +162,4 @@ public class SynoConfig {
     public void setRefreshRateEvents(int refreshRateEvents) {
         this.refreshRateEvents = refreshRateEvents;
     }
-
 }

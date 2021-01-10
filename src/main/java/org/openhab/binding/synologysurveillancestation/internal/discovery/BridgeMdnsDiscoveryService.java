@@ -77,8 +77,8 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
                     properties.put(SynoBindingConstants.PROTOCOL, "http");
                     properties.put(SynoBindingConstants.PORT, port);
                     properties.put(SynoBindingConstants.HOST, ip);
-                    properties.put(SynoBindingConstants.USER_NAME, "");
-                    properties.put(SynoBindingConstants.PASSWORD, "");
+                    // properties.put(SynoBindingConstants.USER_NAME, "");
+                    // properties.put(SynoBindingConstants.PASSWORD, "");
                     properties.put(SynoBindingConstants.SERIAL, serial.toLowerCase());
 
                     DiscoveryResult result = DiscoveryResultBuilder.create(uid).withProperties(properties)

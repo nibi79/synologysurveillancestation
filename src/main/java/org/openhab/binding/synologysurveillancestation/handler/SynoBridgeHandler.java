@@ -149,7 +149,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
                 refreshInProgress.set(false);
                 throw e;
             }
-            if (ret) {
+            if (ret && getThing().getStatus() == ThingStatus.ONLINE) {
                 handleCommand(new ChannelUID(getThing().getUID(), CHANNEL_SID), RefreshType.REFRESH);
             }
             return ret;

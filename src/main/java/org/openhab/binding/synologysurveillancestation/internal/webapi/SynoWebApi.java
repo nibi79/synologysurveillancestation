@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
@@ -20,6 +21,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public interface SynoWebApi {
     /**
      * Establish connection to Surveillance Station Web API

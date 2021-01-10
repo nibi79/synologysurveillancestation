@@ -17,7 +17,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.thing.Channel;
@@ -53,7 +52,7 @@ public class SynoDynamicStateDescriptionProvider implements DynamicStateDescript
     }
 
     @Override
-    public @Nullable StateDescription getStateDescription(@NonNull Channel channel, @Nullable StateDescription original,
+    public @Nullable StateDescription getStateDescription(Channel channel, @Nullable StateDescription original,
             @Nullable Locale locale) {
         List<StateOption> options = channelOptionsMap.get(channel.getUID());
 

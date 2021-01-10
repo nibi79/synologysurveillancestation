@@ -72,7 +72,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     private String cameraId = "";
     private boolean ptz = false;
     private final Map<String, SynoApiThread<SynoCameraHandler>> threads = new HashMap<>();
-    private @Nullable SynoWebApiHandler apiHandler;
+    private SynoWebApiHandler apiHandler;
     private List<StateOption> presets = new ArrayList<>();
     private List<StateOption> patrols = new ArrayList<>();
 
@@ -84,8 +84,11 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @param thing Thing to handle
      * @param ptz PTZ support?
      */
+    @SuppressWarnings("null") // as stated in the doc Bridge can't be null at this point
     public SynoCameraHandler(Thing thing, SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
         super(thing);
+
+        apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
         this.stateDescriptionProvider = stateDescriptionProvider;
 
@@ -111,9 +114,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        if (apiHandler == null) {
-            return;
-        }
         try {
             if (command.toString().equals("REFRESH")) {
                 switch (channelUID.getId()) {
@@ -203,6 +203,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         }
     }
 
+    @SuppressWarnings("null")
     @Override
     public boolean reconnect(boolean forceLogout) throws WebApiException {
         boolean ret = ((SynoBridgeHandler) getBridge().getHandler()).reconnect(forceLogout);
@@ -212,6 +213,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         return ret;
     }
 
+    @SuppressWarnings("null")
     @Override
     public void initialize() {
         if (getBridge() != null) {
@@ -381,7 +383,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     }
 
     @Override
-    public @Nullable SynoWebApiHandler getSynoWebApiHandler() {
+    public SynoWebApiHandler getSynoWebApiHandler() {
         return apiHandler;
     }
 

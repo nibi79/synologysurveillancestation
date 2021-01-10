@@ -12,7 +12,6 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -121,7 +120,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public byte[] getSnapshot(String cameraId, int timeout, int streamId)
             throws IOException, URISyntaxException, WebApiException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
             Map<String, String> params = new HashMap<>();

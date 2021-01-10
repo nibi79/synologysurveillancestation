@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
  * @author Pavion - Contribution
  */
 @Component(service = ThingHandlerFactory.class, configurationPid = "binding.synologysurveillancestation")
+// @NonNullByDefault
 public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);

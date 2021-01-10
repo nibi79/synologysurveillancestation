@@ -14,6 +14,7 @@ package org.openhab.binding.synologysurveillancestation.handler;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 
@@ -23,7 +24,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiExc
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
-public interface SynoHandler {
+public @NonNullByDefault interface SynoHandler {
 
     public ScheduledExecutorService getScheduler();
 

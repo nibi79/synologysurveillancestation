@@ -12,12 +12,15 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link SynoApi} is an interface for Synology API codes
  *
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public interface SynoApi {
 
     // API configuration versions

@@ -128,9 +128,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
      * Run the runnable just once (for manual refresh)
      */
     public void runOnce() {
-        if (getSynoHandler().getSynoWebApiHandler() == null) {
-            logger.error("DeviceId: {}; Thread: {}; Handler not (yet) initialized", deviceId, name);
-        } else if (isNeeded()) {
+        if (isNeeded()) {
             logger.debug("Thread {} tick", name);
             boolean success = false;
             try {

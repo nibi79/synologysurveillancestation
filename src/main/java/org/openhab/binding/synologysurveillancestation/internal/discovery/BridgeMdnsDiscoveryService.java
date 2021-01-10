@@ -18,6 +18,8 @@ import java.util.Set;
 
 import javax.jmdns.ServiceInfo;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
@@ -36,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author Pavion - Initial contribution
  */
 @Component(service = MDNSDiscoveryParticipant.class, immediate = false, configurationPid = "binding.synologysurveillancestation")
+@NonNullByDefault
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
 
     private final Logger logger = LoggerFactory.getLogger(BridgeMdnsDiscoveryService.class);
@@ -55,6 +58,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
     }
 
     @Override
+    @Nullable
     public DiscoveryResult createResult(ServiceInfo service) {
         ThingUID uid = getThingUID(service);
         if (uid != null) {
@@ -87,6 +91,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
     }
 
     @Override
+    @Nullable
     public ThingUID getThingUID(ServiceInfo service) {
         String vendor = service.getPropertyString("vendor");
         String serial = service.getPropertyString("serial");

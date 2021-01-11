@@ -59,6 +59,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private HttpClient httpClient;
     private boolean acceptSsl = false;
+    private @Nullable SynoBridgeHandler bridgeHandler = null;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 
@@ -132,7 +133,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
                     }
                 }
             }
-            SynoBridgeHandler bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);
+            bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);
             CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
             bridgeHandler.setDiscovery(discoveryService);
             this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(
@@ -140,7 +141,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
             return bridgeHandler;
 
-        } else if (thingTypeUID.equals(THING_TYPE_CAMERA)) {
+        } else if (thingTypeUID.equals(THING_TYPE_CAMERA) && bridgeHandler != null) {
             return new SynoCameraHandler(thing, stateDescriptionProvider);
         }
         return null;
@@ -153,6 +154,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
             if (serviceReg != null) {
                 serviceReg.unregister();
                 discoveryServiceRegs.remove(handler.getThing().getUID());
+                bridgeHandler = null;
             }
         }
         super.removeHandler(handler);

@@ -130,17 +130,17 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
                     || e.getCause() instanceof java.io.EOFException
                     || e.getCause() instanceof java.util.concurrent.ExecutionException) {
                 logger.error("Possible SSL certificate issue, please consider using http or enabling SSL bypass");
-            } else {
-                logger.error("Discovery other error: {}", e.getMessage());
-            }
-
-            if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
+            } else if (e.getErrorCode() == 102) {
+                logger.error("Discovery Thread; Surveillance Station is disabled or not installed");
+            } else if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
                 logger.debug("Discovery Thread; Wrong/expired credentials");
                 try {
                     bridgeHandler.reconnect(false);
                 } catch (WebApiException ee) {
                     logger.error("Discovery Thread; Attempt to reconnect failed");
                 }
+            } else {
+                logger.error("Discovery Thread; Unexpected error: {} - {}", e.getErrorCode(), e.getMessage());
             }
         } catch (Exception npe) {
             logger.error("Error in WebApiException", npe);

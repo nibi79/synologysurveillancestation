@@ -91,6 +91,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     }
 
     @Override
+    @Nullable
     public SynoWebApiHandler getSynoWebApiHandler() {
         return apiHandler;
     }

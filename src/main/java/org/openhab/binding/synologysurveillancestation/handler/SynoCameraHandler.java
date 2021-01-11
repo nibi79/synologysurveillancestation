@@ -72,7 +72,6 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     private String cameraId = "";
     private boolean ptz = false;
     private final Map<String, SynoApiThread<SynoCameraHandler>> threads = new HashMap<>();
-    private SynoWebApiHandler apiHandler;
     private List<StateOption> presets = new ArrayList<>();
     private List<StateOption> patrols = new ArrayList<>();
 
@@ -84,11 +83,8 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @param thing Thing to handle
      * @param ptz PTZ support?
      */
-    @SuppressWarnings("null") // as stated in the doc Bridge can't be null at this point
     public SynoCameraHandler(Thing thing, SynoDynamicStateDescriptionProvider stateDescriptionProvider) {
         super(thing);
-
-        apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
         this.stateDescriptionProvider = stateDescriptionProvider;
 
@@ -114,92 +110,102 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        try {
-            if (command.toString().equals("REFRESH")) {
-                switch (channelUID.getId()) {
-                    case CHANNEL_SNAPSHOT:
-                        threads.get(SynoApiThread.THREAD_SNAPSHOT).runOnce();
-                        break;
-                    case CHANNEL_EVENT_MOTION:
-                    case CHANNEL_EVENT_ALARM:
-                    case CHANNEL_EVENT_MANUAL:
-                    case CHANNEL_EVENT_CONTINUOUS:
-                    case CHANNEL_EVENT_EXTERNAL:
-                    case CHANNEL_EVENT_ACTIONRULE:
-                        updateState(channelUID, OnOffType.OFF);
-                        break;
-                    case CHANNEL_SNAPSHOT_URI_STATIC:
-                        int streamId = Integer.parseInt(this.getThing().getConfiguration().get(STREAM_ID).toString());
-                        String uri = apiHandler.getApiCamera().getSnapshotUri(cameraId, streamId);
-                        updateState(channelUID, new StringType(uri));
-                        break;
-                    case CHANNEL_LIVE_URI_RTSP:
-                        String rtsp = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getRtsp();
-                        updateState(channelUID, new StringType(rtsp));
-                        break;
-                    case CHANNEL_LIVE_URI_MJPEG_HTTP:
-                        String mjpeg = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getMjpegHttp();
-                        updateState(channelUID, new StringType(mjpeg));
-                        break;
-                    case CHANNEL_MDPARAM_SOURCE:
-                    case CHANNEL_MDPARAM_SENSITIVITY:
-                    case CHANNEL_MDPARAM_THRESHOLD:
-                    case CHANNEL_MDPARAM_OBJECTSIZE:
-                    case CHANNEL_MDPARAM_PERCENTAGE:
-                    case CHANNEL_MDPARAM_SHORTLIVE:
-                        threads.get(SynoApiThread.THREAD_CAMERAEVENT).runOnce();
-                        break;
-                }
-            } else {
-                switch (channelUID.getId()) {
-                    case CHANNEL_ENABLE:
-                        apiHandler.getApiCamera().toggleCamera(cameraId, command.toString().equals("ON"));
-                        break;
-                    case CHANNEL_RECORD:
-                        apiHandler.getApiExternalRecording().toggleRecording(cameraId, command.toString().equals("ON"));
-                        break;
-                    case CHANNEL_ZOOM:
-                    case CHANNEL_MOVE:
-                        apiHandler.getApiPTZ().execute(cameraId, channelUID.getId(), command.toString());
-                        break;
-                    case CHANNEL_MOVEPRESET:
-                        String preset = checkOption(presets, command.toString());
-                        if (preset != "") {
-                            apiHandler.getApiPTZ().goPreset(cameraId, preset);
+        if (getBridge() != null) {
+            if (getBridge().getStatus() == ThingStatus.ONLINE) {
+                SynoWebApiHandler apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
+
+                try {
+                    if (command.toString().equals("REFRESH")) {
+                        switch (channelUID.getId()) {
+                            case CHANNEL_SNAPSHOT:
+                                threads.get(SynoApiThread.THREAD_SNAPSHOT).runOnce();
+                                break;
+                            case CHANNEL_EVENT_MOTION:
+                            case CHANNEL_EVENT_ALARM:
+                            case CHANNEL_EVENT_MANUAL:
+                            case CHANNEL_EVENT_CONTINUOUS:
+                            case CHANNEL_EVENT_EXTERNAL:
+                            case CHANNEL_EVENT_ACTIONRULE:
+                                updateState(channelUID, OnOffType.OFF);
+                                break;
+                            case CHANNEL_SNAPSHOT_URI_STATIC:
+                                int streamId = Integer
+                                        .parseInt(this.getThing().getConfiguration().get(STREAM_ID).toString());
+                                String uri = apiHandler.getApiCamera().getSnapshotUri(cameraId, streamId);
+                                updateState(channelUID, new StringType(uri));
+                                break;
+                            case CHANNEL_LIVE_URI_RTSP:
+                                String rtsp = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getRtsp();
+                                updateState(channelUID, new StringType(rtsp));
+                                break;
+                            case CHANNEL_LIVE_URI_MJPEG_HTTP:
+                                String mjpeg = apiHandler.getApiLiveUri().getLiveUriResponse(cameraId).getMjpegHttp();
+                                updateState(channelUID, new StringType(mjpeg));
+                                break;
+                            case CHANNEL_MDPARAM_SOURCE:
+                            case CHANNEL_MDPARAM_SENSITIVITY:
+                            case CHANNEL_MDPARAM_THRESHOLD:
+                            case CHANNEL_MDPARAM_OBJECTSIZE:
+                            case CHANNEL_MDPARAM_PERCENTAGE:
+                            case CHANNEL_MDPARAM_SHORTLIVE:
+                                threads.get(SynoApiThread.THREAD_CAMERAEVENT).runOnce();
+                                break;
                         }
-                        break;
-                    case CHANNEL_RUNPATROL:
-                        String patrol = checkOption(patrols, command.toString());
-                        if (patrol != "") {
-                            apiHandler.getApiPTZ().runPatrol(cameraId, patrol);
+                    } else {
+                        switch (channelUID.getId()) {
+                            case CHANNEL_ENABLE:
+                                apiHandler.getApiCamera().toggleCamera(cameraId, command.toString().equals("ON"));
+                                break;
+                            case CHANNEL_RECORD:
+                                apiHandler.getApiExternalRecording().toggleRecording(cameraId,
+                                        command.toString().equals("ON"));
+                                break;
+                            case CHANNEL_ZOOM:
+                            case CHANNEL_MOVE:
+                                apiHandler.getApiPTZ().execute(cameraId, channelUID.getId(), command.toString());
+                                break;
+                            case CHANNEL_MOVEPRESET:
+                                String preset = checkOption(presets, command.toString());
+                                if (preset != "") {
+                                    apiHandler.getApiPTZ().goPreset(cameraId, preset);
+                                }
+                                break;
+                            case CHANNEL_RUNPATROL:
+                                String patrol = checkOption(patrols, command.toString());
+                                if (patrol != "") {
+                                    apiHandler.getApiPTZ().runPatrol(cameraId, patrol);
+                                }
+                                break;
+                            case CHANNEL_MDPARAM_SOURCE:
+                                apiHandler.getApiCameraEvent().setSource(cameraId, command.toString());
+                                break;
+                            case CHANNEL_MDPARAM_SENSITIVITY:
+                                apiHandler.getApiCameraEvent().setSensitivity(cameraId,
+                                        Integer.parseInt(command.toString()));
+                                break;
+                            case CHANNEL_MDPARAM_THRESHOLD:
+                                apiHandler.getApiCameraEvent().setThreshold(cameraId,
+                                        Integer.parseInt(command.toString()));
+                                break;
+                            case CHANNEL_MDPARAM_OBJECTSIZE:
+                                apiHandler.getApiCameraEvent().setObjectSize(cameraId,
+                                        Integer.parseInt(command.toString()));
+                                break;
+                            case CHANNEL_MDPARAM_PERCENTAGE:
+                                apiHandler.getApiCameraEvent().setPercentage(cameraId,
+                                        Integer.parseInt(command.toString()));
+                                break;
+                            case CHANNEL_MDPARAM_SHORTLIVE:
+                                apiHandler.getApiCameraEvent().setShortLiveSecond(cameraId,
+                                        Integer.parseInt(command.toString()));
+                                break;
                         }
-                        break;
-                    case CHANNEL_MDPARAM_SOURCE:
-                        apiHandler.getApiCameraEvent().setSource(cameraId, command.toString());
-                        break;
-                    case CHANNEL_MDPARAM_SENSITIVITY:
-                        apiHandler.getApiCameraEvent().setSensitivity(cameraId, Integer.parseInt(command.toString()));
-                        break;
-                    case CHANNEL_MDPARAM_THRESHOLD:
-                        apiHandler.getApiCameraEvent().setThreshold(cameraId, Integer.parseInt(command.toString()));
-                        break;
-                    case CHANNEL_MDPARAM_OBJECTSIZE:
-                        apiHandler.getApiCameraEvent().setObjectSize(cameraId, Integer.parseInt(command.toString()));
-                        break;
-                    case CHANNEL_MDPARAM_PERCENTAGE:
-                        apiHandler.getApiCameraEvent().setPercentage(cameraId, Integer.parseInt(command.toString()));
-                        break;
-                    case CHANNEL_MDPARAM_SHORTLIVE:
-                        apiHandler.getApiCameraEvent().setShortLiveSecond(cameraId,
-                                Integer.parseInt(command.toString()));
-                        break;
+                    }
+
+                } catch (WebApiException e) {
+                    logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
                 }
             }
-
-        } catch (
-
-        WebApiException e) {
-            logger.error("handle command: {}::{}", getThing().getLabel(), getThing().getUID());
         }
     }
 
@@ -216,13 +222,15 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     @SuppressWarnings("null")
     @Override
     public void initialize() {
+        logger.error("Camera Handler initialize");
+
         if (getBridge() != null) {
             cameraId = getThing().getUID().getId();
 
             logger.debug("Initializing SynologySurveillanceStationHandler for cameraId '{}'", cameraId);
 
             if (getBridge().getStatus() == ThingStatus.ONLINE) {
-                apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
+                SynoWebApiHandler apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
                 try {
                     List<String> toExclude = new ArrayList<>();
@@ -383,7 +391,14 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     }
 
     @Override
+    @Nullable
     public SynoWebApiHandler getSynoWebApiHandler() {
+        SynoWebApiHandler apiHandler = null;
+        if (getBridge() != null) {
+            if (getBridge().getStatus() == ThingStatus.ONLINE) {
+                apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
+            }
+        }
         return apiHandler;
     }
 
@@ -394,20 +409,27 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @throws WebApiException
      */
     public void updatePresets() throws WebApiException {
-        SimpleResponse listPresetResponse = apiHandler.getApiPTZ().listPresets(cameraId);
+        if (getBridge() != null) {
+            if (getBridge().getStatus() == ThingStatus.ONLINE) {
+                SynoWebApiHandler apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
 
-        JsonObject data = listPresetResponse.getData();
-        presets = new ArrayList<>();
-        if (data != null) {
-            JsonArray jsondata = data.getAsJsonArray("presets");
-            if (jsondata != null) {
-                for (JsonElement preset : jsondata) {
-                    JsonObject op = preset.getAsJsonObject();
-                    presets.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                SimpleResponse listPresetResponse = apiHandler.getApiPTZ().listPresets(cameraId);
+
+                JsonObject data = listPresetResponse.getData();
+                presets = new ArrayList<>();
+                if (data != null) {
+                    JsonArray jsondata = data.getAsJsonArray("presets");
+                    if (jsondata != null) {
+                        for (JsonElement preset : jsondata) {
+                            JsonObject op = preset.getAsJsonObject();
+                            presets.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                        }
+                    }
                 }
+                stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET),
+                        presets);
             }
         }
-        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_MOVEPRESET), presets);
     }
 
     /**
@@ -417,20 +439,26 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
      * @throws WebApiException
      */
     public void updatePatrols() throws WebApiException {
-        SimpleResponse listPatrolResponse = apiHandler.getApiPTZ().listPatrol(cameraId);
+        if (getBridge() != null) {
+            if (getBridge().getStatus() == ThingStatus.ONLINE) {
+                SynoWebApiHandler apiHandler = ((SynoBridgeHandler) getBridge().getHandler()).getSynoWebApiHandler();
+                SimpleResponse listPatrolResponse = apiHandler.getApiPTZ().listPatrol(cameraId);
 
-        JsonObject data = listPatrolResponse.getData();
-        patrols = new ArrayList<>();
-        if (data != null) {
-            JsonArray jsondata = data.getAsJsonArray("patrols");
-            if (jsondata != null) {
-                for (JsonElement patrol : jsondata) {
-                    JsonObject op = patrol.getAsJsonObject();
-                    patrols.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                JsonObject data = listPatrolResponse.getData();
+                patrols = new ArrayList<>();
+                if (data != null) {
+                    JsonArray jsondata = data.getAsJsonArray("patrols");
+                    if (jsondata != null) {
+                        for (JsonElement patrol : jsondata) {
+                            JsonObject op = patrol.getAsJsonObject();
+                            patrols.add(new StateOption(op.get("id").getAsString(), op.get("name").getAsString()));
+                        }
+                    }
                 }
+                stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL),
+                        patrols);
             }
         }
-        stateDescriptionProvider.setStateOptions(new ChannelUID(getThing().getUID(), CHANNEL_RUNPATROL), patrols);
     }
 
     /**

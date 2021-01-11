@@ -148,7 +148,9 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                         logger.error("DeviceId: {}; Thread: {}; Attempt to reconnect failed", deviceId, name);
                     }
                 } else {
-                    logger.error("DeviceId: {}; Thread: {}; Handler gone offline", deviceId, name);
+                    logger.error(
+                            "DeviceId: {}; Thread: {}; Handler gone offline (Surveillance Station probably disabled)",
+                            deviceId, name);
                 }
             } catch (Exception e) {
                 logger.error("DeviceId: {}; Thread: {}; Critical error:\n", deviceId, name, e);

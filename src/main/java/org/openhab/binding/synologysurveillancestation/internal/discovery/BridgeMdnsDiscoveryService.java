@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -18,12 +18,16 @@ import java.util.Set;
 
 import javax.jmdns.ServiceInfo;
 
-import org.eclipse.smarthome.config.discovery.DiscoveryResult;
-import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
-import org.eclipse.smarthome.config.discovery.mdns.MDNSDiscoveryParticipant;
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
-import org.eclipse.smarthome.core.thing.ThingUID;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
+import org.openhab.core.config.discovery.DiscoveryResult;
+import org.openhab.core.config.discovery.DiscoveryResultBuilder;
+import org.openhab.core.config.discovery.mdns.MDNSDiscoveryParticipant;
+import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.core.thing.ThingUID;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +37,15 @@ import org.slf4j.LoggerFactory;
  *
  * @author Pavion - Initial contribution
  */
-@Component(service = MDNSDiscoveryParticipant.class, immediate = false)
+@Component(service = MDNSDiscoveryParticipant.class, immediate = false, configurationPid = "binding.synologysurveillancestation")
+@NonNullByDefault
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
 
     private final Logger logger = LoggerFactory.getLogger(BridgeMdnsDiscoveryService.class);
+
+    @Activate
+    public void activate(ComponentContext context) {
+    }
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypeUIDs() {
@@ -49,6 +58,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
     }
 
     @Override
+    @Nullable
     public DiscoveryResult createResult(ServiceInfo service) {
         ThingUID uid = getThingUID(service);
         if (uid != null) {
@@ -63,12 +73,16 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
                 if (name != null && ip != null && model != null && serial != null && port != null) {
                     String label = String.format("%s (%s)", name, model);
                     Map<String, Object> properties = new HashMap<>();
+                    properties.put(SynoBindingConstants.ACCEPT_SSL, false);
                     properties.put(SynoBindingConstants.PROTOCOL, "http");
                     properties.put(SynoBindingConstants.PORT, port);
                     properties.put(SynoBindingConstants.HOST, ip);
+                    // properties.put(SynoBindingConstants.USER_NAME, "");
+                    // properties.put(SynoBindingConstants.PASSWORD, "");
+                    properties.put(SynoBindingConstants.SERIAL, serial.toLowerCase());
 
                     DiscoveryResult result = DiscoveryResultBuilder.create(uid).withProperties(properties)
-                            .withRepresentationProperty(serial.toLowerCase()).withLabel(label).build();
+                            .withRepresentationProperty(SynoBindingConstants.SERIAL).withLabel(label).build();
                     return result;
                 }
             }
@@ -77,6 +91,7 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
     }
 
     @Override
+    @Nullable
     public ThingUID getThingUID(ServiceInfo service) {
         String vendor = service.getPropertyString("vendor");
         String serial = service.getPropertyString("serial");
@@ -87,5 +102,4 @@ public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
         }
         return null;
     }
-
 }

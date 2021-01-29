@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -17,14 +17,16 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.thing.Channel;
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.type.DynamicStateDescriptionProvider;
-import org.eclipse.smarthome.core.types.StateDescription;
-import org.eclipse.smarthome.core.types.StateOption;
+import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.type.DynamicStateDescriptionProvider;
+import org.openhab.core.types.StateDescription;
+import org.openhab.core.types.StateDescriptionFragmentBuilder;
+import org.openhab.core.types.StateOption;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 
@@ -36,27 +38,27 @@ import org.osgi.service.component.annotations.Deactivate;
  * @author Pavion - Contribution
  */
 @NonNullByDefault
-@Component(service = { DynamicStateDescriptionProvider.class,
-        SynoDynamicStateDescriptionProvider.class }, immediate = true)
+@Component(service = { DynamicStateDescriptionProvider.class, SynoDynamicStateDescriptionProvider.class })
 public class SynoDynamicStateDescriptionProvider implements DynamicStateDescriptionProvider {
 
     private final Map<ChannelUID, List<StateOption>> channelOptionsMap = new ConcurrentHashMap<>();
+
+    @Activate
+    public void activate(ComponentContext context) {
+    }
 
     public void setStateOptions(ChannelUID channelUID, List<StateOption> options) {
         channelOptionsMap.put(channelUID, options);
     }
 
     @Override
-    public @Nullable StateDescription getStateDescription(@NonNull Channel channel, @Nullable StateDescription original,
+    public @Nullable StateDescription getStateDescription(Channel channel, @Nullable StateDescription original,
             @Nullable Locale locale) {
         List<StateOption> options = channelOptionsMap.get(channel.getUID());
 
-        if (original != null) {
-            return new StateDescription(original.getMinimum(), original.getMaximum(), original.getStep(),
-                    original.getPattern(), original.isReadOnly(), options);
-        }
-
-        return new StateDescription(null, null, null, null, false, options);
+        StateDescriptionFragmentBuilder builder = (original == null) ? StateDescriptionFragmentBuilder.create()
+                : StateDescriptionFragmentBuilder.create(original);
+        return builder.withOptions(options).build().toStateDescription();
     }
 
     @Deactivate

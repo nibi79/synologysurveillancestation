@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -24,6 +24,7 @@ import org.eclipse.jdt.annotation.Nullable;
 @NonNullByDefault
 public class SynoConfig {
     private String protocol = "http";
+    private boolean acceptSsl = false;
     private String host = "";
     private String port = "5000";
     private String username = "";
@@ -37,6 +38,15 @@ public class SynoConfig {
      */
     public String getProtocol() {
         return protocol;
+    }
+
+    /**
+     * Returns accept SSL state
+     *
+     * @return true if to accept everything, false by default
+     */
+    public boolean isAcceptSsl() {
+        return acceptSsl;
     }
 
     /**
@@ -84,8 +94,9 @@ public class SynoConfig {
 
     @Override
     public String toString() {
-        return "Config [protocol=" + protocol + ", host=" + host + ", port=" + port + ", username=" + username
-                + ", password=" + "********, refreshRateEvents=" + String.valueOf(refreshRateEvents) + "]";
+        return "Config [protocol=" + protocol + ", acceptSsl=" + acceptSsl + ", host=" + host + ", port=" + port
+                + ", username=" + username + ", password=" + "********, refreshRateEvents="
+                + String.valueOf(refreshRateEvents) + "]";
     }
 
     @Override
@@ -98,7 +109,57 @@ public class SynoConfig {
         }
         SynoConfig cfg = (SynoConfig) obj;
         return cfg.getHost().equals(getHost()) && cfg.getPassword().equals(getPassword())
-                && cfg.getProtocol().equals(getProtocol()) && cfg.getPort().equals(getPort())
-                && cfg.getUsername().equals(getUsername()) && cfg.getRefreshRateEvents() == refreshRateEvents;
+                && cfg.isAcceptSsl() == isAcceptSsl() && cfg.getProtocol().equals(getProtocol())
+                && cfg.getPort().equals(getPort()) && cfg.getUsername().equals(getUsername())
+                && cfg.getRefreshRateEvents() == refreshRateEvents;
+    }
+
+    /**
+     * @param protocol the protocol to set
+     */
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+
+    /**
+     * @param acceptSsl the acceptSsl to set
+     */
+    public void setAcceptSsl(boolean acceptSsl) {
+        this.acceptSsl = acceptSsl;
+    }
+
+    /**
+     * @param host the host to set
+     */
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    /**
+     * @param port the port to set
+     */
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    /**
+     * @param username the username to set
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * @param refreshRateEvents the refreshRateEvents to set
+     */
+    public void setRefreshRateEvents(int refreshRateEvents) {
+        this.refreshRateEvents = refreshRateEvents;
     }
 }

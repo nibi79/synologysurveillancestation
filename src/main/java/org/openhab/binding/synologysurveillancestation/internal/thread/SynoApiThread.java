@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -19,14 +19,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.handler.SynoHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.binding.BaseThingHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,9 +128,7 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
      * Run the runnable just once (for manual refresh)
      */
     public void runOnce() {
-        if (getSynoHandler().getSynoWebApiHandler() == null) {
-            logger.error("DeviceId: {}; Thread: {}; Handler not (yet) initialized", deviceId, name);
-        } else if (isNeeded()) {
+        if (isNeeded()) {
             logger.debug("Thread {} tick", name);
             boolean success = false;
             try {
@@ -150,7 +148,9 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                         logger.error("DeviceId: {}; Thread: {}; Attempt to reconnect failed", deviceId, name);
                     }
                 } else {
-                    logger.error("DeviceId: {}; Thread: {}; Handler gone offline", deviceId, name);
+                    logger.error(
+                            "DeviceId: {}; Thread: {}; Handler gone offline (Surveillance Station probably disabled)",
+                            deviceId, name);
                 }
             } catch (Exception e) {
                 logger.error("DeviceId: {}; Thread: {}; Critical error:\n", deviceId, name, e);
@@ -181,7 +181,6 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
                         ThingStatusDetail.COMMUNICATION_ERROR, "Thread " + name);
             }
         }
-
     }
 
     /**
@@ -213,5 +212,4 @@ public abstract class SynoApiThread<T extends BaseThingHandler & SynoHandler> {
      * @return if thread has to be run
      */
     public abstract boolean isNeeded();
-
 }

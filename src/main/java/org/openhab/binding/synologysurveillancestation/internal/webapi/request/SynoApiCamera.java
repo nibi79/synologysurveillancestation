@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,10 +12,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +20,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -124,7 +120,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public byte[] getSnapshot(String cameraId, int timeout, int streamId)
             throws IOException, URISyntaxException, WebApiException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
             Map<String, String> params = new HashMap<>();
@@ -140,20 +135,37 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
             ContentResponse response = request.timeout(timeout, TimeUnit.SECONDS).send();
 
             responseTime = System.currentTimeMillis() - responseTime;
+            byte[] ret = new byte[0];
             if (response.getStatus() == 200) {
-                byte[] ret = response.getContent();
+                ret = response.getContent();
                 if (ret.length < 200) {
-                    if (new String(ret).contains("\"success\":false")) {
-                        logger.trace("Device: {}, API response time: {} ms, unexpected response: {}", cameraId,
-                                responseTime, new String(ret));
-                        throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
+                    String error = new String(ret);
+                    if (error.contains("\"success\":false")) {
+                        if (error.contains("{\"code\":400}")) {
+                            logger.debug("Device: {}, API response time: {} ms, execution failed", cameraId,
+                                    responseTime);
+                            return new byte[0];
+                        } else if (error.contains("{\"code\":401}")) {
+                            logger.debug("Device: {}, API response time: {} ms, parameter invalid", cameraId,
+                                    responseTime);
+                            return new byte[0];
+                        } else if (error.contains("{\"code\":402}")) {
+                            logger.trace("Device: {}, API response time: {} ms, camera disabled", cameraId,
+                                    responseTime);
+                            return new byte[2];
+                        } else if (error.contains("{\"code\":407}")) {
+                            logger.debug("Device: {}, API response time: {} ms, CMS closed", cameraId, responseTime);
+                            return new byte[0];
+                        } else {
+                            logger.trace("Device: {}, API response time: {} ms, unexpected response: {}", cameraId,
+                                    responseTime, error);
+                            throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
+                        }
                     }
                 }
-                InputStream is = new ByteArrayInputStream(ret);
-                IOUtils.copy(is, baos);
             }
             logger.trace("Device: {}, API response time: {} ms, stream id: {}", cameraId, responseTime, streamId);
-            return baos.toByteArray();
+            return ret;
         } catch (IllegalArgumentException | SecurityException | ExecutionException | TimeoutException
                 | InterruptedException e) {
             throw new WebApiException(e);

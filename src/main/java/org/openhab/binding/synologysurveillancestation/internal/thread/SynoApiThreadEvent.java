@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -19,14 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.smarthome.core.library.types.OnOffType;
-import org.eclipse.smarthome.core.thing.Channel;
-import org.eclipse.smarthome.core.thing.Thing;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.thing.Channel;
 
 /**
  * Thread for getting camera events (motion, alarm)
@@ -54,14 +53,16 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     @Override
     public boolean isNeeded() {
         return (getSynoHandler().isLinked(CHANNEL_EVENT_MOTION) || getSynoHandler().isLinked(CHANNEL_EVENT_ALARM)
-                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL) || getSynoHandler().isLinked(CHANNEL_EVENT_CONTINUOUS) 
-                || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL) || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
+                || getSynoHandler().isLinked(CHANNEL_EVENT_MANUAL)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_CONTINUOUS)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_EXTERNAL)
+                || getSynoHandler().isLinked(CHANNEL_EVENT_ACTIONRULE));
     }
 
     @Override
     public boolean refresh() throws Exception {
         SynoCameraHandler cameraHandler = getSynoHandler();
-        Thing thing = cameraHandler.getThing();
+        // Thing thing = cameraHandler.getThing();
 
         EventResponse response = cameraHandler.getSynoWebApiHandler().getApiEvent()
                 .getEventResponse(cameraHandler.getCameraId(), lastEventTime, events);
@@ -106,5 +107,4 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     public Map<String, SynoEvent> getEvents() {
         return events;
     }
-
 }

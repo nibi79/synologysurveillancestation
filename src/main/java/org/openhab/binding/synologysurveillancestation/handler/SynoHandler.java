@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -14,6 +14,8 @@ package org.openhab.binding.synologysurveillancestation.handler;
 
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 
@@ -23,11 +25,11 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiExc
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
-public interface SynoHandler {
+public @NonNullByDefault interface SynoHandler {
 
     public ScheduledExecutorService getScheduler();
 
-    public SynoWebApiHandler getSynoWebApiHandler();
+    public @Nullable SynoWebApiHandler getSynoWebApiHandler();
 
     public boolean reconnect(boolean forceLogout) throws WebApiException;
 }

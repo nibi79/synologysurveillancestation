@@ -34,9 +34,6 @@ This binding is currently under development. Your help and testing would be grea
 For an installation the [latest release](https://github.com/nibi79/synologysurveillancestation/releases) should be copied into the /addons folder of your openHAB installation.
 For an upgrade the existing file should be overwritten. On major or structural changes existing things might have to be deleted and recreated, existing channels might be kept. For further information please read release notes of a corresponding release.
 
-**Note:**
-[v0.32-alpha](https://github.com/nibi79/synologysurveillancestation/releases/tag/v0.32-alpha) is the last release supporting openHAB prior to 2.4.0. If you want to use newer release please consider to upgrade your openHAB.
-
 ## Supported Things
 
 Currently following Things are supported:
@@ -52,12 +49,13 @@ If your openHAB installation is in the same network as your Synology DiskStation
 
 Following options can be set for the **Bridge**:
 
-- Access protocol of the DiskStation (read only / unchangeable with automatic discovery)
-- IP of the DiskStation (read only / unchangeable with automatic discovery)
-- Port of the DiskStation (read only / unchangeable with automatic discovery)
+- Access protocol of the DiskStation
+- Host/IP of the DiskStation
+- Port of the DiskStation
 - User name for the DiskStation / Surveillance Station
 - Password for the DiskStation / Surveillance Station
 - Refresh rate for DiskStation events (Home Mode)
+- (**advanced**) Enable support for self-signed / invalid SSL certificates (binding or openHAB restart required on change)
 
 Following options can be set for the **Camera**:
 
@@ -110,7 +108,15 @@ Currently following **Channels** are supported on the **Camera**:
 ### .things
 
 ```
-Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password" ] {
+Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password", acceptSsl="false" ] {
+Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, refresh-rate-md-param=120, snapshot-stream-id=1 ]
+}
+```
+
+or for a self-signed SSL certificate:
+
+```
+Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="https", host="192.168.0.1", port="5001", username="my username", password="my password", acceptSsl="true" ] {
 Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, refresh-rate-md-param=120, snapshot-stream-id=1 ]
 }
 ```

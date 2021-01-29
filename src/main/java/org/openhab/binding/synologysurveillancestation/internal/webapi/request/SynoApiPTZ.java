@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -85,11 +85,11 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
                         zoomIn(cameraId, MOVE_COMMAND_START);
                         break;
                     case "START_OUT":
-                        zoomIn(cameraId, MOVE_COMMAND_START);
+                        zoomOut(cameraId, MOVE_COMMAND_START);
                         break;
                     // STOP
                     case "STOP_IN":
-                        zoomOut(cameraId, MOVE_COMMAND_STOP);
+                        zoomIn(cameraId, MOVE_COMMAND_STOP);
                         break;
                     case "STOP_OUT":
                         zoomOut(cameraId, MOVE_COMMAND_STOP);
@@ -361,5 +361,4 @@ public class SynoApiPTZ extends SynoApiRequest<SimpleResponse> {
 
         return response;
     }
-
 }

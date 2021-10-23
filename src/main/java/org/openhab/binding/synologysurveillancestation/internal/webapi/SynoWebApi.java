@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
 
 /**
@@ -20,6 +21,7 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.response.
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public interface SynoWebApi {
     /**
      * Establish connection to Surveillance Station Web API
@@ -44,5 +46,4 @@ public interface SynoWebApi {
      * @return
      */
     public boolean isConnected();
-
 }

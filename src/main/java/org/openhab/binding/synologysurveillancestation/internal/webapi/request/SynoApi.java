@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,12 +12,15 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link SynoApi} is an interface for Synology API codes
  *
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public interface SynoApi {
 
     // API configuration versions
@@ -64,5 +67,4 @@ public interface SynoApi {
     public static final int CONNECTION_TIMEOUT = 5000;
 
     public SynoApiConfig getApiConfig();
-
 }

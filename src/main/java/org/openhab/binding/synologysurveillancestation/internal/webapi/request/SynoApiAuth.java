@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -40,7 +40,7 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
     // API configuration
     private static final String API_NAME = "SYNO.API.Auth";
-    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_02, API_SCRIPT_AUTH);
+    private static final SynoApiConfig API_CONFIG = new SynoApiConfig(API_NAME, API_VERSION_06, API_SCRIPT_AUTH);
 
     /**
      * @param config
@@ -97,5 +97,4 @@ public class SynoApiAuth extends SynoApiRequest<AuthResponse> {
 
         return callApi(METHOD_LOGOUT, params);
     }
-
 }

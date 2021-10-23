@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2019 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -19,18 +19,18 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.config.discovery.AbstractDiscoveryService;
-import org.eclipse.smarthome.config.discovery.DiscoveryResult;
-import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
-import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.synologysurveillancestation.SynoBindingConstants;
 import org.openhab.binding.synologysurveillancestation.handler.SynoBridgeHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoWebApiHandler;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
+import org.openhab.core.config.discovery.AbstractDiscoveryService;
+import org.openhab.core.config.discovery.DiscoveryResult;
+import org.openhab.core.config.discovery.DiscoveryResultBuilder;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.core.thing.ThingUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,9 +90,6 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
 
         try {
             SynoWebApiHandler apiHandler = bridgeHandler.getSynoWebApiHandler();
-            if (apiHandler == null) {
-                return;
-            }
 
             CameraResponse response = apiHandler.getApiCamera().listCameras();
 
@@ -128,13 +125,22 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
             }
 
         } catch (WebApiException e) {
-            if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
+
+            if (e.getCause() instanceof javax.net.ssl.SSLHandshakeException
+                    || e.getCause() instanceof java.io.EOFException
+                    || e.getCause() instanceof java.util.concurrent.ExecutionException) {
+                logger.error("Possible SSL certificate issue, please consider using http or enabling SSL bypass");
+            } else if (e.getErrorCode() == 102) {
+                logger.error("Discovery Thread; Surveillance Station is disabled or not installed");
+            } else if (e.getErrorCode() == WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE.getCode()) {
                 logger.debug("Discovery Thread; Wrong/expired credentials");
                 try {
                     bridgeHandler.reconnect(false);
                 } catch (WebApiException ee) {
                     logger.error("Discovery Thread; Attempt to reconnect failed");
                 }
+            } else {
+                logger.error("Discovery Thread; Unexpected error: {} - {}", e.getErrorCode(), e.getMessage());
             }
         } catch (Exception npe) {
             logger.error("Error in WebApiException", npe);
@@ -145,5 +151,4 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
     protected void startBackgroundDiscovery() {
         startScan();
     }
-
 }

@@ -166,13 +166,13 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                                 break;
                             case CHANNEL_MOVEPRESET:
                                 String preset = checkOption(presets, command.toString());
-                                if (preset != "") {
+                                if (!"".equals(preset)) {
                                     apiHandler.getApiPTZ().goPreset(cameraId, preset);
                                 }
                                 break;
                             case CHANNEL_RUNPATROL:
                                 String patrol = checkOption(patrols, command.toString());
-                                if (patrol != "") {
+                                if (!"".equals(patrol)) {
                                     apiHandler.getApiPTZ().runPatrol(cameraId, patrol);
                                 }
                                 break;
@@ -262,7 +262,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                         threads.get(SynoApiThread.THREAD_CAMERAEVENT).runOnce();
                     }
 
-                    if (toExclude.size() > 0) {
+                    if (!toExclude.isEmpty()) {
                         ThingBuilder thingBuilder = editThing();
                         for (String channel : toExclude) {
                             thingBuilder.withoutChannel(new ChannelUID(getThing().getUID(), channel));
@@ -272,6 +272,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                 } catch (WebApiException e) {
                     logger.error("initialize camera: id {} - {}::{}", cameraId, getThing().getLabel(),
                             getThing().getUID());
+                    logger.error("Full stack trace: ", e);
                 }
 
                 updateStatus(ThingStatus.ONLINE);

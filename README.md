@@ -82,7 +82,7 @@ Currently following **Channels** are supported on the **Camera**:
 - PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
      - Zoom _IN/OUT_
      - Move _UP/DOWN/LEFT/RIGHT/HOME_
-     - Continuous Move/Zoom with _START_\<COMMAND\>_ and _STOP_\<COMMAND\>_
+     - Continuous Move/Zoom with _START\<COMMAND\>_ and _STOP\<COMMAND\>_
      - Move to preset
      - Run patrol
 - Event channels:

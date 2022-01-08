@@ -19,9 +19,6 @@ This binding connects openHAB with your surveillance cameras running on Synology
   - [Transformation](#transformation)
     - [.items](#items-1)
     - [transform/liveuri.js](#transformliveurijs)
-  - [Building the plugin](#building-the-plugin)
-    - [Using docker](#using-docker)
-  - [Developing the plugin](#developing-the-plugin)
   - [Support](#support)
 ***
 
@@ -201,66 +198,6 @@ String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologys
 ```
 
 Please note, **[Javascript Transformation](https://www.openhab.org/addons/transformations/javascript/)** add-on must be installed for the transformation to work properly.
-
-## Building the plugin
-
-If you have Java 8 installed simply use the following command to build the plugin
-
-```bash
-mvn clean install
-```
-
-This will create a `target` folder that contains the plugin `jar` file that can be used in your OH2 setup.
-
-### Using docker
-
-The easiest way to build the plugin without setting up your system with all necessary java components is to use the provided `docker` environment.
-In order to build the plugin simply run the following commands. You will find the `jar` files within the same directories as if you would have build the plugin locally.
-
-```bash
-docker-compose run build-plugin
-```
-
-## Developing the plugin
-
-The simplest way to engage in extending the plugin is to use `Eclipse` by following the OH2 developers guide. A good explanation can be found here
-https://github.com/openhab/openhab2-addons
-
-The steps to setup the plugin in your IDE are the following
-
-1. In the eclipse installer only select `openHAB Development` (And make sure to run JAVA 8) The rest will be taken care of by maven dependencies and you don't need those other projects to develop your binding.
-   1. If you have Eclipse already installed got to `File -> Import... -> Oomph -> GitHub Projects -> openHAB`
-2. Wait till Eclipse finishes startup. No need to do any of: Clean, Build, perform ModelGen launch.
-3. In the `pom.xml` of the demo app. (Next to bnd.runapp) remove the dependency `org.openhab.addons.bom.openhab-addons` and add following dependency
-
-```xml
-<dependency>
-    <groupId>org.openhab.addons.bundles</groupId>
-    <artifactId>org.openhab.transform.map</artifactId>
-    <version>${project.version}</version>
-    <scope>runtime</scope>
-</dependency>
-```
-
-4. Only import your binding in eclipse by going to `File -> Import... -> Existing Project into Worspace` and select the root folder of this project
-5. Add the dependency of your binding to the demo pom.xml (The dependency is what you would have put in the bom/openhab-addons/pom.xml
-
-```xml
-<dependency>
-    <groupId>org.openhab.addons.bundles</groupId>
-    <artifactId>org.openhab.binding.synologysurveillancestation</artifactId>
-    <version>${project.version}</version>
-    <scope>runtime</scope>
-</dependency>
-```
-
-6. Open the bnd.runapp. In browse repos you should be able to search your binding.
-7. Drag your binding from the browse repos to the Run requirements.
-8. Click resolve button (below Run requirements)
-9.  Start the bnd.runapp via buttons above Run requirements.
-10. This should show logging in console in eclipse.
-11. You should be able to browse to http://localhost:8080/paperui/index.html (can take some time)
-
 
 ## Support
 

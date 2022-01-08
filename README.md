@@ -80,9 +80,9 @@ Currently following **Channels** are supported on the **Camera**:
      - Snapshot static live feed URI (rtsp) _STRING_
      - Snapshot static live feed URI (mjpeg over http) _STRING_
 - PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
-     - Zoom _IN/OUT_
-     - Move _UP/DOWN/LEFT/RIGHT/HOME_
-     - Continuous Move/Zoom with _START\<COMMAND\>_ and _STOP\<COMMAND\>_
+     - Zoom `IN`/`OUT`
+     - Move `UP`/`DOWN`/`LEFT`/`RIGHT`/`HOME`
+     - Continuous Move/Zoom with `START_<COMMAND>` and `STOP_<COMMAND>` (e.g. `START_IN`)
      - Move to preset
      - Run patrol
 - Event channels:

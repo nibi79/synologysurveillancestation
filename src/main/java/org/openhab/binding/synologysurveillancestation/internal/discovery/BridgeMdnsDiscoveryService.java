@@ -29,8 +29,6 @@ import org.openhab.core.thing.ThingUID;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The {@link BridgeMdnsDiscoveryService} is a class for discovering the DiskStation via mDNS service
@@ -41,7 +39,7 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 public class BridgeMdnsDiscoveryService implements MDNSDiscoveryParticipant {
 
-    private final Logger logger = LoggerFactory.getLogger(BridgeMdnsDiscoveryService.class);
+    // private final Logger logger = LoggerFactory.getLogger(BridgeMdnsDiscoveryService.class);
 
     @Activate
     public void activate(ComponentContext context) {

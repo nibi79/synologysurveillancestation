@@ -25,7 +25,8 @@ import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiExc
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
-public @NonNullByDefault interface SynoHandler {
+@NonNullByDefault
+public interface SynoHandler {
 
     public ScheduledExecutorService getScheduler();
 

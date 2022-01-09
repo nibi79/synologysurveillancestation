@@ -21,8 +21,6 @@ import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraEventResponse;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.SimpleResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * SYNO.SurveillanceStation.Camera.Event
@@ -35,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class SynoApiCameraEvent extends SynoApiRequest<CameraEventResponse> {
-    private final Logger logger = LoggerFactory.getLogger(SynoApiCameraEvent.class);
+    // private final Logger logger = LoggerFactory.getLogger(SynoApiCameraEvent.class);
 
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.Camera.Event";
@@ -62,7 +60,7 @@ public class SynoApiCameraEvent extends SynoApiRequest<CameraEventResponse> {
     }
 
     public SimpleResponse setSource(String cameraId, String source) throws WebApiException {
-        if (!(source.equals("-1") || source.equals("0") || source.equals("1"))) {
+        if (!("-1".equals(source) || "0".equals(source) || "1".equals(source))) {
             return new SimpleResponse("{\"data\":{},\"success\":false}");
         }
         Map<String, String> params = new HashMap<>();

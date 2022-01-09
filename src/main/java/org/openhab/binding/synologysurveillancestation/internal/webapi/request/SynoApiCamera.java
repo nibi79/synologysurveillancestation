@@ -120,7 +120,6 @@ public class SynoApiCamera extends SynoApiRequest<CameraResponse> {
      */
     public byte[] getSnapshot(String cameraId, int timeout, int streamId)
             throws IOException, URISyntaxException, WebApiException {
-
         try {
             Map<String, String> params = new HashMap<>();
 

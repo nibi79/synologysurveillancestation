@@ -45,6 +45,7 @@ public class CameraEventResponse extends SimpleResponse {
      *
      * @return
      */
+    @SuppressWarnings("unused")
     private JsonObject getPDParam() {
         return getData().getAsJsonObject("PDParam");
     }

@@ -20,8 +20,6 @@ import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * SYNO.SurveillanceStation.ExternalEvent
@@ -33,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class SynoApiExternalEvent extends SynoApiRequest<CameraResponse> {
-    private final Logger logger = LoggerFactory.getLogger(SynoApiExternalEvent.class);
+    // private final Logger logger = LoggerFactory.getLogger(SynoApiExternalEvent.class);
 
     // API configuration
     private static final String API_NAME = "SYNO.SurveillanceStation.ExternalEvent";

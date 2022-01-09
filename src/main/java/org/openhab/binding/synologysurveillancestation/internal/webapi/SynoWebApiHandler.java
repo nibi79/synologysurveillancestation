@@ -133,7 +133,7 @@ public class SynoWebApiHandler implements SynoWebApi {
 
     @Override
     public boolean isConnected() {
-        return (!this.sessionID.equals(""));
+        return (!this.sessionID.isBlank());
     }
 
     /**

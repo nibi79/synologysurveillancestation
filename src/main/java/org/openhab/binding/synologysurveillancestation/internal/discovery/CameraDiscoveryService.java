@@ -125,7 +125,6 @@ public class CameraDiscoveryService extends AbstractDiscoveryService {
             }
 
         } catch (WebApiException e) {
-
             if (e.getCause() instanceof javax.net.ssl.SSLHandshakeException
                     || e.getCause() instanceof java.io.EOFException
                     || e.getCause() instanceof java.util.concurrent.ExecutionException) {

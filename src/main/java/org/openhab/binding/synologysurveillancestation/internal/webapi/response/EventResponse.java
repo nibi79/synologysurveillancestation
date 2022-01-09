@@ -73,7 +73,7 @@ public class EventResponse extends SimpleResponse {
      * @return the event with specified reason
      */
     public SynoEvent getEvent(int eventReason) {
-        return synoEvents.get(eventReason);
+        return synoEvents.getOrDefault(eventReason, new SynoEvent(0));
     }
 
     /**

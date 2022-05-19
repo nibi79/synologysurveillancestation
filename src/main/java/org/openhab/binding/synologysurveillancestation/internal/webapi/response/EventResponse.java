@@ -63,6 +63,28 @@ public class EventResponse extends SimpleResponse {
     }
 
     /**
+     * How many events were returned?
+     *
+     * @return
+     */
+    public boolean isEmpty() {
+        return synoEvents.isEmpty();
+    }
+
+    /**
+     * Get the first (latest) event (if available)
+     *
+     * @return
+     */
+    public SynoEvent getFirst() {
+        if (synoEvents.isEmpty()) {
+            return new SynoEvent(0);
+        } else {
+            return synoEvents.get(0);
+        }
+    }
+
+    /**
      * @return if the event with specified reason exists
      */
     public boolean hasEvent(int eventReason) {

@@ -26,7 +26,7 @@ public class SynoConfig {
     private String protocol = "http";
     private boolean acceptSsl = false;
     private String host = "";
-    private String port = "5000";
+    private int port = 5000;
     private String username = "";
     private String password = "";
     private int refreshRateEvents = 5;
@@ -63,7 +63,7 @@ public class SynoConfig {
      *
      * @return the port
      */
-    public String getPort() {
+    public int getPort() {
         return port;
     }
 
@@ -110,7 +110,7 @@ public class SynoConfig {
         SynoConfig cfg = (SynoConfig) obj;
         return cfg.getHost().equals(getHost()) && cfg.getPassword().equals(getPassword())
                 && cfg.isAcceptSsl() == isAcceptSsl() && cfg.getProtocol().equals(getProtocol())
-                && cfg.getPort().equals(getPort()) && cfg.getUsername().equals(getUsername())
+                && cfg.getPort() == port && cfg.getUsername().equals(getUsername())
                 && cfg.getRefreshRateEvents() == refreshRateEvents;
     }
 
@@ -138,7 +138,7 @@ public class SynoConfig {
     /**
      * @param port the port to set
      */
-    public void setPort(String port) {
+    public void setPort(int port) {
         this.port = port;
     }
 

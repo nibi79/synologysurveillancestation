@@ -12,10 +12,11 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.thread;
 
-import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.*;
+import static org.openhab.binding.synologysurveillancestation.SynoBindingConstants.CHANNEL_SNAPSHOT;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
+import org.openhab.binding.synologysurveillancestation.internal.SynoCameraConfig;
 import org.openhab.core.library.types.RawType;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.Thing;
@@ -45,10 +46,9 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
 
         Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT);
         Thing thing = cameraHandler.getThing();
-
-        int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
+        SynoCameraConfig config = thing.getConfiguration().as(SynoCameraConfig.class);
         byte[] snapshot = cameraHandler.getSynoWebApiHandler().getApiCamera()
-                .getSnapshot(getSynoHandler().getCameraId(), getRefreshRate(), streamId);
+                .getSnapshot(getSynoHandler().getCameraId(), getRefreshRate(), config.getSnapshotStreamId());
         if (snapshot.length < 1000) {
             getSynoHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             return (snapshot.length == 2);

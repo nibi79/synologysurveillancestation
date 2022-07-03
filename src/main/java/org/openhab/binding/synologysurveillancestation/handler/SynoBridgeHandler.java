@@ -57,7 +57,6 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     private @Nullable CameraDiscoveryService discoveryService;
     private final SynoWebApiHandler apiHandler;
     private final Map<String, SynoApiThread<SynoBridgeHandler>> threads = new HashMap<>();
-    private int refreshRateEvents = 3;
     private final AtomicBoolean refreshInProgress = new AtomicBoolean(false);
     private SynoConfig config = new SynoConfig();
 
@@ -75,15 +74,10 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
 
     public SynoBridgeHandler(Bridge bridge, HttpClient httpClient) {
         super(bridge);
-        try {
-            this.refreshRateEvents = Integer.parseInt(bridge.getConfiguration().get(REFRESH_RATE_EVENTS).toString());
-        } catch (Exception ex) {
-            logger.error("Error parsing Bridge configuration");
-        }
         config = getConfigAs(SynoConfig.class);
 
         apiHandler = new SynoWebApiHandler(config, httpClient);
-        threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, refreshRateEvents));
+        threads.put(SynoApiThread.THREAD_HOMEMODE, new SynoApiThreadHomeMode(this, config.getRefreshRateEvents()));
         try {
             reconnect(false);
         } catch (WebApiException e) {
@@ -212,6 +206,7 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
         boolean refreshOnly = true;
         Configuration currentConfig = getConfig();
+        int oldRefreshRateEvents = currentConfig.as(SynoConfig.class).getRefreshRateEvents();
         for (Entry<String, Object> entry : configurationParameters.entrySet()) {
             if (!currentConfig.containsKey(entry.getKey())) {
                 refreshOnly = false;
@@ -225,10 +220,9 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         if (!refreshOnly) {
             super.handleConfigurationUpdate(configurationParameters);
         }
-        int newRefreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
-        if (newRefreshRateEvents != this.refreshRateEvents) {
-            this.refreshRateEvents = newRefreshRateEvents;
-            threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(this.refreshRateEvents);
+        int newRefreshRateEvents = getConfig().as(SynoConfig.class).getRefreshRateEvents();
+        if (newRefreshRateEvents != oldRefreshRateEvents) {
+            threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(newRefreshRateEvents);
         }
     }
 

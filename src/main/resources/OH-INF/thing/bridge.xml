@@ -38,7 +38,7 @@
 				<description>IP of Surveillance Station</description>
 				<required>true</required>
 			</parameter>
-			<parameter name="port" type="text">
+			<parameter name="port" type="integer">
 				<label>Port:</label>
 				<description>Port for accessing Surveillance Station</description>
 				<default>5000</default>

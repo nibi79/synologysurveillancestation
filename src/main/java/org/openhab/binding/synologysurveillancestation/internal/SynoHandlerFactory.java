@@ -116,21 +116,20 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
-            if (thing.getConfiguration().get(ACCEPT_SSL) != null) {
-                if (thing.getConfiguration().get(ACCEPT_SSL).toString().toLowerCase().equals("true")) {
-                    SslContextFactory sslContextFactory = new SslContextFactory(true);
-                    sslContextFactory.setTrustAll(true);
-                    sslContextFactory.setEndpointIdentificationAlgorithm(null);
-                    HttpClient client = new HttpClient(sslContextFactory);
-                    try {
-                        client.start();
-                        this.httpClient = client;
-                        logger.debug("Trusting HttpServer started");
-                        this.acceptSsl = true;
-                    } catch (Exception e) {
-                        logger.error("Trusting HttpServer failed");
-                        this.acceptSsl = false;
-                    }
+            SynoConfig config = thing.getConfiguration().as(SynoConfig.class);
+            if (config.isAcceptSsl()) {
+                SslContextFactory sslContextFactory = new SslContextFactory(true);
+                sslContextFactory.setTrustAll(true);
+                sslContextFactory.setEndpointIdentificationAlgorithm(null);
+                HttpClient client = new HttpClient(sslContextFactory);
+                try {
+                    client.start();
+                    this.httpClient = client;
+                    logger.debug("Trusting HttpServer started");
+                    this.acceptSsl = true;
+                } catch (Exception e) {
+                    logger.error("Trusting HttpServer failed");
+                    this.acceptSsl = false;
                 }
             }
             bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);

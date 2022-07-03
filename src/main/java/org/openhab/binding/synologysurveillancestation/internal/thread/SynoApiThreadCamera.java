@@ -16,13 +16,13 @@ import static org.openhab.binding.synologysurveillancestation.SynoBindingConstan
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.handler.SynoCameraHandler;
+import org.openhab.binding.synologysurveillancestation.internal.SynoCameraConfig;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.WebApiAuthErrorCodes;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.CameraResponse;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Channel;
-import org.openhab.core.thing.Thing;
 
 /**
  * Thread for getting camera state (enabled, recording)
@@ -56,10 +56,9 @@ public class SynoApiThreadCamera extends SynoApiThread<SynoCameraHandler> {
 
         if (cameraHandler.isLinked(CHANNEL_SNAPSHOT_URI_DYNAMIC)) {
             Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT_URI_DYNAMIC);
-            Thing thing = cameraHandler.getThing();
-            int streamId = Integer.parseInt(thing.getConfiguration().get(STREAM_ID).toString());
-
-            String path = cameraHandler.getSynoWebApiHandler().getApiCamera().getSnapshotUri(cameraId, streamId);
+            SynoCameraConfig config = cameraHandler.getThing().getConfiguration().as(SynoCameraConfig.class);
+            String path = cameraHandler.getSynoWebApiHandler().getApiCamera().getSnapshotUri(cameraId,
+                    config.getSnapshotStreamId());
             path += "&timestamp=" + String.valueOf(System.currentTimeMillis());
             cameraHandler.updateState(channel.getUID(), new StringType(path));
         }

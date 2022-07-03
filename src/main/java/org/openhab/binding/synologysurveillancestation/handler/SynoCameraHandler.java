@@ -23,6 +23,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.synologysurveillancestation.internal.SynoCameraConfig;
 import org.openhab.binding.synologysurveillancestation.internal.discovery.SynoDynamicStateDescriptionProvider;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThread;
 import org.openhab.binding.synologysurveillancestation.internal.thread.SynoApiThreadCamera;
@@ -87,25 +88,14 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
         super(thing);
 
         this.stateDescriptionProvider = stateDescriptionProvider;
+        SynoCameraConfig config = getThing().getConfiguration().as(SynoCameraConfig.class);
 
-        int refreshRateSnapshot = 10;
-        int refreshRateEvents = 3;
-        int refreshRateCameraEvent = 0;
-
-        try {
-            refreshRateSnapshot = Integer.parseInt(getThing().getConfiguration().get(REFRESH_RATE_SNAPSHOT).toString());
-            refreshRateEvents = Integer.parseInt(getThing().getConfiguration().get(REFRESH_RATE_EVENTS).toString());
-            refreshRateCameraEvent = Integer
-                    .parseInt(getThing().getConfiguration().get(REFRESH_RATE_CAMERAEVENT).toString());
-        } catch (Exception ex) {
-            logger.error("Error parsing camera Thing configuration");
-        }
-
-        threads.put(SynoApiThread.THREAD_SNAPSHOT, new SynoApiThreadSnapshot(this, refreshRateSnapshot));
-        threads.put(SynoApiThread.THREAD_EVENT, new SynoApiThreadEvent(this, refreshRateEvents));
-        threads.put(SynoApiThread.THREAD_CAMERA, new SynoApiThreadCamera(this, refreshRateEvents));
-        threads.put(SynoApiThread.THREAD_LIVEURI, new SynoApiThreadLiveUri(this, refreshRateEvents));
-        threads.put(SynoApiThread.THREAD_CAMERAEVENT, new SynoApiThreadCameraEvent(this, refreshRateCameraEvent));
+        threads.put(SynoApiThread.THREAD_SNAPSHOT, new SynoApiThreadSnapshot(this, config.getRefreshRateSnapshot()));
+        threads.put(SynoApiThread.THREAD_EVENT, new SynoApiThreadEvent(this, config.getRefreshRateEvents()));
+        threads.put(SynoApiThread.THREAD_CAMERA, new SynoApiThreadCamera(this, config.getRefreshRateEvents()));
+        threads.put(SynoApiThread.THREAD_LIVEURI, new SynoApiThreadLiveUri(this, config.getRefreshRateEvents()));
+        threads.put(SynoApiThread.THREAD_CAMERAEVENT,
+                new SynoApiThreadCameraEvent(this, config.getRefreshRateMdParam()));
     }
 
     @Override
@@ -129,8 +119,8 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
                                 updateState(channelUID, OnOffType.OFF);
                                 break;
                             case CHANNEL_SNAPSHOT_URI_STATIC:
-                                int streamId = Integer
-                                        .parseInt(this.getThing().getConfiguration().get(STREAM_ID).toString());
+                                int streamId = this.getThing().getConfiguration().as(SynoCameraConfig.class)
+                                        .getSnapshotStreamId();
                                 String uri = apiHandler.getApiCamera().getSnapshotUri(cameraId, streamId);
                                 updateState(channelUID, new StringType(uri));
                                 break;
@@ -316,16 +306,13 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
             configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
         }
         updateConfiguration(configuration);
+        SynoCameraConfig config = thing.getConfiguration().as(SynoCameraConfig.class);
 
-        int refreshRateSnapshot = Integer.parseInt(configurationParameters.get(REFRESH_RATE_SNAPSHOT).toString());
-        int refreshRateEvents = Integer.parseInt(configurationParameters.get(REFRESH_RATE_EVENTS).toString());
-        int refreshRateCameraEvent = Integer
-                .parseInt(getThing().getConfiguration().get(REFRESH_RATE_CAMERAEVENT).toString());
-        threads.get(SynoApiThread.THREAD_SNAPSHOT).setRefreshRate(refreshRateSnapshot);
-        threads.get(SynoApiThread.THREAD_EVENT).setRefreshRate(refreshRateEvents);
-        threads.get(SynoApiThread.THREAD_CAMERA).setRefreshRate(refreshRateEvents);
-        threads.get(SynoApiThread.THREAD_LIVEURI).setRefreshRate(refreshRateEvents);
-        threads.get(SynoApiThread.THREAD_CAMERAEVENT).setRefreshRate(refreshRateCameraEvent);
+        threads.get(SynoApiThread.THREAD_SNAPSHOT).setRefreshRate(config.getRefreshRateSnapshot());
+        threads.get(SynoApiThread.THREAD_EVENT).setRefreshRate(config.getRefreshRateEvents());
+        threads.get(SynoApiThread.THREAD_CAMERA).setRefreshRate(config.getRefreshRateEvents());
+        threads.get(SynoApiThread.THREAD_LIVEURI).setRefreshRate(config.getRefreshRateEvents());
+        threads.get(SynoApiThread.THREAD_CAMERAEVENT).setRefreshRate(config.getRefreshRateMdParam());
     }
 
     @Override

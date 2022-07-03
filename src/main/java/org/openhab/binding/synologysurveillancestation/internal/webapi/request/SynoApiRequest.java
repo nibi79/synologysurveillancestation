@@ -121,7 +121,7 @@ public abstract class SynoApiRequest<T extends SynoApiResponse> implements SynoA
      */
     protected URI getWebApiUrlBuilder() throws URISyntaxException {
         StringBuilder sb = URIUtil.newURIBuilder(getConfig().getProtocol(), getConfig().getHost(),
-                Integer.parseInt(getConfig().getPort()));
+                getConfig().getPort());
         URI uri = new URI(sb.toString());
         uri = URIUtil.addPath(uri, apiConfig.getScriptpath());
         return uri;

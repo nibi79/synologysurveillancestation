@@ -200,29 +200,30 @@ public class SynoBridgeHandler extends BaseBridgeHandler implements SynoHandler 
         for (SynoApiThread<SynoBridgeHandler> thread : threads.values()) {
             thread.stop();
         }
+        try {
+            apiHandler.disconnect();
+        } catch (WebApiException e) {
+            logger.error("Error disconnecting: ", e);
+        }
     }
 
     @Override
     public void handleConfigurationUpdate(Map<String, Object> configurationParameters) {
-        boolean refreshOnly = true;
-        Configuration currentConfig = getConfig();
-        int oldRefreshRateEvents = currentConfig.as(SynoConfig.class).getRefreshRateEvents();
-        for (Entry<String, Object> entry : configurationParameters.entrySet()) {
-            if (!currentConfig.containsKey(entry.getKey())) {
-                refreshOnly = false;
-                break;
-            } else if (!currentConfig.get(entry.getKey()).equals(entry.getValue())
-                    && !entry.getKey().equals(REFRESH_RATE_EVENTS)) {
-                refreshOnly = false;
-                break;
+        Configuration configuration = editConfiguration();
+
+        for (Entry<String, Object> configurationParameter : configurationParameters.entrySet()) {
+            configuration.put(configurationParameter.getKey(), configurationParameter.getValue());
+        }
+        SynoConfig oldConfig = thing.getConfiguration().as(SynoConfig.class);
+        SynoConfig newConfig = configuration.as(SynoConfig.class);
+
+        if (!oldConfig.equals(newConfig)) {
+            if (oldConfig.equalsButForRefresh(newConfig)) {
+                updateConfiguration(configuration);
+                threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(newConfig.getRefreshRateEvents());
+            } else {
+                super.handleConfigurationUpdate(configurationParameters);
             }
-        }
-        if (!refreshOnly) {
-            super.handleConfigurationUpdate(configurationParameters);
-        }
-        int newRefreshRateEvents = getConfig().as(SynoConfig.class).getRefreshRateEvents();
-        if (newRefreshRateEvents != oldRefreshRateEvents) {
-            threads.get(SynoApiThread.THREAD_HOMEMODE).setRefreshRate(newRefreshRateEvents);
         }
     }
 

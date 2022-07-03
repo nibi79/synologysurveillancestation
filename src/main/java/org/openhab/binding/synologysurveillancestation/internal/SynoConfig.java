@@ -115,6 +115,25 @@ public class SynoConfig {
     }
 
     /**
+     * If but refresh is changed
+     *
+     * @param obj
+     * @return
+     */
+    public boolean equalsButForRefresh(@Nullable Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof SynoConfig)) {
+            return false;
+        }
+        SynoConfig cfg = (SynoConfig) obj;
+        return cfg.getHost().equals(getHost()) && cfg.getPassword().equals(getPassword())
+                && cfg.isAcceptSsl() == isAcceptSsl() && cfg.getProtocol().equals(getProtocol())
+                && cfg.getPort() == port && cfg.getUsername().equals(getUsername());
+    }
+
+    /**
      * @param protocol the protocol to set
      */
     public void setProtocol(String protocol) {

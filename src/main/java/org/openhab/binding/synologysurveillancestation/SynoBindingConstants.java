@@ -52,10 +52,10 @@ public class SynoBindingConstants {
     public static final String PASSWORD = "password";
     public static final String SERIAL = "serial";
     public static final String SESSION_ID = "sessionID";
-    public static final String REFRESH_RATE_SNAPSHOT = "refresh-rate-snapshot";
-    public static final String REFRESH_RATE_EVENTS = "refresh-rate-events";
-    public static final String REFRESH_RATE_CAMERAEVENT = "refresh-rate-md-param";
-    public static final String STREAM_ID = "snapshot-stream-id";
+    // public static final String REFRESH_RATE_SNAPSHOT = "refreshRateSnapshot";
+    public static final String REFRESH_RATE_EVENTS = "refreshRateEvents";
+    // public static final String REFRESH_RATE_CAMERAEVENT = "refreshRateMdParam";
+    // public static final String STREAM_ID = "snapshotStreamId";
 
     // List of all Bridge Channels
     public static final String CHANNEL_HOMEMODE = "homemode";

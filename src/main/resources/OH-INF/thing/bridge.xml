@@ -55,7 +55,7 @@
 				<description>Password for accessing camera</description>
 				<required>true</required>
 			</parameter>
-			<parameter name="refresh-rate-events" unit="s" type="integer">
+			<parameter name="refreshRateEvents" unit="s" type="integer">
 				<label>Event refresh rate:</label>
 				<description>Refresh rate for station global events in seconds (0 to disable)</description>
 				<default>3</default>

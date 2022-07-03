@@ -106,7 +106,7 @@ Currently following **Channels** are supported on the **Camera**:
 
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password", acceptSsl="false" ] {
-Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, refresh-rate-md-param=120, snapshot-stream-id=1 ]
+Thing camera CameraID "Camera 1" @ "Outside" [ refreshRateEvents=5, refreshRateSnapshot=10, refreshRateMdParam=120, snapshotStreamId=1 ]
 }
 ```
 
@@ -114,7 +114,7 @@ or for a self-signed SSL certificate:
 
 ```
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="https", host="192.168.0.1", port="5001", username="my username", password="my password", acceptSsl="true" ] {
-Thing camera CameraID "Camera 1" @ "Outside" [ refresh-rate-events=5, refresh-rate-snapshot=10, refresh-rate-md-param=120, snapshot-stream-id=1 ]
+Thing camera CameraID "Camera 1" @ "Outside" [ refreshRateEvents=5, refreshRateSnapshot=10, refreshRateMdParam=120, snapshotStreamId=1 ]
 }
 ```
 

@@ -21,6 +21,8 @@ import org.openhab.core.library.types.RawType;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.types.UnDefType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Thread for getting snapshots
@@ -29,7 +31,7 @@ import org.openhab.core.types.UnDefType;
  */
 @NonNullByDefault
 public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
-    // private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
+    private final Logger logger = LoggerFactory.getLogger(SynoApiThreadSnapshot.class);
 
     public SynoApiThreadSnapshot(SynoCameraHandler handler, int refreshRate) {
         super(SynoApiThread.THREAD_SNAPSHOT, handler, refreshRate);
@@ -47,8 +49,13 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
         Channel channel = cameraHandler.getThing().getChannel(CHANNEL_SNAPSHOT);
         Thing thing = cameraHandler.getThing();
         SynoCameraConfig config = thing.getConfiguration().as(SynoCameraConfig.class);
-        byte[] snapshot = cameraHandler.getSynoWebApiHandler().getApiCamera()
-                .getSnapshot(getSynoHandler().getCameraId(), getRefreshRate(), config.getSnapshotStreamId());
+        byte[] snapshot = new byte[0];
+        try {
+            snapshot = cameraHandler.getSynoWebApiHandler().getApiCamera().getSnapshot(getSynoHandler().getCameraId(),
+                    getRefreshRate(), config.getSnapshotStreamId());
+        } catch (Exception e) {
+            logger.error("Unexpected exception while obtaining snapshot, possibly network disconnected");
+        }
         if (snapshot.length < 1000) {
             getSynoHandler().updateState(channel.getUID(), UnDefType.UNDEF);
             return (snapshot.length == 2);

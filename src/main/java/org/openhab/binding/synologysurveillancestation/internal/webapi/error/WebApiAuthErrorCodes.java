@@ -12,12 +12,15 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi.error;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
+
 /**
  * The {@link WebApiAuthErrorCodes} hosts errorCodes for SYNO.API.Auth.
  *
  * @author Nils - Initial contribution
  * @author Pavion - Contribution
  */
+@NonNullByDefault
 public enum WebApiAuthErrorCodes implements ErrorCode {
 
     UNKNOWN_ERROR(100, "Unknown error."),

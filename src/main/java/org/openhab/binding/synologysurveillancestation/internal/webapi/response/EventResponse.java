@@ -80,7 +80,7 @@ public class EventResponse extends SimpleResponse {
         if (synoEvents.isEmpty()) {
             return new SynoEvent(0);
         } else {
-            return synoEvents.get(0);
+            return synoEvents.getOrDefault(0, new SynoEvent(0));
         }
     }
 

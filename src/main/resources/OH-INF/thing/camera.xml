@@ -37,25 +37,25 @@
 				<advanced>true</advanced>
 			</parameter-group>
 
-			<parameter name="refresh-rate-snapshot" unit="s" type="integer" groupName="pg-refresh-rate">
+			<parameter name="refreshRateSnapshot" unit="s" type="integer" groupName="pg-refresh-rate">
 				<label>Snapshot refresh rate:</label>
 				<description>Refresh rate for camera snapshot in seconds (0 to disable)</description>
 				<default>10</default>
 				<required>true</required>
 			</parameter>
-			<parameter name="refresh-rate-events" unit="s" type="integer" groupName="pg-refresh-rate">
+			<parameter name="refreshRateEvents" unit="s" type="integer" groupName="pg-refresh-rate">
 				<label>Event refresh rate:</label>
 				<description>Refresh rate for events in seconds (0 to disable)</description>
 				<default>3</default>
 				<required>true</required>
 			</parameter>
-			<parameter name="refresh-rate-md-param" unit="s" type="integer" groupName="pg-refresh-rate">
+			<parameter name="refreshRateMdParam" unit="s" type="integer" groupName="pg-refresh-rate">
 				<label>MD parameter refresh rate:</label>
 				<description>Refresh rate for motion detection parameter in seconds (0 to disable)</description>
 				<default>0</default>
 				<required>true</required>
 			</parameter>
-			<parameter name="snapshot-stream-id" type="integer" groupName="pg-common">
+			<parameter name="snapshotStreamId" type="integer" groupName="pg-common">
 				<label>Snapshot stream ID:</label>
 				<description>Snapshot video stream ID according to Surveillance Station configuration (default: 1 for 'Stream 1')</description>
 				<default>1</default>

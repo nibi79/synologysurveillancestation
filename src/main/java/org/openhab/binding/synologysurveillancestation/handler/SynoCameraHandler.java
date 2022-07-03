@@ -212,7 +212,7 @@ public class SynoCameraHandler extends BaseThingHandler implements SynoHandler {
     @SuppressWarnings("null")
     @Override
     public void initialize() {
-        logger.error("Camera Handler initialize");
+        logger.debug("Initialize Camera Handler...");
 
         if (getBridge() != null) {
             cameraId = getThing().getUID().getId();

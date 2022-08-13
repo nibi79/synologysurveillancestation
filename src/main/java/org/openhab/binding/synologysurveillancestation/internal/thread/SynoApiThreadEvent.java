@@ -62,16 +62,17 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
     @Override
     public boolean refresh() throws Exception {
         SynoCameraHandler cameraHandler = getSynoHandler();
+        // Thing thing = cameraHandler.getThing();
 
-        for (String eventType : events.keySet()) {
-            if (getSynoHandler().isLinked(eventType)) {
-                Channel channel = cameraHandler.getThing().getChannel(eventType);
-                SynoEvent event = events.get(eventType);
-                EventResponse response = cameraHandler.getSynoWebApiHandler().getApiEvent()
-                        .getEventResponse(cameraHandler.getCameraId(), lastEventTime, event.getReason());
-                if (response.isSuccess()) {
-                    if (!response.isEmpty()) {
-                        SynoEvent responseEvent = response.getFirst();
+        EventResponse response = cameraHandler.getSynoWebApiHandler().getApiEvent()
+                .getEventResponse(cameraHandler.getCameraId(), lastEventTime, events);
+        if (response.isSuccess()) {
+            for (String eventType : events.keySet()) {
+                if (getSynoHandler().isLinked(eventType)) {
+                    SynoEvent event = events.get(eventType);
+                    Channel channel = cameraHandler.getThing().getChannel(eventType);
+                    if (response.hasEvent(event.getReason())) {
+                        SynoEvent responseEvent = response.getEvent(event.getReason());
                         if (responseEvent.getEventId() != event.getEventId()) {
                             event.setEventId(responseEvent.getEventId());
                             event.setEventCompleted(responseEvent.isEventCompleted());
@@ -88,17 +89,16 @@ public class SynoApiThreadEvent extends SynoApiThread<SynoCameraHandler> {
                         event.setEventCompleted(true);
                         cameraHandler.updateState(channel.getUID(), OnOffType.OFF);
                     }
-                    if (response.getTimestamp() > lastEventTime) {
-                        lastEventTime = response.getTimestamp();
-                    }
-                } else if (response.getErrorcode() == 105) {
-                    throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
-                } else {
-                    return false;
                 }
             }
+
+            lastEventTime = response.getTimestamp();
+            return true;
+        } else if (response.getErrorcode() == 105) {
+            throw new WebApiException(WebApiAuthErrorCodes.INSUFFICIENT_USER_PRIVILEGE);
+        } else {
+            return false;
         }
-        return true;
     }
 
     /**

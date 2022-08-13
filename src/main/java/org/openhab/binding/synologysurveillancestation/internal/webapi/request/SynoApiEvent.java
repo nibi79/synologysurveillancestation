@@ -14,10 +14,12 @@ package org.openhab.binding.synologysurveillancestation.internal.webapi.request;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringJoiner;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.client.HttpClient;
 import org.openhab.binding.synologysurveillancestation.internal.SynoConfig;
+import org.openhab.binding.synologysurveillancestation.internal.webapi.SynoEvent;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.WebApiException;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.response.EventResponse;
 
@@ -48,14 +50,19 @@ public class SynoApiEvent extends SynoApiRequest<EventResponse> {
      * @return
      * @throws WebApiException
      */
-    public EventResponse getEventResponse(String cameraId, long lastEventTime, int reason) {
+    public EventResponse getEventResponse(String cameraId, long lastEventTime, Map<String, SynoEvent> events) {
         Map<String, String> params = new HashMap<>();
 
         params.put("cameraIds", cameraId);
-        // params.put("fromTime", String.valueOf(lastEventTime));
+        params.put("fromTime", String.valueOf(lastEventTime));
         params.put("blIncludeSnapshot", API_FALSE);
-        params.put("limit", "1");
-        params.put("reason", String.valueOf(reason));
+        params.put("limit", "25");
+
+        StringJoiner reasons = new StringJoiner(",");
+        for (SynoEvent event : events.values()) {
+            reasons.add(String.valueOf(event.getReason()));
+        }
+        params.put("reason", reasons.toString());
 
         try {
             return callApi(METHOD_LIST, params);

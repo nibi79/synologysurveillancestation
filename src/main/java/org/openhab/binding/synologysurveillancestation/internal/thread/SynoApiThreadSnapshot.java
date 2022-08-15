@@ -54,7 +54,7 @@ public class SynoApiThreadSnapshot extends SynoApiThread<SynoCameraHandler> {
             snapshot = cameraHandler.getSynoWebApiHandler().getApiCamera().getSnapshot(getSynoHandler().getCameraId(),
                     getRefreshRate(), config.getSnapshotStreamId());
         } catch (Exception e) {
-            logger.error("Unexpected exception while obtaining snapshot, possibly network disconnected");
+            logger.error("Unexpected exception while obtaining snapshot, possibly network disconnected", e);
         }
         if (snapshot.length < 1000) {
             getSynoHandler().updateState(channel.getUID(), UnDefType.UNDEF);

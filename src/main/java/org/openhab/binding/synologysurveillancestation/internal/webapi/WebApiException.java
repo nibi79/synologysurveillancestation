@@ -64,7 +64,7 @@ public class WebApiException extends Exception {
     public WebApiException(Throwable cause) {
         super(cause.getMessage(), cause);
         this.errorCode = UNKNOWN;
-        this.errorMsg = cause.getMessage();
+        this.errorMsg = (cause.getMessage() != null) ? cause.getMessage() : "";
     }
 
     public int getErrorCode() {

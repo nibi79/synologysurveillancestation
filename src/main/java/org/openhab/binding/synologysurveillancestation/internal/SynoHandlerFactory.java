@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2022 Contributors to the openHAB project
+ * Copyright (c) 2010-2024 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -59,7 +59,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private HttpClient httpClient;
     private boolean acceptSsl = false;
-    private @Nullable SynoBridgeHandler bridgeHandler = null;
+    private SynoBridgeHandler bridgeHandler = null;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 

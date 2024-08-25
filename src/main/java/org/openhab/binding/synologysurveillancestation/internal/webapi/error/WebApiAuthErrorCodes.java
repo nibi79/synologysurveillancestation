@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2022 Contributors to the openHAB project
+ * Copyright (c) 2010-2024 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -23,6 +23,7 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 @NonNullByDefault
 public enum WebApiAuthErrorCodes implements ErrorCode {
 
+    NO_ERROR(0, "Success"),
     UNKNOWN_ERROR(100, "Unknown error."),
     PARAM_NOT_SPECIFIED(101, "The account parameter is not specified."),
     API_DOES_NOT_EXIST(102, "Surveillance Station is not running."),
@@ -77,7 +78,7 @@ public enum WebApiAuthErrorCodes implements ErrorCode {
      * @return
      */
     public static ErrorCode getByCode(int code) {
-        return ErrorCode.lookup(WebApiAuthErrorCodes.class, code);
+        return ErrorCode.lookup(code);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2022 Contributors to the openHAB project
+ * Copyright (c) 2010-2024 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -11,6 +11,8 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
+
+import java.util.Objects;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.ErrorCode;
@@ -64,7 +66,7 @@ public class WebApiException extends Exception {
     public WebApiException(Throwable cause) {
         super(cause.getMessage(), cause);
         this.errorCode = UNKNOWN;
-        this.errorMsg = cause.getMessage();
+        this.errorMsg = Objects.requireNonNullElse(cause.getMessage(), "");
     }
 
     public int getErrorCode() {

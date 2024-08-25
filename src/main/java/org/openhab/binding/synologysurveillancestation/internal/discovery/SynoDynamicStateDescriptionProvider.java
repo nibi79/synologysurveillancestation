@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.discovery;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class SynoDynamicStateDescriptionProvider implements DynamicStateDescript
     @Override
     public @Nullable StateDescription getStateDescription(Channel channel, @Nullable StateDescription original,
             @Nullable Locale locale) {
-        List<StateOption> options = channelOptionsMap.get(channel.getUID());
+        List<StateOption> options = channelOptionsMap.getOrDefault(channel.getUID(), new ArrayList<StateOption>());
 
         StateDescriptionFragmentBuilder builder = (original == null) ? StateDescriptionFragmentBuilder.create()
                 : StateDescriptionFragmentBuilder.create(original);

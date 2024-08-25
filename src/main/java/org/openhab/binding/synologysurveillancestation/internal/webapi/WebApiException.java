@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.synologysurveillancestation.internal.webapi;
 
+import java.util.Objects;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.synologysurveillancestation.internal.webapi.error.ErrorCode;
 
@@ -64,7 +66,7 @@ public class WebApiException extends Exception {
     public WebApiException(Throwable cause) {
         super(cause.getMessage(), cause);
         this.errorCode = UNKNOWN;
-        this.errorMsg = (cause.getMessage() != null) ? cause.getMessage() : "";
+        this.errorMsg = Objects.requireNonNullElse(cause.getMessage(), "");
     }
 
     public int getErrorCode() {

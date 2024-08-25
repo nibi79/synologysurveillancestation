@@ -59,7 +59,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
     private HttpClient httpClient;
     private boolean acceptSsl = false;
-    private @Nullable SynoBridgeHandler bridgeHandler = null;
+    private SynoBridgeHandler bridgeHandler = null;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 

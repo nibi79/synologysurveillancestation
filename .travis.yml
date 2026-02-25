@@ -1,7 +1,0 @@
-language: java
-
-services:
-  - docker
-
-script:
-- docker-compose run build-plugin

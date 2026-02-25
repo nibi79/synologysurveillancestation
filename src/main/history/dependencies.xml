@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="org.openhab.binding.synologysurveillancestation-4.3.0-SNAPSHOT">
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0" name="org.openhab.binding.synologysurveillancestation-5.2.0-SNAPSHOT">
     <feature version="0.0.0">
         <feature>openhab-runtime-base</feature>
         <feature>wrap</feature>
-        <bundle>mvn:org.openhab.addons.bundles/org.openhab.binding.synologysurveillancestation/4.3.0-SNAPSHOT</bundle>
+        <bundle>mvn:org.openhab.addons.bundles/org.openhab.binding.synologysurveillancestation/5.2.0-SNAPSHOT</bundle>
         <bundle>wrap:mvn:org.lastnpe.eea/eea-all/2.4.0</bundle>
     </feature>
 </features>

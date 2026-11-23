@@ -35,6 +35,13 @@
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>.._.._.._openhab-bindings_org.openhab.binding.synologysurveillancestation_src_main_resources</name>
+			<type>2</type>
+			<location>//C:/coding/oh/openhab-bindings/org.openhab.binding.synologysurveillancestation/src/main/resources/</location>
+		</link>
+	</linkedResources>
 	<filteredResources>
 		<filter>
 			<id>1771776121826</id>

@@ -20,7 +20,6 @@ This binding connects openHAB with your surveillance cameras running on Synology
     - [.items](#items-1)
     - [transform/liveuri.js](#transformliveurijs)
   - [Support](#support)
-***
 
 ## Disclaimer
 
@@ -71,40 +70,40 @@ Currently following **Channels** are supported on the **Bridge**:
 Currently following **Channels** are supported on the **Camera**:
 
 - Common channels:
-     - Snapshot _IMAGE_
-     - Camera recording _SWITCH_
-     - Enable camera _SWITCH_
+  - Snapshot _IMAGE_
+  - Camera recording _SWITCH_
+  - Enable camera _SWITCH_
 - URIs:
-     - Snapshot static URI _STRING_
-     - Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
-     - Snapshot static live feed URI (rtsp) _STRING_
-     - Snapshot static live feed URI (mjpeg over http) _STRING_
+  - Snapshot static URI _STRING_
+  - Snapshot dynamic URI (refreshes with event refresh rate) _STRING_
+  - Snapshot static live feed URI (rtsp) _STRING_
+  - Snapshot static live feed URI (mjpeg over http) _STRING_
 - PTZ (Pan/Tilt/Zoom) for PTZ cameras only:
-     - Zoom `IN`/`OUT`
-     - Move `UP`/`DOWN`/`LEFT`/`RIGHT`/`HOME`
-     - Continuous Move/Zoom with `START_<COMMAND>` and `STOP_<COMMAND>` (e.g. `START_IN`)
-     - Move to preset
-     - Run patrol
+  - Zoom `IN`/`OUT`
+  - Move `UP`/`DOWN`/`LEFT`/`RIGHT`/`HOME`
+  - Continuous Move/Zoom with `START_<COMMAND>` and `STOP_<COMMAND>` (e.g. `START_IN`)
+  - Move to preset
+  - Run patrol
 - Event channels:
-     - Motion event _SWITCH_ (read-only)
-     - Alarm event _SWITCH_ (read-only)
-     - Manual event _SWITCH_ (read-only)
-     - Continuous recording event _SWITCH_ (read-only)
-     - External event _SWITCH_ (read-only)
-     - Action rule event _SWITCH_ (read-only)
+  - Motion event _SWITCH_ (read-only)
+  - Alarm event _SWITCH_ (read-only)
+  - Manual event _SWITCH_ (read-only)
+  - Continuous recording event _SWITCH_ (read-only)
+  - External event _SWITCH_ (read-only)
+  - Action rule event _SWITCH_ (read-only)
 - Motion detection channels (if available):
-     - Motion detection source _STRING_ (-1:disable, 0:by camera, 1:by Surveillance Station)
-     - Motion detection sensitivity _NUMBER_ (1 to 99)
-     - Motion detection threshold _NUMBER_ (1 to 99)
-     - Motion detection object size _NUMBER_ (1 to 99)
-     - Motion detection percentage _NUMBER_ (1 to 99)
-     - Ignore short-lived motion for _NUMBER_ (0 to 10) seconds
+  - Motion detection source _STRING_ (-1:disable, 0:by camera, 1:by Surveillance Station)
+  - Motion detection sensitivity _NUMBER_ (1 to 99)
+  - Motion detection threshold _NUMBER_ (1 to 99)
+  - Motion detection object size _NUMBER_ (1 to 99)
+  - Motion detection percentage _NUMBER_ (1 to 99)
+  - Ignore short-lived motion for _NUMBER_ (0 to 10) seconds
 
 ## File based configuration
 
 ### .things
 
-```
+```DSL
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="http", host="192.168.0.1", port="5000", username="my username", password="my password", acceptSsl="false" ] {
 Thing camera CameraID "Camera 1" @ "Outside" [ refreshRateEvents=5, refreshRateSnapshot=10, refreshRateMdParam=120, snapshotStreamId=1 ]
 }
@@ -112,7 +111,7 @@ Thing camera CameraID "Camera 1" @ "Outside" [ refreshRateEvents=5, refreshRateS
 
 or for a self-signed SSL certificate:
 
-```
+```DSL
 Bridge synologysurveillancestation:station:diskstation "DiskStation" @ "ServerRoom" [ protocol="https", host="192.168.0.1", port="5001", username="my username", password="my password", acceptSsl="true" ] {
 Thing camera CameraID "Camera 1" @ "Outside" [ refreshRateEvents=5, refreshRateSnapshot=10, refreshRateMdParam=120, snapshotStreamId=1 ]
 }
@@ -122,7 +121,7 @@ Here the **CameraID** is a numeric ID of your surveillance camera in Surveillanc
 
 ### .items
 
-```
+```DSL
 Switch Surveillance_HomeMode "Home Mode" {channel="synologysurveillancestation:station:diskstation:homemode"}
 Number:Dimensionless Surveillance_Event_Trigger "External event trigger" {channel="synologysurveillancestation:station:diskstation:eventtrigger"}
 String Surveillance_SID "Current SID" {channel="synologysurveillancestation:station:diskstation:sid"}
@@ -161,7 +160,7 @@ Here `:1` is yet again the numeric ID of your surveillance camera from a previou
 
 ### .sitemap
 
-```
+```DSL
 Switch item=Surveillance_Zooming mappings=[IN="IN", OUT="OUT"]
 
 // Some cameras like Reolink do not support simple stepping
@@ -185,13 +184,13 @@ Example: SID-based stream URI (over http).
 
 ### .items
 
-```
+```DSL
 String Surveillance_Snapshot_Live_Uri_Static "SID-based URI" {channel="synologysurveillancestation:camera:diskstation:1:common#snapshot-uri-static"[profile="transform:JS", function="liveuri.js"]}
 ```
 
 ### transform/liveuri.js
 
-```
+```DSL
 (function(i) {
     return i.replace("entry.cgi", "SurveillanceStation/videoStreaming.cgi").replace(".Camera", ".VideoStream").replace("version=8", "version=1").replace("GetSnapshot", "Stream&format=mjpeg")
 })(input)

@@ -4,8 +4,8 @@
 	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
 	<bridge-type id="station">
-		<label>Bridge Synology Surveilance Station API</label>
-		<description>Represents the API for Synology Surveilance Station.</description>
+		<label>Bridge Synology Surveillance Station API</label>
+		<description>Represents the API for Synology Surveillance Station.</description>
 
 		<channels>
 			<channel id="homemode" typeId="homemode-channel"/>

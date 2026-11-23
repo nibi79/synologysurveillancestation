@@ -57,26 +57,19 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
     private final Logger logger = LoggerFactory.getLogger(SynoHandlerFactory.class);
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
-    private HttpClient httpClient;
-    private boolean acceptSsl = false;
+    private @Nullable HttpClient commonHttpClient;
+    private @Nullable HttpClient customHttpClient;
     private SynoBridgeHandler bridgeHandler = null;
 
     private SynoDynamicStateDescriptionProvider stateDescriptionProvider;
 
     @Reference
     protected void setHttpClientFactory(HttpClientFactory httpClientFactory) {
-        this.httpClient = httpClientFactory.getCommonHttpClient();
+        this.commonHttpClient = httpClientFactory.getCommonHttpClient();
     }
 
     protected void unsetHttpClientFactory(HttpClientFactory httpClientFactory) {
-        if (this.acceptSsl) {
-            try {
-                this.httpClient.stop();
-            } catch (Exception e) {
-                logger.error("Couldn't stop trusting HttpServer, sorry");
-            }
-        }
-        this.httpClient = null;
+        this.commonHttpClient = null;
     }
 
     @Override
@@ -89,6 +82,7 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
     @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         super.deactivate(componentContext);
+        stopCustomHttpClient();
     }
 
     @Override
@@ -117,28 +111,45 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
 
         if (thingTypeUID.equals(THING_TYPE_STATION)) {
             SynoConfig config = thing.getConfiguration().as(SynoConfig.class);
+            HttpClient client;
             if (config.isAcceptSsl()) {
-                SslContextFactory sslContextFactory = new SslContextFactory(true);
-                sslContextFactory.setTrustAll(true);
+                SslContextFactory.Client sslContextFactory = new SslContextFactory.Client(true);
                 sslContextFactory.setEndpointIdentificationAlgorithm(null);
-                HttpClient client = new HttpClient(sslContextFactory);
+                client = new HttpClient();
+                client.setSslContextFactory(sslContextFactory);
                 try {
                     client.start();
-                    this.httpClient = client;
-                    logger.debug("Trusting HttpServer started");
-                    this.acceptSsl = true;
+                    this.customHttpClient = client;
+                    logger.debug("HttpClient accepting invalid SSL certificates started");
                 } catch (Exception e) {
-                    logger.error("Trusting HttpServer failed");
-                    this.acceptSsl = false;
+                    try {
+                        client.stop();
+                    } catch (Exception stopException) {
+                        e.addSuppressed(stopException);
+                    }
+                    throw new IllegalStateException("Could not start the HttpClient accepting invalid SSL certificates",
+                            e);
                 }
+            } else {
+                client = commonHttpClient;
             }
-            bridgeHandler = new SynoBridgeHandler((Bridge) thing, httpClient);
-            CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
-            bridgeHandler.setDiscovery(discoveryService);
-            this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(
-                    DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
+            if (client == null) {
+                throw new IllegalStateException("The common HttpClient is not available");
+            }
+            try {
+                bridgeHandler = new SynoBridgeHandler((Bridge) thing, client);
+                CameraDiscoveryService discoveryService = new CameraDiscoveryService(bridgeHandler);
+                bridgeHandler.setDiscovery(discoveryService);
+                this.discoveryServiceRegs.put(thing.getUID(), bundleContext.registerService(
+                        DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
 
-            return bridgeHandler;
+                return bridgeHandler;
+            } catch (RuntimeException e) {
+                if (client.equals(customHttpClient)) {
+                    stopCustomHttpClient();
+                }
+                throw e;
+            }
 
         } else if (thingTypeUID.equals(THING_TYPE_CAMERA) && bridgeHandler != null) {
             return new SynoCameraHandler(thing, stateDescriptionProvider);
@@ -153,10 +164,25 @@ public class SynoHandlerFactory extends BaseThingHandlerFactory {
             if (serviceReg != null) {
                 serviceReg.unregister();
                 discoveryServiceRegs.remove(handler.getThing().getUID());
-                bridgeHandler = null;
             }
+            bridgeHandler = null;
         }
         super.removeHandler(handler);
+        if (handler.getThing().getThingTypeUID().equals(THING_TYPE_STATION)) {
+            stopCustomHttpClient();
+        }
+    }
+
+    private void stopCustomHttpClient() {
+        HttpClient client = customHttpClient;
+        customHttpClient = null;
+        if (client != null) {
+            try {
+                client.stop();
+            } catch (Exception e) {
+                logger.warn("Could not stop the custom HttpClient", e);
+            }
+        }
     }
 
     @Reference
